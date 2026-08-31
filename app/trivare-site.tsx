@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent, SyntheticEvent, useEffect, useRef, useState } from 'react';
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Menu, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Menu, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -148,6 +148,8 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
     let targetY = element.clientHeight * .47;
     let x = targetX;
     let y = targetY;
+    let slowX = targetX;
+    let slowY = targetY;
     let targetVelocityX = 0;
     let targetVelocityY = 0;
     let velocityX = 0;
@@ -196,6 +198,8 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
       const entrance = reducedMotion ? 1 : smoothstep(.7, 5.2, seconds);
       const pointerU = x / width;
       const pointerV = y / height;
+      const slowPointerU = slowX / width;
+      const slowPointerV = slowY / height;
       const speed = Math.min(1, Math.hypot(velocityX, velocityY) / 38);
       const pullX = velocityX / Math.max(1, width);
       const pullY = velocityY / Math.max(1, height);
@@ -219,7 +223,11 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
           const dy = (v - pointerV) / (.3 / localShape);
           const localDistance = Math.sqrt(dx * dx + dy * dy);
           const localNoise = valueNoise(warpedX * 2.05 + seconds * .01, warpedY * 2.05, 127);
-          const cursorInfluence = reveal * smoothstep(1.12 + localNoise * .13, .08, localDistance) * (.55 + localNoise * .45);
+          const echoDx = (u - slowPointerU) / (.49 * localShape);
+          const echoDy = (v - slowPointerV) / (.39 / localShape);
+          const echoDistance = Math.sqrt(echoDx * echoDx + echoDy * echoDy);
+          const echoInfluence = reveal * smoothstep(1.08 + localNoise * .12, .12, echoDistance) * (.24 + localNoise * .2);
+          const cursorInfluence = reveal * smoothstep(1.12 + localNoise * .13, .08, localDistance) * (.55 + localNoise * .45) + echoInfluence;
           warpedX += dx * cursorInfluence * .075 - pullX * cursorInfluence * (1.8 + speed * 2.1);
           warpedY += dy * cursorInfluence * .065 - pullY * cursorInfluence * (1.6 + speed * 1.8);
 
@@ -238,7 +246,7 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
           const relief = smoothstep(.33, .68, folds * .78 + fine * .22);
           const breathing = .9 + Math.sin(seconds * .11 + large * 5.2) * .08 + Math.sin(seconds * .047 + folds * 3.7) * .05;
           const mass = smoothstep(.39, .54, density * breathing + cursorInfluence * .09);
-          const diagonalFront = smoothstep(.94 - entrance * 1.22, 1.19 - entrance * 1.22, u - v * .42);
+          const diagonalFront = smoothstep(.78 - entrance * 1.28, 1.08 - entrance * 1.28, u * .82 + (1 - v) * .36);
           const calmBreaks = .72 + smoothstep(.38, .7, fractalNoise(warpedX * .52 - 2.4, warpedY * .52 + 4.2, 211, 2)) * .28;
           const safeDx = (u - titleCenterX) / Math.max(.18, titleWidth / width * .6);
           const safeDy = (v - titleCenterY) / Math.max(.08, titleHeight / height * 1.45);
@@ -334,6 +342,8 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
         lastDraw = time;
         x += (targetX - x) * .06;
         y += (targetY - y) * .06;
+        slowX += (targetX - slowX) * .027;
+        slowY += (targetY - slowY) * .027;
         velocityX += (targetVelocityX - velocityX) * .025;
         velocityY += (targetVelocityY - velocityY) * .025;
         targetVelocityX *= .86;
@@ -530,7 +540,7 @@ export function TrivareSite() {
           <div className="hero-lower">
             <div className="hero-actions">
               <a className="primary-cta" href="#contact"><span>Plan een kennismaking</span><span className="cta-arrow"><ArrowUpRight /></span></a>
-              <a className="quiet-link" href="#werk">Bekijk ons werk <ArrowDown /></a>
+              <a className="quiet-link" href="#werk">Bekijk ons werk</a>
             </div>
           </div>
         </div>
@@ -538,7 +548,7 @@ export function TrivareSite() {
       </section>
 
       <section className="section services" id="diensten">
-        <div className="section-intro" data-reveal><p className="section-label">DIENSTEN</p><div><h2>Een website die past<br /><span>bij je bedrijf.</span></h2><p>Of het nu gaat om een nieuwe website, een redesign of het verbeteren van wat er al staat: we kijken graag mee naar wat je nodig hebt en hoe we daar een passende website van kunnen maken.</p></div></div>
+        <div className="section-intro" data-reveal><p className="section-label">DIENSTEN</p><div><h2 className="services-heading">Een website die past <span>bij je bedrijf.</span></h2><p>Of het nu gaat om een nieuwe website, een redesign of het verbeteren van wat er al staat: we kijken graag mee naar wat je nodig hebt en hoe we daar een passende website van kunnen maken.</p></div></div>
         <div className="service-rows" data-reveal>{services.map((service) => <a href="#contact" className="service-row" key={service.number}><span className="service-number">{service.number}</span><h3>{service.title}</h3><p>{service.text}</p><ArrowUpRight /></a>)}</div>
         <p className="service-tags">DESIGN · BRANDING · UX · SEO · CRO · ONDERHOUD</p>
         <div className="capability-grid">{capabilities.map((capability) => <article key={capability.number} data-reveal><span>{capability.number}</span><strong>{capability.title}</strong><p>{capability.text}</p><i /></article>)}</div>
@@ -572,7 +582,7 @@ export function TrivareSite() {
       </section>
 
       <section className="section personality-section" aria-labelledby="personality-title">
-        <div className="personality-intro" data-reveal><p className="section-label">PERSOONLIJKHEID</p><h2 id="personality-title">Je blijft betrokken bij<br /><span>het hele proces.</span></h2><p>Een website maken we niet los van de mensen achter het bedrijf. Daarom bespreken we keuzes, laten we zien waar we mee bezig zijn en nemen we feedback mee tijdens het traject.<br /><br />Je hebt direct contact en weet waar het project staat. Zo komen we samen tot een resultaat waar beide kanten achter staan.</p></div>
+        <div className="personality-intro" data-reveal><h2 id="personality-title">Je blijft betrokken bij <span>het hele proces.</span></h2><p>Een website maken we niet los van de mensen achter het bedrijf. Daarom bespreken we keuzes, laten we zien waar we mee bezig zijn en nemen we feedback mee tijdens het traject.<br /><br />Je hebt direct contact en weet waar het project staat. Zo komen we samen tot een resultaat waar beide kanten achter staan.</p></div>
         <div className="personality-visual" data-reveal><Image src="/personality-studio.png" alt="Persoonlijke samenwerking en ontwerpdetails in de studio" fill sizes="100vw" /><div className="personality-caption"><span>DIRECT CONTACT</span><span>SAMEN AFSTEMMEN</span><span>AANDACHT VOOR DETAIL</span></div></div>
       </section>
 
