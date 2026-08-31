@@ -83,44 +83,56 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>) {
   useEffect(() => {
     const element = ref.current;
     if (!element || matchMedia('(pointer: coarse)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const title = element.querySelector<HTMLElement>('.hero-title');
     let visible = true;
     let frame = 0;
-    let targetX = element.clientWidth * .7;
-    let targetY = element.clientHeight * .48;
-    let previousX = targetX;
-    let previousY = targetY;
+    let targetX = element.clientWidth * .72;
+    let targetY = element.clientHeight * .47;
     let x = targetX;
     let y = targetY;
+    let lightX = targetX;
+    let lightY = targetY;
+    let titleOffsetX = 0;
+    let titleOffsetY = 0;
+
+    const measureTitle = () => {
+      if (!title) return;
+      const heroRect = element.getBoundingClientRect();
+      const titleRect = title.getBoundingClientRect();
+      titleOffsetX = titleRect.left - heroRect.left;
+      titleOffsetY = titleRect.top - heroRect.top;
+    };
 
     const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }, { threshold: .05 });
     observer.observe(element);
+    measureTitle();
     const move = (event: globalThis.PointerEvent) => {
       const rect = element.getBoundingClientRect();
       targetX = event.clientX - rect.left;
       targetY = event.clientY - rect.top;
-      element.dataset.glow = 'true';
+      element.dataset.cloudReveal = 'true';
     };
-    const leave = () => { element.dataset.glow = 'false'; };
+    const leave = () => { element.dataset.cloudReveal = 'false'; };
     const render = () => {
       if (visible) {
-        x += (targetX - x) * .092;
-        y += (targetY - y) * .092;
-        const dx = targetX - previousX;
-        const dy = targetY - previousY;
-        const velocity = Math.min(1.08, Math.hypot(dx, dy) / 220 + 1);
-        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-        previousX = targetX; previousY = targetY;
-        element.style.setProperty('--glow-x', `${x}px`);
-        element.style.setProperty('--glow-y', `${y}px`);
-        element.style.setProperty('--glow-stretch', velocity.toFixed(3));
-        element.style.setProperty('--glow-angle', `${(angle * .045).toFixed(2)}deg`);
+        x += (targetX - x) * .08;
+        y += (targetY - y) * .08;
+        lightX += (targetX - lightX) * .03;
+        lightY += (targetY - lightY) * .03;
+        element.style.setProperty('--mouse-x', `${x}px`);
+        element.style.setProperty('--mouse-y', `${y}px`);
+        element.style.setProperty('--light-x', `${lightX}px`);
+        element.style.setProperty('--light-y', `${lightY}px`);
+        title?.style.setProperty('--title-x', `${x - titleOffsetX}px`);
+        title?.style.setProperty('--title-y', `${y - titleOffsetY}px`);
       }
       frame = requestAnimationFrame(render);
     };
     element.addEventListener('pointermove', move);
     element.addEventListener('pointerleave', leave);
+    addEventListener('resize', measureTitle);
     frame = requestAnimationFrame(render);
-    return () => { observer.disconnect(); element.removeEventListener('pointermove', move); element.removeEventListener('pointerleave', leave); cancelAnimationFrame(frame); };
+    return () => { observer.disconnect(); element.removeEventListener('pointermove', move); element.removeEventListener('pointerleave', leave); removeEventListener('resize', measureTitle); cancelAnimationFrame(frame); };
   }, [ref]);
 }
 
@@ -271,11 +283,14 @@ export function TrivareSite() {
       </div>
 
       <section className="hero-section" id="top" ref={heroRef}>
-        <div className="hero-cursor-glow" aria-hidden="true" /><div className="grain" aria-hidden="true" />
+        <div className="hero-atmosphere" aria-hidden="true">
+          {['base', 'reveal', 'echo'].map((layer) => <div className={`hero-cloud-layer hero-cloud-${layer}`} key={layer}>{['a', 'b', 'c', 'd'].map((shape) => <i className={`hero-cloud-shape hero-cloud-${shape}`} key={shape} />)}</div>)}
+        </div>
+        <div className="grain" aria-hidden="true" />
         <div className="hero-content">
-          <h1>Websites die<br /><span>vertrouwen uitstralen.</span></h1>
+          <h1 className="hero-title"><span className="hero-title-base">Websites die<br />vertrouwen<br />uitstralen.</span><span className="hero-title-gold" aria-hidden="true">Websites die<br />vertrouwen<br />uitstralen.</span></h1>
           <div className="hero-lower">
-            <p>Trivare ontwerpt en bouwt professionele websites die passen bij je bedrijf. Helder in gebruik, sterk in uitstraling en zorgvuldig uitgewerkt.</p>
+            <p>Trivare ontwerpt en bouwt websites die professioneel ogen, logisch werken en passen bij het bedrijf erachter.</p>
             <div className="hero-actions">
               <a className="primary-cta" href="#contact"><span>Plan een kennismaking</span><span className="cta-arrow"><ArrowUpRight /></span></a>
               <a className="quiet-link" href="#werk">Bekijk ons werk <ArrowDown /></a>
