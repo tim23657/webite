@@ -81,15 +81,43 @@ function setPointerPosition(event: ReactPointerEvent<HTMLElement>) {
   event.currentTarget.style.setProperty('--mouse-y', `${event.clientY - rect.top}px`);
 }
 
-const heroRibbons = [
-  { y: .12, width: .18, amp: .115, amp2: .06, freq: 1.35, speed: .000031, phase: .4, blur: 30, tilt: -.055 },
-  { y: .27, width: .23, amp: .155, amp2: .072, freq: 1.04, speed: -.000024, phase: 2.1, blur: 43, tilt: .075 },
-  { y: .42, width: .14, amp: .105, amp2: .07, freq: 1.66, speed: .000029, phase: 4.3, blur: 23, tilt: -.04 },
-  { y: .57, width: .25, amp: .16, amp2: .055, freq: .91, speed: -.000019, phase: 1.4, blur: 47, tilt: .06 },
-  { y: .72, width: .17, amp: .125, amp2: .08, freq: 1.28, speed: .000022, phase: 5.2, blur: 29, tilt: -.07 },
-  { y: .86, width: .22, amp: .105, amp2: .06, freq: 1.12, speed: -.000017, phase: 3.2, blur: 42, tilt: .045 },
-  { y: .98, width: .16, amp: .09, amp2: .068, freq: 1.5, speed: .00002, phase: 6.1, blur: 33, tilt: -.035 },
-];
+const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
+const smoothstep = (edge0: number, edge1: number, value: number) => {
+  const amount = clamp01((value - edge0) / (edge1 - edge0));
+  return amount * amount * (3 - 2 * amount);
+};
+
+function noiseHash(x: number, y: number, seed: number) {
+  let value = Math.imul(x, 374761393) + Math.imul(y, 668265263) + Math.imul(seed, 1442695041);
+  value = Math.imul(value ^ (value >>> 13), 1274126177);
+  return ((value ^ (value >>> 16)) >>> 0) / 4294967295;
+}
+
+function valueNoise(x: number, y: number, seed: number) {
+  const x0 = Math.floor(x);
+  const y0 = Math.floor(y);
+  const tx = x - x0;
+  const ty = y - y0;
+  const sx = tx * tx * (3 - 2 * tx);
+  const sy = ty * ty * (3 - 2 * ty);
+  const top = noiseHash(x0, y0, seed) * (1 - sx) + noiseHash(x0 + 1, y0, seed) * sx;
+  const bottom = noiseHash(x0, y0 + 1, seed) * (1 - sx) + noiseHash(x0 + 1, y0 + 1, seed) * sx;
+  return top * (1 - sy) + bottom * sy;
+}
+
+function fractalNoise(x: number, y: number, seed: number, octaves: number) {
+  let sum = 0;
+  let amplitude = .56;
+  let frequency = 1;
+  let total = 0;
+  for (let octave = 0; octave < octaves; octave += 1) {
+    sum += valueNoise(x * frequency, y * frequency, seed + octave * 17) * amplitude;
+    total += amplitude;
+    frequency *= 1.93;
+    amplitude *= .48;
+  }
+  return sum / total;
+}
 
 function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React.RefObject<HTMLCanvasElement | null>) {
   useEffect(() => {
@@ -101,10 +129,12 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
     const baseCanvas = document.createElement('canvas');
     const detailCanvas = document.createElement('canvas');
     const maskCanvas = document.createElement('canvas');
+    const fieldCanvas = document.createElement('canvas');
     const baseContext = baseCanvas.getContext('2d');
     const detailContext = detailCanvas.getContext('2d');
     const maskContext = maskCanvas.getContext('2d');
-    if (!baseContext || !detailContext || !maskContext) return;
+    const fieldContext = fieldCanvas.getContext('2d');
+    if (!baseContext || !detailContext || !maskContext || !fieldContext) return;
 
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const canTrackPointer = !matchMedia('(pointer: coarse)').matches && !reducedMotion;
@@ -126,7 +156,13 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
     let pointerInside = false;
     let titleOffsetX = 0;
     let titleOffsetY = 0;
+    let titleWidth = 1;
+    let titleHeight = 1;
     let lastDraw = 0;
+    const startedAt = performance.now();
+    let fieldWidth = 184;
+    let fieldHeight = 110;
+    let fieldPixels = fieldContext.createImageData(fieldWidth, fieldHeight);
 
     const resize = () => {
       width = Math.max(1, element.clientWidth);
@@ -138,6 +174,11 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
         surface.width = pixelWidth;
         surface.height = pixelHeight;
       }
+      fieldWidth = Math.max(150, Math.min(214, Math.round(width / 6.4)));
+      fieldHeight = Math.max(92, Math.round(fieldWidth * height / width));
+      fieldCanvas.width = fieldWidth;
+      fieldCanvas.height = fieldHeight;
+      fieldPixels = fieldContext.createImageData(fieldWidth, fieldHeight);
     };
 
     const measureTitle = () => {
@@ -146,66 +187,91 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
       const titleRect = title.getBoundingClientRect();
       titleOffsetX = titleRect.left - heroRect.left;
       titleOffsetY = titleRect.top - heroRect.top;
+      titleWidth = titleRect.width;
+      titleHeight = titleRect.height;
     };
 
-    const drawField = (ctx: CanvasRenderingContext2D, time: number, strength: number, detailed: boolean) => {
-      ctx.setTransform(renderScale, 0, 0, renderScale, 0, 0);
-      ctx.clearRect(0, 0, width, height);
-      ctx.globalCompositeOperation = 'lighter';
-      const drift = time * .000011;
-      heroRibbons.forEach((ribbon, index) => {
-        const path = new Path2D();
-        const step = Math.max(24, width / 42);
-        for (let px = -width * .16; px <= width * 1.16; px += step) {
-          const progress = px / width;
-          const wave = progress * Math.PI * 2 * ribbon.freq + time * ribbon.speed + ribbon.phase;
-          const py = height * ribbon.y
-            + Math.sin(wave) * height * ribbon.amp
-            + Math.sin(wave * .57 + ribbon.phase * 1.8 + drift) * height * ribbon.amp2
-            + Math.cos(wave * 1.37 - ribbon.phase + drift * .6) * height * .022
-            + (px - width * .5) * ribbon.tilt;
-          if (px <= -width * .15) path.moveTo(px, py); else path.lineTo(px, py);
+    const drawField = (time: number) => {
+      const seconds = reducedMotion ? 12 : Math.max(0, (time - startedAt) / 1000);
+      const entrance = reducedMotion ? 1 : smoothstep(.7, 5.2, seconds);
+      const pointerU = x / width;
+      const pointerV = y / height;
+      const speed = Math.min(1, Math.hypot(velocityX, velocityY) / 38);
+      const pullX = velocityX / Math.max(1, width);
+      const pullY = velocityY / Math.max(1, height);
+      const titleCenterX = (titleOffsetX + titleWidth * .5) / width;
+      const titleCenterY = (titleOffsetY + titleHeight * .5) / height;
+      const data = fieldPixels.data;
+
+      for (let py = 0; py < fieldHeight; py += 1) {
+        const v = py / Math.max(1, fieldHeight - 1);
+        for (let px = 0; px < fieldWidth; px += 1) {
+          const u = px / Math.max(1, fieldWidth - 1);
+          const diagonalX = (u + v * .48) * 1.15 + seconds * .018;
+          const diagonalY = (v - u * .28) * 1.46 - seconds * .013;
+          const coarseWarpX = fractalNoise(diagonalX * .83 + seconds * .004, diagonalY * .83, 19, 2);
+          const coarseWarpY = fractalNoise(diagonalX * .83 + 5.7, diagonalY * .83 - seconds * .003, 43, 2);
+          let warpedX = diagonalX + (coarseWarpX - .5) * 1.18 + Math.sin(diagonalY * 2.1 + seconds * .027) * .075;
+          let warpedY = diagonalY + (coarseWarpY - .5) * 1.05 + Math.cos(diagonalX * 1.8 - seconds * .021) * .065;
+
+          const localShape = .72 + valueNoise(warpedX * 1.45, warpedY * 1.45, 91) * .48;
+          const dx = (u - pointerU) / (.34 * localShape + speed * .055);
+          const dy = (v - pointerV) / (.3 / localShape);
+          const localDistance = Math.sqrt(dx * dx + dy * dy);
+          const localNoise = valueNoise(warpedX * 2.05 + seconds * .01, warpedY * 2.05, 127);
+          const cursorInfluence = reveal * smoothstep(1.12 + localNoise * .13, .08, localDistance) * (.55 + localNoise * .45);
+          warpedX += dx * cursorInfluence * .075 - pullX * cursorInfluence * (1.8 + speed * 2.1);
+          warpedY += dy * cursorInfluence * .065 - pullY * cursorInfluence * (1.6 + speed * 1.8);
+
+          const large = fractalNoise(warpedX * .94, warpedY * .94, 71, 4);
+          const folds = fractalNoise(warpedX * 2.35 + 3.1, warpedY * 2.35 - 1.7, 113, 3);
+          const fine = valueNoise(warpedX * 4.8 - seconds * .006, warpedY * 4.8 + seconds * .004, 157);
+          const density = large * .72 + folds * .23 + fine * .05;
+          const largeRight = fractalNoise((warpedX + .032) * .94, warpedY * .94, 71, 3);
+          const largeDown = fractalNoise(warpedX * .94, (warpedY + .032) * .94, 71, 3);
+          const foldsRight = fractalNoise((warpedX + .018) * 2.35 + 3.1, warpedY * 2.35 - 1.7, 113, 2);
+          const foldsDown = fractalNoise(warpedX * 2.35 + 3.1, (warpedY + .018) * 2.35 - 1.7, 113, 2);
+          const normalX = (large - largeRight) * .72 + (folds - foldsRight) * .28;
+          const normalY = (large - largeDown) * .72 + (folds - foldsDown) * .28;
+          const slope = Math.min(1, Math.hypot(normalX, normalY) * 16);
+          const light = clamp01(.48 + (-normalX * .78 - normalY * .63) * 11);
+          const relief = smoothstep(.33, .68, folds * .78 + fine * .22);
+          const breathing = .9 + Math.sin(seconds * .11 + large * 5.2) * .08 + Math.sin(seconds * .047 + folds * 3.7) * .05;
+          const mass = smoothstep(.39, .54, density * breathing + cursorInfluence * .09);
+          const diagonalFront = smoothstep(.94 - entrance * 1.22, 1.19 - entrance * 1.22, u - v * .42);
+          const calmBreaks = .72 + smoothstep(.38, .7, fractalNoise(warpedX * .52 - 2.4, warpedY * .52 + 4.2, 211, 2)) * .28;
+          const safeDx = (u - titleCenterX) / Math.max(.18, titleWidth / width * .6);
+          const safeDy = (v - titleCenterY) / Math.max(.08, titleHeight / height * 1.45);
+          const safeDistance = Math.sqrt(safeDx * safeDx + safeDy * safeDy);
+          const titleSafety = .48 + smoothstep(.52, 1.22, safeDistance) * .52;
+          const opacity = entrance * diagonalFront * calmBreaks * titleSafety * mass * (.035 + light * .22 + slope * .32 + cursorInfluence * .18) * (.42 + relief * .58);
+          const shade = clamp01(large * .38 + light * .3 + slope * .16 + relief * .12 + fine * .04);
+          const index = (py * fieldWidth + px) * 4;
+          data[index] = Math.round(151 + shade * 25);
+          data[index + 1] = Math.round(126 + shade * 15);
+          data[index + 2] = Math.round(84 + shade * 7);
+          data[index + 3] = Math.round(clamp01(opacity) * 255);
         }
-        const gradient = ctx.createLinearGradient(0, 0, width, 0);
-        const left = detailed ? .018 : .009;
-        const middle = detailed ? .15 : .064;
-        const right = detailed ? .205 : .092;
-        gradient.addColorStop(0, `rgba(176,141,87,${left * strength})`);
-        gradient.addColorStop(.2, `rgba(176,141,87,${middle * .38 * strength})`);
-        gradient.addColorStop(.53, `rgba(176,141,87,${middle * .84 * strength})`);
-        gradient.addColorStop(.82, `rgba(176,141,87,${right * strength})`);
-        gradient.addColorStop(1, `rgba(176,141,87,${right * .76 * strength})`);
-        ctx.strokeStyle = gradient;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        const mainWidth = height * ribbon.width * (detailed ? .82 : 1.06);
-        ctx.lineWidth = mainWidth;
-        ctx.filter = `blur(${Math.max(14, ribbon.blur * (detailed ? .62 : 1))}px)`;
-        ctx.globalAlpha = .78 + (index % 3) * .07;
-        ctx.stroke(path);
+      }
 
-        ctx.save();
-        ctx.translate((index % 3 - 1) * width * .004, (index % 2 ? 1 : -1) * height * .012);
-        ctx.lineWidth = mainWidth * (detailed ? .34 : .42);
-        ctx.filter = `blur(${Math.max(8, ribbon.blur * (detailed ? .24 : .34))}px)`;
-        ctx.globalAlpha = detailed ? .38 : .16;
-        ctx.stroke(path);
-        ctx.restore();
-
-        if (detailed || index % 2 === 0) {
-          ctx.save();
-          ctx.translate(0, (index % 2 ? -1 : 1) * height * .018);
-          ctx.lineWidth = Math.max(7, mainWidth * .07);
-          ctx.filter = `blur(${detailed ? 7 : 11}px)`;
-          ctx.globalAlpha = detailed ? .19 : .07;
-          ctx.stroke(path);
-          ctx.restore();
+      fieldContext.putImageData(fieldPixels, 0, 0);
+      const paint = (ctx: CanvasRenderingContext2D, alpha: number, blur: number, passes = 1) => {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.filter = `blur(${blur * renderScale}px)`;
+        ctx.globalAlpha = alpha;
+        const overscan = 20 * renderScale;
+        for (let pass = 0; pass < passes; pass += 1) {
+          const shift = pass * renderScale * 2;
+          ctx.drawImage(fieldCanvas, -overscan - shift, -overscan + shift, ctx.canvas.width + overscan * 2, ctx.canvas.height + overscan * 2);
         }
-
-      });
-      ctx.filter = 'none';
-      ctx.globalAlpha = 1;
-      ctx.globalCompositeOperation = 'source-over';
+        ctx.filter = 'none';
+        ctx.globalAlpha = 1;
+      };
+      paint(baseContext, .95, 2.5);
+      paint(detailContext, .84, 1, 2);
     };
 
     const drawRevealMask = (time: number) => {
@@ -277,8 +343,7 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
         element.style.setProperty('--mouse-y', `${y}px`);
         title?.style.setProperty('--title-x', `${x - titleOffsetX}px`);
         title?.style.setProperty('--title-y', `${y - titleOffsetY}px`);
-        drawField(baseContext, reducedMotion ? 6000 : time, 1, false);
-        drawField(detailContext, reducedMotion ? 6000 : time, 1, true);
+        drawField(time);
         drawRevealMask(time);
         detailContext.setTransform(1, 0, 0, 1, 0, 0);
         detailContext.globalCompositeOperation = 'destination-in';
