@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { PointerEvent as ReactPointerEvent, SyntheticEvent, useEffect, useRef, useState } from 'react';
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Menu, X } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, AtSign, Menu, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -48,9 +48,9 @@ const projects = [
 ];
 
 const process = [
-  { number: '01', label: 'STRATEGIE & RICHTING', title: 'Eerst begrijpen wat jouw website moet bereiken.', text: 'We bespreken je bedrijf, doelgroep, aanbod en doelen. Zo ontstaat een heldere basis voor de structuur, boodschap en uitstraling.', image: '/projects/north.png' },
-  { number: '02', label: 'ONTWERP & REALISATIE', title: 'Elk onderdeel krijgt een duidelijke functie.', text: 'We vertalen de gekozen richting naar een sterk ontwerp en bouwen dit zorgvuldig uit. Van hiërarchie en teksten tot mobiel gebruik, snelheid en duidelijke call-to-actions.', image: '/projects/abc-construction.png' },
-  { number: '03', label: 'LIVE & VERDER', title: 'Klaar om professioneel naar buiten te treden.', text: 'Voor de livegang controleren we de belangrijkste details, zodat alles goed werkt en professioneel staat. Daarna kunnen we gericht blijven verbeteren.', image: '/projects/bloom-weddings.png' },
+  { number: '01', label: 'STRATEGIE & RICHTING', title: 'Eerst begrijpen wat jouw website moet bereiken.', text: 'We bespreken je bedrijf, doelgroep, aanbod en doelen. Zo ontstaat een heldere basis voor de structuur, boodschap en uitstraling.', image: '/process/strategy.png' },
+  { number: '02', label: 'ONTWERP & REALISATIE', title: 'Elk onderdeel krijgt een duidelijke functie.', text: 'We vertalen de gekozen richting naar een sterk ontwerp en bouwen dit zorgvuldig uit. Van hiërarchie en teksten tot mobiel gebruik, snelheid en duidelijke call-to-actions.', image: '/process/design-build.png' },
+  { number: '03', label: 'LIVE & VERDER', title: 'Klaar om professioneel naar buiten te treden.', text: 'Voor de livegang controleren we de belangrijkste details, zodat alles goed werkt en professioneel staat. Daarna kunnen we gericht blijven verbeteren.', image: '/process/launch.png' },
 ];
 
 const values = [
@@ -94,11 +94,18 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>) {
       if (visible) {
         x1 += (targetX - x1) * .064; y1 += (targetY - y1) * .064;
         x2 += (targetX * .91 - x2) * .028; y2 += (targetY * 1.05 - y2) * .028;
-        const velocity = Math.min(1.12, Math.hypot(targetX - previousX, targetY - previousY) / 160 + 1);
+        const dx = targetX - previousX;
+        const dy = targetY - previousY;
+        const velocity = Math.min(1.24, Math.hypot(dx, dy) / 115 + 1);
+        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
         previousX = targetX; previousY = targetY;
         element.style.setProperty('--field-x-1', `${x1}px`); element.style.setProperty('--field-y-1', `${y1}px`);
         element.style.setProperty('--field-x-2', `${x2}px`); element.style.setProperty('--field-y-2', `${y2}px`);
         element.style.setProperty('--field-stretch', velocity.toFixed(3));
+        element.style.setProperty('--field-angle', `${angle.toFixed(2)}deg`);
+        element.style.setProperty('--field-angle-soft', `${(angle * .08).toFixed(2)}deg`);
+        element.style.setProperty('--field-angle-back', `${(angle * -.045).toFixed(2)}deg`);
+        element.style.setProperty('--field-angle-ribbon', `${(angle * .11).toFixed(2)}deg`);
       }
       frame = requestAnimationFrame(render);
     };
@@ -116,7 +123,7 @@ function ProjectCard({ project, onOpen }: { project: typeof projects[number]; on
         <span className="project-local-light" aria-hidden="true" />
         <span className="project-arrow" aria-hidden="true"><ArrowUpRight /></span>
       </span>
-      <span className="project-meta"><span>{project.label}</span><span>{project.number} / 03</span></span>
+      <span className="project-meta"><span>{project.label}</span><span>{project.number}</span></span>
       <strong>{project.title}</strong>
       <span className="project-description">{project.description}</span>
     </button>
@@ -204,7 +211,7 @@ export function TrivareSite() {
       </div>
 
       <section className="hero-section" id="top" ref={heroRef}>
-        <div className="hero-field hero-field-one" aria-hidden="true" /><div className="hero-field hero-field-two" aria-hidden="true" /><div className="grain" aria-hidden="true" />
+        <div className="hero-field hero-field-one" aria-hidden="true" /><div className="hero-field hero-field-two" aria-hidden="true" /><div className="hero-field hero-field-three" aria-hidden="true" /><div className="hero-fluid-grid" aria-hidden="true" /><div className="grain" aria-hidden="true" />
         <div className="hero-content">
           <h1>Websites die<br /><span>vertrouwen uitstralen.</span></h1>
           <div className="hero-lower">
@@ -221,13 +228,13 @@ export function TrivareSite() {
       <section className="section services" id="diensten">
         <div className="section-intro" data-reveal><p className="section-label"><span>02</span> DIENSTEN</p><div><h2>Alles voor een website<br /><span>die sterker staat.</span></h2><p>Van een compleet nieuw ontwerp tot het verbeteren van een bestaande website. We kijken naar wat er nodig is en bouwen van daaruit verder.</p></div></div>
         <div className="service-rows" data-reveal>{services.map((service) => <a href="#contact" className="service-row" key={service.number}><span className="service-number">{service.number}</span><h3>{service.title}</h3><p>{service.text}</p><ArrowUpRight /></a>)}</div>
-        <p className="service-tags">UX · SEO · CRO · ONDERHOUD</p>
+        <p className="service-tags">DESIGN · BRANDING · UX · SEO · CRO · ONDERHOUD</p>
       </section>
 
       <section className="section work-section" id="werk">
         <div className="section-intro work-intro" data-reveal><p className="section-label"><span>03</span> SELECTIE VAN ONS WERK</p><div><h2>Websites met<br /><span>een eigen karakter.</span></h2><p>Geen standaard template met een ander logo, maar websites waarin uitstraling, gebruiksgemak en het karakter van het bedrijf samenkomen.</p></div></div>
         <div className="project-grid" data-reveal>{projects.map((project, index) => <ProjectCard key={project.slug} project={project} onOpen={() => setCaseIndex(index)} />)}</div>
-        <div className="proof-strip" data-reveal><div><strong>3</strong><span>geselecteerde projecten</span></div><div><strong>Persoonlijk</strong><span>begeleiding en afstemming</span></div><div><strong>Ontwerp + realisatie</strong><span>één zorgvuldig proces</span></div><div><strong>Na livegang</strong><span>ruimte om te optimaliseren</span></div></div>
+        <div className="proof-strip" data-reveal><div><strong>Geselecteerd werk</strong><span>verschillende stijlen, zorgvuldig uitgewerkt</span></div><div><strong>Persoonlijk</strong><span>begeleiding en afstemming</span></div><div><strong>Ontwerp + realisatie</strong><span>één zorgvuldig proces</span></div><div><strong>Na livegang</strong><span>ruimte om te optimaliseren</span></div></div>
       </section>
 
       <section className="approach-section" id="aanpak">
@@ -248,7 +255,7 @@ export function TrivareSite() {
 
       <section className="section about-section" id="over" onPointerMove={setPointerPosition}>
         <div className="about-wash" aria-hidden="true" />
-        <div className="about-copy" data-reveal><p className="section-label"><span>06</span> OVER TRIVARE</p><h2><span>Persoonlijk in aanpak.</span><span>Zorgvuldig in uitvoering.</span></h2><p className="about-intro">Trivare helpt bedrijven aan websites die professioneel aanvoelen en passen bij wie ze zijn.</p><p>We beginnen niet bij een template, maar bij jouw bedrijf. Wat wil je uitstralen? Wie wil je bereiken? En wat moet iemand begrijpen zodra die op je website terechtkomt?</p><p>Van daaruit bouwen we stap voor stap aan een helder en sterk geheel.</p><small>Geen ingewikkeld proces.<br />Wel aandacht voor detail, duidelijke keuzes en persoonlijk contact.</small></div>
+        <div className="about-copy" data-reveal><p className="section-label"><span>06</span> OVER TRIVARE</p><h2><span>Persoonlijk in aanpak.</span><span>Zorgvuldig in uitvoering.</span></h2><p className="about-intro">Trivare helpt bedrijven aan websites die professioneel aanvoelen en passen bij wie ze zijn.</p><p>We beginnen niet bij een template, maar bij jouw bedrijf. Wat wil je uitstralen? Wie wil je bereiken? En wat moet iemand begrijpen zodra die op je website terechtkomt?</p><p>Van daaruit bouwen we stap voor stap aan een helder en sterk geheel.</p><small>Geen ingewikkeld proces.<br />Wel aandacht voor detail, duidelijke keuzes en persoonlijk contact.</small><div className="personal-note"><span>DIRECT SAMENWERKEN</span><p>Bij Trivare heb je rechtstreeks contact. We bespreken keuzes, verwerken feedback en houden het proces overzichtelijk — van de eerste richting tot de livegang.</p><a href="https://www.instagram.com/trivare.studio" target="_blank" rel="noreferrer"><AtSign /> Volg @trivare.studio <ArrowUpRight /></a></div></div>
         <div className="about-image" data-reveal><Image src="/studio.png" alt="Persoonlijke samenwerking bij Trivare" fill sizes="(max-width: 900px) 100vw, 44vw" /><span>ACHTER TRIVARE</span></div>
       </section>
 
@@ -274,9 +281,9 @@ export function TrivareSite() {
       </section>
 
       <footer>
-        <div className="footer-top" data-reveal><div className="footer-brand"><a href="#top" className="footer-logo"><Image src="/trivare-logo.png" alt="Trivare" width={1086} height={362} /></a><p>Websites die vertrouwen uitstralen.</p></div><div><h3>NAVIGATIE</h3><nav><a href="#diensten">Diensten</a><a href="#werk">Werk</a><a href="#werkwijze">Werkwijze</a><a href="#over">Over Trivare</a><a href="#contact">Contact</a></nav></div><div><h3>CONTACT</h3><a href="mailto:contact@trivare.nl">contact@trivare.nl</a><p>Overijssel, Nederland</p></div></div>
+        <div className="footer-top" data-reveal><div className="footer-brand"><a href="#top" className="footer-logo"><Image src="/trivare-logo.png" alt="Trivare" width={1086} height={362} /></a><p>Websites die vertrouwen uitstralen.</p></div><div><h3>NAVIGATIE</h3><nav><a href="#diensten">Diensten</a><a href="#werk">Werk</a><a href="#werkwijze">Werkwijze</a><a href="#over">Over Trivare</a><a href="#contact">Contact</a></nav></div><div><h3>CONTACT</h3><a href="mailto:contact@trivare.nl">contact@trivare.nl</a><a className="footer-instagram" href="https://www.instagram.com/trivare.studio" target="_blank" rel="noreferrer">Instagram · @trivare.studio</a><p>Overijssel, Nederland</p></div></div>
         <div className="footer-cta" data-reveal><h2>Klaar om iets<br /><span>sterks neer te zetten?</span></h2><a className="primary-cta light-cta" href="#contact"><span>Plan een kennismaking</span><span className="cta-arrow"><ArrowUpRight /></span></a></div>
-        <div className="footer-bottom"><span>© 2026 Trivare</span><span>Webdesign · Redesign · Optimalisatie</span><span>Overijssel, Nederland</span></div>
+        <div className="footer-bottom"><span>© 2026 Trivare</span><span>Design · Branding · SEO · CRO</span><span>Overijssel, Nederland</span></div>
       </footer>
 
       <Dialog open={caseIndex !== null} onOpenChange={(open) => !open && setCaseIndex(null)}>
