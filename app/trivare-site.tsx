@@ -94,6 +94,14 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>) {
     let y = targetY;
     let lightX = targetX;
     let lightY = targetY;
+    let stretch = 1;
+    let angle = 0;
+    let shiftX = 0;
+    let shiftY = 0;
+    let desiredStretch = 1;
+    let desiredAngle = 0;
+    let desiredShiftX = 0;
+    let desiredShiftY = 0;
     let titleOffsetX = 0;
     let titleOffsetY = 0;
 
@@ -110,8 +118,17 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>) {
     measureTitle();
     const move = (event: globalThis.PointerEvent) => {
       const rect = element.getBoundingClientRect();
-      targetX = event.clientX - rect.left;
-      targetY = event.clientY - rect.top;
+      const nextX = event.clientX - rect.left;
+      const nextY = event.clientY - rect.top;
+      const dx = nextX - targetX;
+      const dy = nextY - targetY;
+      const speed = Math.min(1, Math.hypot(dx, dy) / 82);
+      desiredStretch = 1 + speed * .07;
+      desiredAngle = Math.max(-2.2, Math.min(2.2, Math.atan2(dy, dx) * 180 / Math.PI * .025));
+      desiredShiftX = Math.max(-9, Math.min(9, dx * .075));
+      desiredShiftY = Math.max(-6, Math.min(6, dy * .055));
+      targetX = nextX;
+      targetY = nextY;
       element.dataset.cloudReveal = 'true';
     };
     const leave = () => { element.dataset.cloudReveal = 'false'; };
@@ -121,10 +138,24 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>) {
         y += (targetY - y) * .08;
         lightX += (targetX - lightX) * .03;
         lightY += (targetY - lightY) * .03;
+        stretch += (desiredStretch - stretch) * .075;
+        angle += (desiredAngle - angle) * .06;
+        shiftX += (desiredShiftX - shiftX) * .07;
+        shiftY += (desiredShiftY - shiftY) * .07;
+        desiredStretch += (1 - desiredStretch) * .035;
+        desiredAngle *= .955;
+        desiredShiftX *= .94;
+        desiredShiftY *= .94;
         element.style.setProperty('--mouse-x', `${x}px`);
         element.style.setProperty('--mouse-y', `${y}px`);
         element.style.setProperty('--light-x', `${lightX}px`);
         element.style.setProperty('--light-y', `${lightY}px`);
+        element.style.setProperty('--field-stretch', stretch.toFixed(4));
+        element.style.setProperty('--field-angle', `${angle.toFixed(3)}deg`);
+        element.style.setProperty('--field-shift-x', `${shiftX.toFixed(2)}px`);
+        element.style.setProperty('--field-shift-y', `${shiftY.toFixed(2)}px`);
+        element.style.setProperty('--trail-x', `${(shiftX * 5).toFixed(2)}px`);
+        element.style.setProperty('--trail-y', `${(shiftY * 4).toFixed(2)}px`);
         title?.style.setProperty('--title-x', `${x - titleOffsetX}px`);
         title?.style.setProperty('--title-y', `${y - titleOffsetY}px`);
       }
@@ -290,7 +321,7 @@ export function TrivareSite() {
         </div>
         <div className="grain" aria-hidden="true" />
         <div className="hero-content">
-          <h1 className="hero-title"><span className="hero-title-base">Websites die<br />vertrouwen<br />uitstralen.</span><span className="hero-title-gold" aria-hidden="true">Websites die<br />vertrouwen<br />uitstralen.</span></h1>
+          <h1 className="hero-title"><span className="hero-title-base">Websites die vertrouwen uitstralen.</span><span className="hero-title-gold" aria-hidden="true">Websites die vertrouwen uitstralen.</span></h1>
           <div className="hero-lower">
             <p>Trivare ontwerpt en bouwt websites die professioneel ogen, logisch werken en passen bij het bedrijf erachter.</p>
             <div className="hero-actions">
