@@ -56,9 +56,11 @@ const projects = [
 ];
 
 const process = [
-  { number: '01', label: 'STRATEGIE & RICHTING', title: 'Eerst begrijpen wat jouw website moet bereiken.', text: 'We bespreken je bedrijf, doelgroep, aanbod en doelen. Zo ontstaat een heldere basis voor de structuur, boodschap en uitstraling.', image: '/process/strategy.png' },
-  { number: '02', label: 'ONTWERP & REALISATIE', title: 'Elk onderdeel krijgt een duidelijke functie.', text: 'We vertalen de gekozen richting naar een sterk ontwerp en bouwen dit zorgvuldig uit. Van hiërarchie en teksten tot mobiel gebruik, snelheid en duidelijke call-to-actions.', image: '/process/design-build.png' },
-  { number: '03', label: 'LIVE & VERDER', title: 'Klaar om professioneel naar buiten te treden.', text: 'Voor de livegang controleren we de belangrijkste details, zodat alles goed werkt en professioneel staat. Daarna kunnen we gericht blijven verbeteren.', image: '/process/launch.png' },
+  { number: '01', label: 'KENNISMAKING & DISCOVERY', title: 'We beginnen bij het verhaal achter je bedrijf.', text: 'We bespreken je ambities, doelgroep en aanbod. Zo begrijpen we wat de website moet bereiken en welk gevoel bezoekers moeten meenemen.', image: '/process/discovery.png' },
+  { number: '02', label: 'STRATEGIE & RICHTING', title: 'Een heldere basis vóór we gaan ontwerpen.', text: 'We brengen structuur, inhoud en prioriteiten samen in een duidelijke richting. Elke keuze krijgt een reden en draagt bij aan het grotere geheel.', image: '/process/strategy.png' },
+  { number: '03', label: 'ONTWERP & REALISATIE', title: 'Elk onderdeel krijgt aandacht en een duidelijke functie.', text: 'We vertalen de richting naar een onderscheidend ontwerp en bouwen dit zorgvuldig uit voor ieder schermformaat.', image: '/process/design-build.png' },
+  { number: '04', label: 'CONTROLE & LIVEGANG', title: 'Tot in detail voorbereid om sterk naar buiten te treden.', text: 'Voor de livegang controleren we inhoud, interactie, snelheid en mobiel gebruik. Zo voelt de eerste indruk meteen professioneel.', image: '/process/launch.png' },
+  { number: '05', label: 'OPTIMALISATIE & ONDERHOUD', title: 'Na de livegang blijven we gericht verbeteren.', text: 'We kijken naar gebruik, prestaties en groeikansen. Met onderhoud, SEO en CRO blijft de website actueel en effectief.', image: '/process/optimization.png' },
 ];
 
 const values = [
@@ -297,52 +299,57 @@ export function TrivareSite() {
             </div>
           </div>
         </div>
-        <div className="hero-edge" aria-hidden="true"><span>01</span><span>ONTWERP · REALISATIE · OPTIMALISATIE</span></div>
+        <div className="hero-edge" aria-hidden="true"><span>ONTWERP · REALISATIE · OPTIMALISATIE</span></div>
       </section>
 
       <section className="section services" id="diensten">
-        <div className="section-intro" data-reveal><p className="section-label"><span>02</span> DIENSTEN</p><div><h2>Alles voor een website<br /><span>die sterker staat.</span></h2><p>Van een compleet nieuw ontwerp tot het verbeteren van een bestaande website. We kijken naar wat er nodig is en bouwen van daaruit verder.</p></div></div>
+        <div className="section-intro" data-reveal><p className="section-label">DIENSTEN</p><div><h2>Alles voor een website<br /><span>die sterker staat.</span></h2><p>Van een compleet nieuw ontwerp tot het verbeteren van een bestaande website. We kijken naar wat er nodig is en bouwen van daaruit verder.</p></div></div>
         <div className="service-rows" data-reveal>{services.map((service) => <a href="#contact" className="service-row" key={service.number}><span className="service-number">{service.number}</span><h3>{service.title}</h3><p>{service.text}</p><ArrowUpRight /></a>)}</div>
         <p className="service-tags">DESIGN · BRANDING · UX · SEO · CRO · ONDERHOUD</p>
         <div className="capability-grid">{capabilities.map((capability) => <article key={capability.number} data-reveal><span>{capability.number}</span><strong>{capability.title}</strong><p>{capability.text}</p><i /></article>)}</div>
       </section>
 
       <section className="section work-section" id="werk">
-        <div className="section-intro work-intro" data-reveal><p className="section-label"><span>03</span> SELECTIE VAN ONS WERK</p><div><h2>Websites met<br /><span>een eigen karakter.</span></h2><p>Geen standaard template met een ander logo, maar websites waarin uitstraling, gebruiksgemak en het karakter van het bedrijf samenkomen.</p></div></div>
+        <div className="section-intro work-intro" data-reveal><p className="section-label">SELECTIE VAN ONS WERK</p><div><h2>Websites met<br /><span>een eigen karakter.</span></h2><p>Geen standaard template met een ander logo, maar websites waarin uitstraling, gebruiksgemak en het karakter van het bedrijf samenkomen.</p></div></div>
         <div className="project-grid" data-reveal>{projects.map((project, index) => <ProjectCard key={project.slug} project={project} onOpen={() => setCaseIndex(index)} />)}</div>
         <div className="proof-strip"><div data-reveal><strong>Geselecteerd werk</strong><span>VERSCHILLENDE STIJLEN, ZORGVULDIG UITGEWERKT</span><i /></div><div data-reveal><strong>Persoonlijk</strong><span>BEGELEIDING EN AFSTEMMING</span><i /></div><div data-reveal><strong>Ontwerp + realisatie</strong><span>ÉÉN ZORGVULDIG PROCES</span><i /></div><div data-reveal><strong>Na livegang</strong><span>RUIMTE OM TE OPTIMALISEREN</span><i /></div></div>
       </section>
 
       <section className="approach-section" id="aanpak">
-        <div className="section-intro light-intro" data-reveal><p className="section-label light"><span>04</span> ONZE AANPAK</p><div><h2>Niet alleen mooi.<br /><span>Vooral goed doordacht.</span></h2><p>Een sterke website moet er professioneel uitzien, prettig werken en duidelijk maken waar je bedrijf voor staat.<br /><br />Daarom kijken we niet alleen naar design. We denken ook na over structuur, gebruiksgemak, techniek en de keuzes die bezoekers helpen om verder te gaan.</p></div></div>
+        <div className="section-intro light-intro" data-reveal><p className="section-label light">ONZE AANPAK</p><div><h2>Niet alleen mooi.<br /><span>Vooral goed doordacht.</span></h2><p>Een sterke website moet er professioneel uitzien, prettig werken en duidelijk maken waar je bedrijf voor staat.<br /><br />Daarom kijken we niet alleen naar design. We denken ook na over structuur, gebruiksgemak, techniek en de keuzes die bezoekers helpen om verder te gaan.</p></div></div>
         <div className="approach-words" data-reveal><span>HELDER</span><span>DOORDACHT</span><span>ZORGVULDIG</span></div>
       </section>
 
       <section className="section process-section" id="werkwijze" ref={processRef}>
-        <div className="process-intro" data-reveal><div><p className="section-label"><span>05</span> WERKWIJZE</p><h2>Van een goed idee<br />naar een website die <span>voor je werkt.</span></h2></div><p>Een sterk resultaat begint met een duidelijke richting. We kijken eerst naar wat je wilt bereiken, wat je wilt uitstralen en wat je website moet doen.</p></div>
+        <div className="process-intro" data-reveal><div><p className="section-label">WERKWIJZE</p><h2>Van een goed idee<br />naar een website die <span>voor je werkt.</span></h2></div><p>Een sterk resultaat begint met een duidelijke richting. We kijken eerst naar wat je wilt bereiken, wat je wilt uitstralen en wat je website moet doen.</p></div>
         <div className="process-stage" data-reveal onTouchStart={(event) => touchStart.current = event.touches[0].clientX} onTouchEnd={(event) => { if (touchStart.current === null) return; const distance = event.changedTouches[0].clientX - touchStart.current; if (Math.abs(distance) > 48) setProcessIndex((processIndex + (distance < 0 ? 1 : -1) + process.length) % process.length); touchStart.current = null; }}>
           {process.map((step, index) => <Image key={step.number} className={index === processIndex ? 'is-active' : ''} src={step.image} alt="" fill sizes="100vw" />)}
           <div className="process-shade" />
           <div className="process-copy" key={activeProcess.number}><p><span>{activeProcess.number}</span> {activeProcess.label}</p><h3>{activeProcess.title}</h3><span>{activeProcess.text}</span></div>
           <div className="process-controls"><button onClick={() => setProcessIndex((processIndex - 1 + process.length) % process.length)} aria-label="Vorige stap"><ArrowLeft /></button><button onClick={() => setProcessIndex((processIndex + 1) % process.length)} aria-label="Volgende stap"><ArrowRight /></button></div>
-          <div className="process-progress"><span>{activeProcess.number} / 03</span><div><i style={{ width: `${((processIndex + 1) / process.length) * 100}%` }} /></div></div>
+          <div className="process-progress"><span>{activeProcess.number} / {String(process.length).padStart(2, '0')}</span><div><i style={{ width: `${((processIndex + 1) / process.length) * 100}%` }} /></div></div>
         </div>
       </section>
 
       <section className="section about-section" id="over">
-        <div className="about-copy" data-reveal><p className="section-label"><span>06</span> OVER TRIVARE</p><h2><span>Persoonlijk in aanpak.</span><span>Zorgvuldig in uitvoering.</span></h2><p className="about-intro">Trivare helpt bedrijven aan websites die professioneel aanvoelen en passen bij wie ze zijn.</p><p>We beginnen niet bij een template, maar bij jouw bedrijf. Wat wil je uitstralen? Wie wil je bereiken? En wat moet iemand begrijpen zodra die op je website terechtkomt?</p><p>Je hebt rechtstreeks contact, blijft betrokken bij belangrijke keuzes en weet steeds waar het project staat. Zo bouwen we stap voor stap aan een helder en sterk geheel.</p><small>Geen ingewikkeld proces.<br />Wel aandacht voor detail, duidelijke keuzes en persoonlijk contact.</small></div>
+        <div className="about-copy" data-reveal><p className="section-label">OVER TRIVARE</p><h2><span>Persoonlijk in aanpak.</span><span>Zorgvuldig in uitvoering.</span></h2><p className="about-intro">Trivare helpt bedrijven aan websites die professioneel aanvoelen en passen bij wie ze zijn.</p><p>We beginnen niet bij een template, maar bij jouw bedrijf. Wat wil je uitstralen? Wie wil je bereiken? En wat moet iemand begrijpen zodra die op je website terechtkomt?</p><p>Je hebt rechtstreeks contact, blijft betrokken bij belangrijke keuzes en weet steeds waar het project staat. Zo bouwen we stap voor stap aan een helder en sterk geheel.</p><small>Geen ingewikkeld proces.<br />Wel aandacht voor detail, duidelijke keuzes en persoonlijk contact.</small></div>
         <div className="about-image" data-reveal><Image src="/studio.png" alt="Persoonlijke samenwerking bij Trivare" fill sizes="(max-width: 900px) 100vw, 44vw" /><span>ACHTER TRIVARE</span></div>
+      </section>
+
+      <section className="section personality-section" aria-labelledby="personality-title">
+        <div className="personality-intro" data-reveal><p className="section-label">PERSOONLIJKHEID</p><h2 id="personality-title">Samenwerken voelt<br /><span>persoonlijk en dichtbij.</span></h2><p>Geen onpersoonlijk bureauproces, maar aandacht, korte lijnen en samen keuzes maken. De beelden geven een indruk van hoe strategie, ontwerp en detail bij Trivare samenkomen.</p></div>
+        <div className="personality-visual" data-reveal><Image src="/personality-studio.png" alt="Persoonlijke samenwerking en ontwerpdetails in de studio" fill sizes="100vw" /><div className="personality-caption"><span>DIRECT CONTACT</span><span>SAMEN SCHERPSTELLEN</span><span>AANDACHT VOOR DETAIL</span></div></div>
       </section>
 
       <section className="values-grid">{values.map((value) => <article key={value.number} data-reveal><span>{value.number}</span><h3>{value.title}</h3><p>{value.text}</p><i /></article>)}</section>
 
       <section className="section investment-section" id="investering">
-        <div className="investment-copy" data-reveal><p className="section-label"><span>07</span> INVESTERING</p><h2>Maatwerk in ontwerp.<br /><span>Duidelijkheid in prijs.</span></h2><p>We kijken naar wat jouw website nodig heeft en spreken vooraf duidelijk af wat we maken en wat de investering wordt.</p><small><i /> Heldere afspraken vóór de start.</small></div>
+        <div className="investment-copy" data-reveal><p className="section-label">INVESTERING</p><h2>Maatwerk in ontwerp.<br /><span>Duidelijkheid in prijs.</span></h2><p>We kijken naar wat jouw website nodig heeft en spreken vooraf duidelijk af wat we maken en wat de investering wordt.</p><small><i /> Heldere afspraken vóór de start.</small></div>
         <aside className="investment-panel" data-reveal><p>ZO WERKT HET</p><h3>Eerst helder.<br />Dan bouwen.</h3><div>{investmentSteps.map((step) => <article key={step.number}><span>{step.number}</span><div><strong>{step.title}</strong><p>{step.text}</p></div></article>)}</div><small>PERSOONLIJK EN DUIDELIJK</small></aside>
       </section>
 
       <section className="contact-section" id="contact">
-        <div className="contact-intro" data-reveal><p className="section-label light"><span>08</span> CONTACT</p><h2>Laten we<br /><span>kennismaken.</span></h2><p>Vertel waar je mee bezig bent of waar je tegenaan loopt. Dan kijken we samen wat er nodig is.</p><button className="calendar-link" onClick={() => setCalendlyOpen(true)}>Plan direct een afspraak <ArrowUpRight /></button><div className="mail-direct"><span>Liever mailen?</span><a href="mailto:contact@trivare.nl">contact@trivare.nl</a></div></div>
+        <div className="contact-intro" data-reveal><p className="section-label light">CONTACT</p><h2>Laten we<br /><span>kennismaken.</span></h2><p>Vertel waar je mee bezig bent of waar je tegenaan loopt. Dan kijken we samen wat er nodig is.</p><button className="calendar-link" onClick={() => setCalendlyOpen(true)}>Plan direct een afspraak <ArrowUpRight /></button><div className="mail-direct"><span>Liever mailen?</span><a href="mailto:contact@trivare.nl">contact@trivare.nl</a></div></div>
         <form className="contact-form" onSubmit={submitContact} data-reveal noValidate>
           <label htmlFor="contact-name"><span>Naam</span><Input id="contact-name" name="name" required autoComplete="name" placeholder="Jouw naam" /></label>
           <label htmlFor="contact-company"><span>Bedrijfsnaam</span><Input id="contact-company" name="company" required autoComplete="organization" placeholder="Naam van je bedrijf" /></label>
