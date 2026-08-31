@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { PointerEvent as ReactPointerEvent, SyntheticEvent, useEffect, useRef, useState } from 'react';
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, AtSign, Menu, X } from 'lucide-react';
+import { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent, SyntheticEvent, useEffect, useRef, useState } from 'react';
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Menu, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,6 +15,14 @@ const services = [
   { number: '01', title: 'Website ontwerp', text: 'Een professionele website die past bij je bedrijf, vertrouwen uitstraalt en prettig werkt.' },
   { number: '02', title: 'Website redesign', text: 'Een bestaande website opnieuw ontworpen voor een sterkere uitstraling, duidelijkere structuur en betere gebruikerservaring.' },
   { number: '03', title: 'Website optimalisatie', text: 'Gerichte verbeteringen in snelheid, gebruiksgemak, vindbaarheid en conversie.' },
+];
+
+const capabilities = [
+  { number: '01', title: 'SEO', text: 'Een heldere sitestructuur, sterke contentbasis en techniek die vindbaarheid ondersteunen.' },
+  { number: '02', title: 'CRO', text: 'Gerichte verbeteringen die bezoekers duidelijker naar contact, aanvraag of aankoop begeleiden.' },
+  { number: '03', title: 'Branding', text: 'Een herkenbare visuele richting die past bij de kwaliteit en persoonlijkheid van je bedrijf.' },
+  { number: '04', title: 'Onderhoud', text: 'Technische aandacht, updates en optimalisatie om je website sterk en actueel te houden.' },
+  { number: '05', title: 'Persoonlijke samenwerking', text: 'Direct contact, duidelijke keuzes en betrokken begeleiding van eerste idee tot livegang.' },
 ];
 
 const projects = [
@@ -55,7 +63,7 @@ const process = [
 
 const values = [
   { number: '01', title: 'Aandacht', text: 'We kijken goed naar wat je nodig hebt en nemen de tijd om keuzes zorgvuldig uit te werken.' },
-  { number: '02', title: 'Vakmanschap', text: 'Ontwerp, techniek en gebruiksgemak moeten kloppen — tot in de details.' },
+  { number: '02', title: 'Vakmanschap', text: 'Ontwerp, techniek en gebruiksgemak moeten in ieder detail kloppen.' },
   { number: '03', title: 'Samenwerking', text: 'We houden je betrokken, leggen keuzes uit en stemmen belangrijke beslissingen samen af.' },
 ];
 
@@ -77,11 +85,12 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>) {
     if (!element || matchMedia('(pointer: coarse)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     let visible = true;
     let frame = 0;
-    let targetX = element.clientWidth * .76;
-    let targetY = element.clientHeight * .46;
+    let targetX = element.clientWidth * .7;
+    let targetY = element.clientHeight * .48;
     let previousX = targetX;
     let previousY = targetY;
-    let x1 = targetX, y1 = targetY, x2 = targetX * .88, y2 = targetY * 1.1;
+    let x = targetX;
+    let y = targetY;
 
     const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }, { threshold: .05 });
     observer.observe(element);
@@ -89,30 +98,34 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>) {
       const rect = element.getBoundingClientRect();
       targetX = event.clientX - rect.left;
       targetY = event.clientY - rect.top;
+      element.dataset.glow = 'true';
     };
+    const leave = () => { element.dataset.glow = 'false'; };
     const render = () => {
       if (visible) {
-        x1 += (targetX - x1) * .064; y1 += (targetY - y1) * .064;
-        x2 += (targetX * .91 - x2) * .028; y2 += (targetY * 1.05 - y2) * .028;
+        x += (targetX - x) * .115;
+        y += (targetY - y) * .115;
         const dx = targetX - previousX;
         const dy = targetY - previousY;
-        const velocity = Math.min(1.24, Math.hypot(dx, dy) / 115 + 1);
+        const velocity = Math.min(1.16, Math.hypot(dx, dy) / 150 + 1);
         const angle = Math.atan2(dy, dx) * 180 / Math.PI;
         previousX = targetX; previousY = targetY;
-        element.style.setProperty('--field-x-1', `${x1}px`); element.style.setProperty('--field-y-1', `${y1}px`);
-        element.style.setProperty('--field-x-2', `${x2}px`); element.style.setProperty('--field-y-2', `${y2}px`);
-        element.style.setProperty('--field-stretch', velocity.toFixed(3));
-        element.style.setProperty('--field-angle', `${angle.toFixed(2)}deg`);
-        element.style.setProperty('--field-angle-soft', `${(angle * .08).toFixed(2)}deg`);
-        element.style.setProperty('--field-angle-back', `${(angle * -.045).toFixed(2)}deg`);
-        element.style.setProperty('--field-angle-ribbon', `${(angle * .11).toFixed(2)}deg`);
+        element.style.setProperty('--glow-x', `${x}px`);
+        element.style.setProperty('--glow-y', `${y}px`);
+        element.style.setProperty('--glow-stretch', velocity.toFixed(3));
+        element.style.setProperty('--glow-angle', `${(angle * .08).toFixed(2)}deg`);
       }
       frame = requestAnimationFrame(render);
     };
     element.addEventListener('pointermove', move);
+    element.addEventListener('pointerleave', leave);
     frame = requestAnimationFrame(render);
-    return () => { observer.disconnect(); element.removeEventListener('pointermove', move); cancelAnimationFrame(frame); };
+    return () => { observer.disconnect(); element.removeEventListener('pointermove', move); element.removeEventListener('pointerleave', leave); cancelAnimationFrame(frame); };
   }, [ref]);
+}
+
+function InstagramMark() {
+  return <svg className="instagram-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5" fill="none" stroke="currentColor" strokeWidth="1.7" /><circle cx="12" cy="12" r="3.7" fill="none" stroke="currentColor" strokeWidth="1.7" /><circle cx="17.4" cy="6.8" r="1" fill="currentColor" /></svg>;
 }
 
 function ProjectCard({ project, onOpen }: { project: typeof projects[number]; onOpen: () => void }) {
@@ -133,6 +146,9 @@ function ProjectCard({ project, onOpen }: { project: typeof projects[number]; on
 export function TrivareSite() {
   const heroRef = useRef<HTMLElement>(null);
   const processRef = useRef<HTMLElement>(null);
+  const confettiCanvasRef = useRef<HTMLCanvasElement>(null);
+  const confettiFrameRef = useRef<number | null>(null);
+  const logoMessageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const touchStart = useRef<number | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -142,12 +158,18 @@ export function TrivareSite() {
   const [formState, setFormState] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [formError, setFormError] = useState('');
   const [serviceChoice, setServiceChoice] = useState('Nieuwe website');
+  const [logoMessageVisible, setLogoMessageVisible] = useState(false);
   useHeroField(heroRef);
 
   useEffect(() => {
     const onScroll = () => setScrolled(scrollY > 20);
     addEventListener('scroll', onScroll, { passive: true }); onScroll();
     return () => removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => () => {
+    if (confettiFrameRef.current) cancelAnimationFrame(confettiFrameRef.current);
+    if (logoMessageTimerRef.current) clearTimeout(logoMessageTimerRef.current);
   }, []);
 
   useEffect(() => {
@@ -194,16 +216,54 @@ export function TrivareSite() {
   const selectedCase = caseIndex === null ? null : projects[caseIndex];
   const closeMenuAndNavigate = () => setMenuOpen(false);
 
+  const celebrateLogo = (event: ReactMouseEvent<HTMLButtonElement>) => {
+    setLogoMessageVisible(true);
+    if (logoMessageTimerRef.current) clearTimeout(logoMessageTimerRef.current);
+    logoMessageTimerRef.current = setTimeout(() => setLogoMessageVisible(false), 3000);
+    document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' });
+
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const canvas = confettiCanvasRef.current;
+    const context = canvas?.getContext('2d');
+    if (!canvas || !context) return;
+    if (confettiFrameRef.current) cancelAnimationFrame(confettiFrameRef.current);
+    const ratio = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = innerWidth * ratio;
+    canvas.height = innerHeight * ratio;
+    canvas.style.width = `${innerWidth}px`;
+    canvas.style.height = `${innerHeight}px`;
+    context.setTransform(ratio, 0, 0, ratio, 0, 0);
+    const rect = event.currentTarget.getBoundingClientRect();
+    const palette = ['#b08d57', '#d7bc8c', '#fffef9', '#87683b'];
+    const pieces = Array.from({ length: 92 }, (_, index) => {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 2.8 + Math.random() * 7.2;
+      return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 4.5, gravity: .16, size: 2.5 + Math.random() * 4.5, rotation: Math.random() * Math.PI, spin: (Math.random() - .5) * .2, life: 1, decay: .012 + Math.random() * .01, color: palette[index % palette.length] };
+    });
+    const render = () => {
+      context.clearRect(0, 0, innerWidth, innerHeight);
+      pieces.forEach((piece) => {
+        piece.vy += piece.gravity; piece.x += piece.vx; piece.y += piece.vy; piece.rotation += piece.spin; piece.life -= piece.decay;
+        context.save(); context.globalAlpha = Math.max(piece.life, 0); context.translate(piece.x, piece.y); context.rotate(piece.rotation); context.fillStyle = piece.color; context.fillRect(-piece.size, -piece.size / 3, piece.size * 2, piece.size / 1.5); context.restore();
+      });
+      if (pieces.some((piece) => piece.life > 0 && piece.y < innerHeight + 30)) confettiFrameRef.current = requestAnimationFrame(render);
+      else { context.clearRect(0, 0, innerWidth, innerHeight); confettiFrameRef.current = null; }
+    };
+    render();
+  };
+
   return (
     <main>
       <header className={`site-nav ${scrolled ? 'is-scrolled' : ''}`}>
-        <a className="official-logo" href="#top" aria-label="Trivare home"><Image src="/trivare-logo.png" alt="Trivare" width={1086} height={362} priority /></a>
+        <button type="button" className="official-logo" onClick={celebrateLogo} aria-label="Trivare home en logo-animatie"><Image src="/trivare-logo.png" alt="Trivare" width={1086} height={362} priority /></button>
         <nav className="nav-links" aria-label="Hoofdnavigatie">
           <a href="#diensten">Diensten</a><a href="#werk">Werk</a><a href="#werkwijze">Werkwijze</a><a href="#over">Over Trivare</a><a href="#contact">Contact</a>
         </nav>
         <a className="outline-cta" href="#contact"><span>Kennismaken</span><ArrowUpRight /></a>
         <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label="Open menu">{menuOpen ? <X /> : <Menu />}</button>
       </header>
+      <canvas className="confetti-canvas" ref={confettiCanvasRef} aria-hidden="true" />
+      <div className={`logo-message ${logoMessageVisible ? 'is-visible' : ''}`} aria-live="polite">Websites die vertrouwen uitstralen.</div>
 
       <div className={`mobile-menu ${menuOpen ? 'is-open' : ''}`} aria-hidden={!menuOpen}>
         <nav>{['Diensten', 'Werk', 'Werkwijze', 'Over Trivare', 'Contact'].map((label) => <a key={label} href={`#${label === 'Over Trivare' ? 'over' : label.toLowerCase()}`} onClick={closeMenuAndNavigate}>{label}</a>)}</nav>
@@ -211,7 +271,7 @@ export function TrivareSite() {
       </div>
 
       <section className="hero-section" id="top" ref={heroRef}>
-        <div className="hero-field hero-field-one" aria-hidden="true" /><div className="hero-field hero-field-two" aria-hidden="true" /><div className="hero-field hero-field-three" aria-hidden="true" /><div className="hero-fluid-grid" aria-hidden="true" /><div className="grain" aria-hidden="true" />
+        <div className="hero-cursor-glow" aria-hidden="true" /><div className="grain" aria-hidden="true" />
         <div className="hero-content">
           <h1>Websites die<br /><span>vertrouwen uitstralen.</span></h1>
           <div className="hero-lower">
@@ -229,12 +289,13 @@ export function TrivareSite() {
         <div className="section-intro" data-reveal><p className="section-label"><span>02</span> DIENSTEN</p><div><h2>Alles voor een website<br /><span>die sterker staat.</span></h2><p>Van een compleet nieuw ontwerp tot het verbeteren van een bestaande website. We kijken naar wat er nodig is en bouwen van daaruit verder.</p></div></div>
         <div className="service-rows" data-reveal>{services.map((service) => <a href="#contact" className="service-row" key={service.number}><span className="service-number">{service.number}</span><h3>{service.title}</h3><p>{service.text}</p><ArrowUpRight /></a>)}</div>
         <p className="service-tags">DESIGN · BRANDING · UX · SEO · CRO · ONDERHOUD</p>
+        <div className="capability-grid">{capabilities.map((capability) => <article key={capability.number} data-reveal><span>{capability.number}</span><strong>{capability.title}</strong><p>{capability.text}</p><i /></article>)}</div>
       </section>
 
       <section className="section work-section" id="werk">
         <div className="section-intro work-intro" data-reveal><p className="section-label"><span>03</span> SELECTIE VAN ONS WERK</p><div><h2>Websites met<br /><span>een eigen karakter.</span></h2><p>Geen standaard template met een ander logo, maar websites waarin uitstraling, gebruiksgemak en het karakter van het bedrijf samenkomen.</p></div></div>
         <div className="project-grid" data-reveal>{projects.map((project, index) => <ProjectCard key={project.slug} project={project} onOpen={() => setCaseIndex(index)} />)}</div>
-        <div className="proof-strip" data-reveal><div><strong>Geselecteerd werk</strong><span>verschillende stijlen, zorgvuldig uitgewerkt</span></div><div><strong>Persoonlijk</strong><span>begeleiding en afstemming</span></div><div><strong>Ontwerp + realisatie</strong><span>één zorgvuldig proces</span></div><div><strong>Na livegang</strong><span>ruimte om te optimaliseren</span></div></div>
+        <div className="proof-strip"><div data-reveal><strong>Geselecteerd werk</strong><span>VERSCHILLENDE STIJLEN, ZORGVULDIG UITGEWERKT</span><i /></div><div data-reveal><strong>Persoonlijk</strong><span>BEGELEIDING EN AFSTEMMING</span><i /></div><div data-reveal><strong>Ontwerp + realisatie</strong><span>ÉÉN ZORGVULDIG PROCES</span><i /></div><div data-reveal><strong>Na livegang</strong><span>RUIMTE OM TE OPTIMALISEREN</span><i /></div></div>
       </section>
 
       <section className="approach-section" id="aanpak">
@@ -253,9 +314,8 @@ export function TrivareSite() {
         </div>
       </section>
 
-      <section className="section about-section" id="over" onPointerMove={setPointerPosition}>
-        <div className="about-wash" aria-hidden="true" />
-        <div className="about-copy" data-reveal><p className="section-label"><span>06</span> OVER TRIVARE</p><h2><span>Persoonlijk in aanpak.</span><span>Zorgvuldig in uitvoering.</span></h2><p className="about-intro">Trivare helpt bedrijven aan websites die professioneel aanvoelen en passen bij wie ze zijn.</p><p>We beginnen niet bij een template, maar bij jouw bedrijf. Wat wil je uitstralen? Wie wil je bereiken? En wat moet iemand begrijpen zodra die op je website terechtkomt?</p><p>Van daaruit bouwen we stap voor stap aan een helder en sterk geheel.</p><small>Geen ingewikkeld proces.<br />Wel aandacht voor detail, duidelijke keuzes en persoonlijk contact.</small><div className="personal-note"><span>DIRECT SAMENWERKEN</span><p>Bij Trivare heb je rechtstreeks contact. We bespreken keuzes, verwerken feedback en houden het proces overzichtelijk — van de eerste richting tot de livegang.</p><a href="https://www.instagram.com/trivare.studio" target="_blank" rel="noreferrer"><AtSign /> Volg @trivare.studio <ArrowUpRight /></a></div></div>
+      <section className="section about-section" id="over">
+        <div className="about-copy" data-reveal><p className="section-label"><span>06</span> OVER TRIVARE</p><h2><span>Persoonlijk in aanpak.</span><span>Zorgvuldig in uitvoering.</span></h2><p className="about-intro">Trivare helpt bedrijven aan websites die professioneel aanvoelen en passen bij wie ze zijn.</p><p>We beginnen niet bij een template, maar bij jouw bedrijf. Wat wil je uitstralen? Wie wil je bereiken? En wat moet iemand begrijpen zodra die op je website terechtkomt?</p><p>Je hebt rechtstreeks contact, blijft betrokken bij belangrijke keuzes en weet steeds waar het project staat. Zo bouwen we stap voor stap aan een helder en sterk geheel.</p><small>Geen ingewikkeld proces.<br />Wel aandacht voor detail, duidelijke keuzes en persoonlijk contact.</small></div>
         <div className="about-image" data-reveal><Image src="/studio.png" alt="Persoonlijke samenwerking bij Trivare" fill sizes="(max-width: 900px) 100vw, 44vw" /><span>ACHTER TRIVARE</span></div>
       </section>
 
@@ -273,7 +333,7 @@ export function TrivareSite() {
           <label htmlFor="contact-company"><span>Bedrijfsnaam</span><Input id="contact-company" name="company" required autoComplete="organization" placeholder="Naam van je bedrijf" /></label>
           <label htmlFor="contact-email"><span>E-mail</span><Input id="contact-email" name="email" type="email" required autoComplete="email" placeholder="naam@bedrijf.nl" /></label>
           <label htmlFor="contact-phone"><span>Telefoon <small>(optioneel)</small></span><Input id="contact-phone" name="phone" type="tel" autoComplete="tel" placeholder="06 12 34 56 78" /></label>
-          <fieldset><legend>Waar kunnen we mee helpen?</legend><div className="service-choices">{['Nieuwe website', 'Redesign', 'Optimalisatie', 'Anders'].map((choice) => <button type="button" key={choice} aria-pressed={serviceChoice === choice} onClick={() => setServiceChoice(choice)}>{choice}</button>)}</div></fieldset>
+          <fieldset><legend>Waar kunnen we mee helpen?</legend><div className="service-choices">{['Nieuwe website', 'Redesign', 'SEO / CRO', 'Branding', 'Onderhoud', 'Anders'].map((choice) => <button type="button" key={choice} aria-pressed={serviceChoice === choice} onClick={() => setServiceChoice(choice)}>{choice}</button>)}</div></fieldset>
           <label htmlFor="contact-message"><span>Bericht</span><Textarea id="contact-message" name="message" required minLength={10} rows={4} placeholder="Vertel kort waar je mee bezig bent" /></label>
           <Button className="submit-button" type="submit" disabled={formState === 'sending' || formState === 'success'}><span>{formState === 'sending' ? 'Versturen...' : formState === 'success' ? 'Bericht ontvangen' : 'Verstuur bericht'}</span>{formState === 'sending' ? <i className="mini-loader" /> : <ArrowUpRight />}</Button>
           <div className={`form-message ${formState}`} aria-live="polite">{formState === 'success' ? 'Bedankt — je bericht is verzonden.' : formState === 'error' ? formError : ''}</div>
@@ -281,9 +341,8 @@ export function TrivareSite() {
       </section>
 
       <footer>
-        <div className="footer-top" data-reveal><div className="footer-brand"><a href="#top" className="footer-logo"><Image src="/trivare-logo.png" alt="Trivare" width={1086} height={362} /></a><p>Websites die vertrouwen uitstralen.</p></div><div><h3>NAVIGATIE</h3><nav><a href="#diensten">Diensten</a><a href="#werk">Werk</a><a href="#werkwijze">Werkwijze</a><a href="#over">Over Trivare</a><a href="#contact">Contact</a></nav></div><div><h3>CONTACT</h3><a href="mailto:contact@trivare.nl">contact@trivare.nl</a><a className="footer-instagram" href="https://www.instagram.com/trivare.studio" target="_blank" rel="noreferrer">Instagram · @trivare.studio</a><p>Overijssel, Nederland</p></div></div>
-        <div className="footer-cta" data-reveal><h2>Klaar om iets<br /><span>sterks neer te zetten?</span></h2><a className="primary-cta light-cta" href="#contact"><span>Plan een kennismaking</span><span className="cta-arrow"><ArrowUpRight /></span></a></div>
-        <div className="footer-bottom"><span>© 2026 Trivare</span><span>Design · Branding · SEO · CRO</span><span>Overijssel, Nederland</span></div>
+        <div className="footer-top" data-reveal><div className="footer-brand"><button type="button" onClick={celebrateLogo} className="footer-logo" aria-label="Trivare logo-animatie"><Image src="/trivare-logo.png" alt="Trivare" width={1086} height={362} /></button><p>Websites die vertrouwen uitstralen.</p></div><div><h3>NAVIGATIE</h3><nav><a href="#diensten">Diensten</a><a href="#werk">Werk</a><a href="#werkwijze">Werkwijze</a><a href="#over">Over Trivare</a><a href="#contact">Contact</a></nav></div><div><h3>CONTACT</h3><a href="mailto:contact@trivare.nl">contact@trivare.nl</a><a className="footer-instagram" href="https://www.instagram.com/trivare.studio" target="_blank" rel="noreferrer"><InstagramMark /><span>trivare.studio</span><ArrowUpRight /></a><p>Overijssel, Nederland</p></div></div>
+        <div className="footer-bottom"><span>© 2026 Trivare</span><span>Webdesign · SEO · CRO · Branding · Onderhoud</span><span>Overijssel, Nederland</span></div>
       </footer>
 
       <Dialog open={caseIndex !== null} onOpenChange={(open) => !open && setCaseIndex(null)}>
