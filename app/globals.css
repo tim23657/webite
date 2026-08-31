@@ -1644,3 +1644,129 @@ footer { background: #050505; }
   .hero-fluid-canvas { opacity: .9; }
 }
 
+/* Focused refinement: hero legibility, quieter lines and responsive typography. */
+.hero-title-base,
+.hero-title-gold,
+.hero-title:hover,
+.hero-title:hover .hero-title-base {
+  color: #fffef9 !important;
+  -webkit-text-stroke: .32px rgba(176,141,87,.18);
+  text-shadow: 0 0 .7px rgba(176,141,87,.2), 0 1px 1px rgba(176,141,87,.08);
+}
+.quiet-link,
+.quiet-link:hover {
+  color: #fffef9;
+  -webkit-text-stroke: .24px rgba(176,141,87,.17);
+  text-shadow: 0 0 .6px rgba(176,141,87,.16);
+}
+.quiet-link::before {
+  height: 1px;
+  background: rgba(176,141,87,.34);
+}
+.quiet-link::after {
+  height: 1px;
+  background: #b08d57;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .46s cubic-bezier(.16,1,.3,1);
+}
+.quiet-link:hover::after { transform: scaleX(1); }
+
+@media (min-width: 1101px) {
+  .services-heading {
+    width: max-content;
+    max-width: none;
+    white-space: nowrap;
+    font-size: clamp(2.75rem, 4.05vw, 4.75rem) !important;
+    letter-spacing: -.045em;
+  }
+  .personality-intro h2 {
+    grid-column: 2;
+    width: max-content;
+    max-width: none;
+    white-space: nowrap;
+    font-size: clamp(2.7rem, 3.7vw, 4.3rem);
+    letter-spacing: -.045em;
+  }
+}
+
+.personality-intro > p:last-child { grid-column: 2; }
+.project-meta {
+  position: relative;
+  padding-bottom: 13px;
+  border-bottom: 1px solid rgba(176,141,87,.18);
+}
+.project-meta::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 36%;
+  height: 1px;
+  background: rgba(176,141,87,.72);
+  transform: scaleX(.22);
+  transform-origin: left;
+  transition: transform .58s cubic-bezier(.16,1,.3,1);
+}
+.project-card:hover .project-meta::after { transform: scaleX(1); }
+.capability-grid,
+.values-grid { border-top-color: rgba(176,141,87,.22); }
+.capability-grid article,
+.values-grid article { border-color: rgba(176,141,87,.16); }
+
+@media (max-width: 1100px) {
+  .services-heading,
+  .personality-intro h2 { width: auto; max-width: 100%; white-space: normal; }
+  .personality-intro { grid-template-columns: 1fr; gap: 30px; }
+  .personality-intro h2,
+  .personality-intro > p:last-child { grid-column: 1; }
+  .personality-intro > p:last-child { margin-top: 0; }
+}
+
+@media (max-width: 760px) {
+  .site-nav { padding-inline: 18px; }
+  .official-logo { width: 132px; height: 44px; }
+  .menu-button { width: 44px; height: 44px; place-items: center; }
+  .mobile-menu { padding-inline: 22px; }
+  .mobile-menu nav a { padding-block: 13px; font-size: clamp(2.45rem, 11vw, 4.2rem); line-height: .98; }
+  .hero-section { padding-inline: 20px; }
+  .hero-title { max-width: 11ch; font-size: clamp(3rem, 13.4vw, 4.3rem) !important; line-height: .9 !important; letter-spacing: -.05em !important; }
+  .hero-actions { width: auto; }
+  .primary-cta { min-height: 58px; }
+  .section-intro h2,
+  .process-intro h2,
+  .investment-copy h2,
+  .footer-cta h2,
+  .personality-intro h2 { font-size: clamp(2.65rem, 11.7vw, 4.2rem); line-height: .94; letter-spacing: -.047em; }
+  .personality-intro { gap: 26px; }
+  .personality-visual { min-height: clamp(470px, 135vw, 580px); }
+  .project-grid { gap: 72px; }
+  .project-image { aspect-ratio: 1 / 1.12; }
+  .project-meta { margin-top: 17px; padding-bottom: 11px; }
+  .process-stage { min-height: min(760px, 182vw); }
+  .process-copy { left: 24px; right: 24px; }
+  .process-copy h3 { font-size: clamp(2.25rem, 10.5vw, 2.9rem); line-height: .96; }
+  .process-progress { left: 24px; right: 24px; }
+  .investment-panel { padding-inline: 24px; }
+  .footer-top { gap: 54px; }
+  .footer-bottom { gap: 12px; line-height: 1.55; }
+}
+
+@media (max-width: 390px) {
+  .hero-title { font-size: clamp(2.8rem, 12.9vw, 3.35rem) !important; }
+  .section,
+  .approach-section { padding-inline: 19px; }
+  .section-intro h2,
+  .process-intro h2,
+  .investment-copy h2,
+  .footer-cta h2,
+  .personality-intro h2 { font-size: clamp(2.45rem, 11.1vw, 3.3rem); }
+  .service-row { grid-template-columns: 38px minmax(0, 1fr) 22px; }
+  .service-row h3 { font-size: 1.62rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiet-link::after,
+  .project-meta::after { transition: none !important; }
+}
+
