@@ -103,17 +103,17 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>) {
     const leave = () => { element.dataset.glow = 'false'; };
     const render = () => {
       if (visible) {
-        x += (targetX - x) * .115;
-        y += (targetY - y) * .115;
+        x += (targetX - x) * .092;
+        y += (targetY - y) * .092;
         const dx = targetX - previousX;
         const dy = targetY - previousY;
-        const velocity = Math.min(1.16, Math.hypot(dx, dy) / 150 + 1);
+        const velocity = Math.min(1.08, Math.hypot(dx, dy) / 220 + 1);
         const angle = Math.atan2(dy, dx) * 180 / Math.PI;
         previousX = targetX; previousY = targetY;
         element.style.setProperty('--glow-x', `${x}px`);
         element.style.setProperty('--glow-y', `${y}px`);
         element.style.setProperty('--glow-stretch', velocity.toFixed(3));
-        element.style.setProperty('--glow-angle', `${(angle * .08).toFixed(2)}deg`);
+        element.style.setProperty('--glow-angle', `${(angle * .045).toFixed(2)}deg`);
       }
       frame = requestAnimationFrame(render);
     };
