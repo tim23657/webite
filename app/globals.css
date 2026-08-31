@@ -697,3 +697,160 @@ footer { background: #050505; }
   .mobile-menu-cta { color: #fff; }
 }
 
+/* White content canvas. The gold navigation and hero remain unchanged. */
+.services,
+.work-section,
+.process-section,
+.about-section,
+.values-grid,
+.investment-section,
+.approach-section,
+.contact-section {
+  --line: rgba(176,141,87,.28);
+  --muted: #514a41;
+  color: var(--ink);
+  background: #fff;
+  border-top-color: rgba(176,141,87,.18);
+}
+
+.services .section-label,
+.work-section .section-label,
+.process-section .section-label,
+.about-section .section-label,
+.investment-section .section-label,
+.contact-section .section-label,
+.section-label.light,
+.section-label span {
+  color: var(--gold);
+}
+
+.section-intro h2,
+.section-intro h2 span,
+.process-intro h2,
+.process-intro h2 span,
+.about-copy h2 span,
+.about-copy h2 span:last-child,
+.investment-copy h2,
+.investment-copy h2 span,
+.contact-intro h2,
+.contact-intro h2 span {
+  color: var(--gold);
+  text-shadow: none;
+}
+
+.services .section-intro > div > p,
+.work-section .section-intro > div > p,
+.process-intro > p,
+.about-copy > p,
+.about-copy .about-intro,
+.investment-copy > p,
+.contact-intro > p:not(.section-label),
+.light-intro > div > p {
+  color: #514a41;
+}
+
+.service-rows,
+.service-row,
+.proof-strip,
+.proof-strip > div,
+.capability-grid,
+.capability-grid article,
+.values-grid article {
+  border-color: var(--line);
+}
+.service-row,
+.project-card { color: var(--ink); }
+.service-number,
+.project-meta,
+.capability-grid article > span,
+.values-grid article > span,
+.service-tags { color: var(--gold); }
+.service-row h3,
+.capability-grid strong,
+.values-grid h3 {
+  color: var(--gold);
+  text-shadow: none;
+}
+.service-row p,
+.project-description,
+.capability-grid p,
+.values-grid p { color: #514a41; }
+.service-row svg { color: var(--gold); }
+.service-row:hover { background: linear-gradient(90deg, rgba(176,141,87,.08), transparent 72%); }
+.service-row:hover h3 { color: var(--gold); }
+.service-row::after,
+.capability-grid i,
+.proof-strip i,
+.values-grid i { background: var(--gold); }
+
+.capability-grid article,
+.values-grid article { background: #fff; }
+.capability-grid article::before,
+.proof-strip > div::before { background: rgba(176,141,87,.3); }
+.capability-grid article:hover,
+.values-grid article:hover,
+.proof-strip > div:hover {
+  background: rgba(176,141,87,.065);
+  border-color: rgba(176,141,87,.65);
+}
+
+.project-card strong { color: var(--ink); }
+.project-card:hover strong { color: var(--gold); }
+.proof-strip > div { color: var(--ink); }
+.proof-strip strong,
+.proof-strip > div:hover strong { color: var(--gold); }
+.proof-strip span { color: #514a41; }
+
+.approach-words { border-color: var(--line); }
+.approach-words span { border-color: var(--line); color: var(--gold); }
+.approach-words span::after { background: var(--gold); }
+.approach-words span:hover { color: var(--gold); background: rgba(176,141,87,.065); }
+.about-copy small,
+.investment-copy > small { color: var(--gold); border-color: var(--gold); }
+.investment-copy > small i { background: var(--gold); }
+
+.investment-panel {
+  color: var(--ink);
+  background: #fff;
+  border-color: var(--line);
+  backdrop-filter: none;
+}
+.investment-panel > p,
+.investment-panel > small,
+.investment-panel article > span { color: var(--gold); }
+.investment-panel article { border-color: var(--line); }
+.investment-panel article::after { border-color: var(--line); background: var(--gold); }
+.investment-panel article p { color: #514a41; }
+
+.contact-intro > p:not(.section-label),
+.contact-form label > span,
+.contact-form legend { color: #514a41; }
+.contact-form input,
+.contact-form textarea {
+  color: var(--ink);
+  border-bottom-color: rgba(176,141,87,.42);
+  background: rgba(176,141,87,.035);
+}
+.contact-form input::placeholder,
+.contact-form textarea::placeholder { color: #8d857a; }
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-bottom-color: var(--gold);
+  background: rgba(176,141,87,.065);
+  box-shadow: inset 0 -1px var(--gold);
+}
+.service-choices button { border-color: rgba(176,141,87,.42); color: var(--ink); }
+.service-choices button:hover,
+.service-choices button[aria-pressed='true'] {
+  border-color: var(--gold);
+  background: rgba(176,141,87,.1);
+  color: var(--gold);
+}
+.submit-button { background: var(--gold); color: #fff; }
+.submit-button::before { background: rgba(255,255,255,.18); }
+.submit-button:hover { background: #9d7841; color: #fff; }
+.calendar-link { color: var(--gold); border-bottom-color: rgba(176,141,87,.64); }
+.calendar-link::after { background: var(--gold); }
+.mail-direct { color: #6c6256; }
+.mail-direct a { color: var(--gold); }
+
