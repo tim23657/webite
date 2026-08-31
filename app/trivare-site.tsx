@@ -323,7 +323,6 @@ export function TrivareSite() {
         <div className="hero-content">
           <h1 className="hero-title"><span className="hero-title-base">Websites die vertrouwen uitstralen.</span><span className="hero-title-gold" aria-hidden="true">Websites die vertrouwen uitstralen.</span></h1>
           <div className="hero-lower">
-            <p>Trivare ontwerpt en bouwt websites die professioneel ogen, logisch werken en passen bij het bedrijf erachter.</p>
             <div className="hero-actions">
               <a className="primary-cta" href="#contact"><span>Plan een kennismaking</span><span className="cta-arrow"><ArrowUpRight /></span></a>
               <a className="quiet-link" href="#werk">Bekijk ons werk <ArrowDown /></a>
