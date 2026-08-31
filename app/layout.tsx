@@ -1,25 +1,25 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Inter, Manrope } from 'next/font/google';
 import './globals.css';
 
-const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
-const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
+const inter = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' });
+const manrope = Manrope({ variable: '--font-heading', subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://trivare.nl'),
-  title: 'Trivare — Websites die bedrijven vooruitbrengen',
-  description: 'Strategisch webdesign, UX, SEO, CRO, onderhoud en branding voor ambitieuze mkb-bedrijven in Overijssel.',
+  title: 'Trivare — Websites die vertrouwen uitstralen',
+  description: 'Professioneel webdesign, redesign en website-optimalisatie voor bedrijven in Overijssel en daarbuiten.',
   openGraph: {
-    title: 'Trivare — Websites die bedrijven vooruitbrengen',
-    description: 'Strategisch webdesign, UX, SEO, CRO, onderhoud en branding voor ambitieuze mkb-bedrijven in Overijssel.',
+    title: 'Trivare — Websites die vertrouwen uitstralen',
+    description: 'Professioneel webdesign, redesign en website-optimalisatie voor bedrijven in Overijssel en daarbuiten.',
     type: 'website',
     locale: 'nl_NL',
-    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Trivare — Websites die bedrijven vooruitbrengen.' }],
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Trivare — Websites die vertrouwen uitstralen.' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Trivare — Websites die bedrijven vooruitbrengen',
-    description: 'Professionele websites en digitale groei voor het Nederlandse mkb.',
+    title: 'Trivare — Websites die vertrouwen uitstralen',
+    description: 'Professioneel webdesign, redesign en optimalisatie.',
     images: ['/og.png'],
   },
 };
@@ -27,7 +27,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="nl">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>{children}</body>
+      <body className={`${inter.variable} ${manrope.variable}`}>{children}</body>
     </html>
   );
 }
+
