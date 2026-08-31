@@ -23,6 +23,7 @@ const capabilities = [
   { number: '03', title: 'Branding', text: 'We vertalen de uitstraling van je bedrijf naar een visuele richting die herkenbaar en passend voelt.' },
   { number: '04', title: 'Onderhoud', text: 'Na de livegang kunnen we betrokken blijven voor updates, technische aandacht en verdere verbeteringen.' },
   { number: '05', title: 'Persoonlijke samenwerking', text: 'Je hebt direct contact en blijft betrokken bij het proces. We bespreken belangrijke keuzes, verwerken feedback en bouwen de website stap voor stap samen verder.' },
+  { number: '06', title: 'Gebruiksgemak', text: 'Een duidelijke structuur en prettige ervaring, zodat bezoekers makkelijk vinden wat ze zoeken.' },
 ];
 
 const projects = [
@@ -154,7 +155,7 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
     let targetVelocityY = 0;
     let velocityX = 0;
     let velocityY = 0;
-    let reveal = canTrackPointer ? 0 : .22;
+    let reveal = 0;
     let pointerInside = false;
     let titleOffsetX = 0;
     let titleOffsetY = 0;
@@ -211,53 +212,57 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
         const v = py / Math.max(1, fieldHeight - 1);
         for (let px = 0; px < fieldWidth; px += 1) {
           const u = px / Math.max(1, fieldWidth - 1);
-          const diagonalX = (u + v * .48) * 1.15 + seconds * .018;
-          const diagonalY = (v - u * .28) * 1.46 - seconds * .013;
-          const coarseWarpX = fractalNoise(diagonalX * .83 + seconds * .004, diagonalY * .83, 19, 2);
-          const coarseWarpY = fractalNoise(diagonalX * .83 + 5.7, diagonalY * .83 - seconds * .003, 43, 2);
-          let warpedX = diagonalX + (coarseWarpX - .5) * 1.18 + Math.sin(diagonalY * 2.1 + seconds * .027) * .075;
-          let warpedY = diagonalY + (coarseWarpY - .5) * 1.05 + Math.cos(diagonalX * 1.8 - seconds * .021) * .065;
+          const diagonalX = (u + v * .44) * 1.08 + seconds * .011;
+          const diagonalY = (v - u * .31) * 1.4 - seconds * .008;
+          const coarseWarpX = fractalNoise(diagonalX * .76 + seconds * .0028, diagonalY * .76, 19, 3);
+          const coarseWarpY = fractalNoise(diagonalX * .76 + 5.7, diagonalY * .76 - seconds * .0022, 43, 3);
+          let warpedX = diagonalX + (coarseWarpX - .5) * 1.32 + Math.sin(diagonalY * 1.72 + seconds * .018) * .09;
+          let warpedY = diagonalY + (coarseWarpY - .5) * 1.19 + Math.cos(diagonalX * 1.55 - seconds * .014) * .08;
 
           const localShape = .72 + valueNoise(warpedX * 1.45, warpedY * 1.45, 91) * .48;
-          const dx = (u - pointerU) / (.34 * localShape + speed * .055);
-          const dy = (v - pointerV) / (.3 / localShape);
+          const dx = (u - pointerU) / (.18 * localShape + speed * .024);
+          const dy = (v - pointerV) / (.22 / localShape);
           const localDistance = Math.sqrt(dx * dx + dy * dy);
           const localNoise = valueNoise(warpedX * 2.05 + seconds * .01, warpedY * 2.05, 127);
-          const echoDx = (u - slowPointerU) / (.49 * localShape);
-          const echoDy = (v - slowPointerV) / (.39 / localShape);
+          const echoDx = (u - slowPointerU) / (.23 * localShape);
+          const echoDy = (v - slowPointerV) / (.27 / localShape);
           const echoDistance = Math.sqrt(echoDx * echoDx + echoDy * echoDy);
-          const echoInfluence = reveal * smoothstep(1.08 + localNoise * .12, .12, echoDistance) * (.24 + localNoise * .2);
-          const cursorInfluence = reveal * smoothstep(1.12 + localNoise * .13, .08, localDistance) * (.55 + localNoise * .45) + echoInfluence;
-          warpedX += dx * cursorInfluence * .075 - pullX * cursorInfluence * (1.8 + speed * 2.1);
-          warpedY += dy * cursorInfluence * .065 - pullY * cursorInfluence * (1.6 + speed * 1.8);
+          const echoInfluence = reveal * smoothstep(1.04 + localNoise * .1, .1, echoDistance) * (.13 + localNoise * .13);
+          const cursorInfluence = reveal * smoothstep(1.06 + localNoise * .12, .06, localDistance) * (.5 + localNoise * .38) + echoInfluence;
+          warpedX += dx * cursorInfluence * .058 - pullX * cursorInfluence * (1.45 + speed * 1.9);
+          warpedY += dy * cursorInfluence * .052 - pullY * cursorInfluence * (1.3 + speed * 1.65);
 
-          const large = fractalNoise(warpedX * .94, warpedY * .94, 71, 4);
+          const large = fractalNoise(warpedX * .68, warpedY * .68, 71, 4);
+          const secondary = fractalNoise(warpedX * .91 + 2.7, warpedY * .91 - 1.2, 83, 3);
           const folds = fractalNoise(warpedX * 2.35 + 3.1, warpedY * 2.35 - 1.7, 113, 3);
           const fine = valueNoise(warpedX * 4.8 - seconds * .006, warpedY * 4.8 + seconds * .004, 157);
-          const density = large * .72 + folds * .23 + fine * .05;
-          const largeRight = fractalNoise((warpedX + .032) * .94, warpedY * .94, 71, 3);
-          const largeDown = fractalNoise(warpedX * .94, (warpedY + .032) * .94, 71, 3);
+          const broadFlow = .5 + Math.sin(warpedX * 1.46 - warpedY * .68 + (coarseWarpY - .5) * 2.5 + seconds * .012) * .5;
+          const foldWave = .5 + Math.sin((warpedX * 2.18 + warpedY * .72 + (folds - .5) * 2.9 + seconds * .017) * Math.PI) * .5;
+          const density = large * .57 + secondary * .18 + broadFlow * .17 + folds * .08;
+          const largeRight = fractalNoise((warpedX + .032) * .68, warpedY * .68, 71, 3);
+          const largeDown = fractalNoise(warpedX * .68, (warpedY + .032) * .68, 71, 3);
           const foldsRight = fractalNoise((warpedX + .018) * 2.35 + 3.1, warpedY * 2.35 - 1.7, 113, 2);
           const foldsDown = fractalNoise(warpedX * 2.35 + 3.1, (warpedY + .018) * 2.35 - 1.7, 113, 2);
           const normalX = (large - largeRight) * .72 + (folds - foldsRight) * .28;
           const normalY = (large - largeDown) * .72 + (folds - foldsDown) * .28;
           const slope = Math.min(1, Math.hypot(normalX, normalY) * 16);
           const light = clamp01(.48 + (-normalX * .78 - normalY * .63) * 11);
-          const relief = smoothstep(.33, .68, folds * .78 + fine * .22);
-          const breathing = .9 + Math.sin(seconds * .11 + large * 5.2) * .08 + Math.sin(seconds * .047 + folds * 3.7) * .05;
-          const mass = smoothstep(.39, .54, density * breathing + cursorInfluence * .09);
+          const ridge = 1 - Math.abs(foldWave * 2 - 1);
+          const relief = smoothstep(.32, .82, ridge * .7 + folds * .22 + fine * .08);
+          const breathing = .93 + Math.sin(seconds * .071 + large * 5.2) * .055 + Math.sin(seconds * .033 + folds * 3.7) * .035;
+          const mass = smoothstep(.42, .58, density * breathing + cursorInfluence * .07);
           const diagonalFront = smoothstep(.78 - entrance * 1.28, 1.08 - entrance * 1.28, u * .82 + (1 - v) * .36);
           const calmBreaks = .72 + smoothstep(.38, .7, fractalNoise(warpedX * .52 - 2.4, warpedY * .52 + 4.2, 211, 2)) * .28;
           const safeDx = (u - titleCenterX) / Math.max(.18, titleWidth / width * .6);
           const safeDy = (v - titleCenterY) / Math.max(.08, titleHeight / height * 1.45);
           const safeDistance = Math.sqrt(safeDx * safeDx + safeDy * safeDy);
           const titleSafety = .48 + smoothstep(.52, 1.22, safeDistance) * .52;
-          const opacity = entrance * diagonalFront * calmBreaks * titleSafety * mass * (.035 + light * .22 + slope * .32 + cursorInfluence * .18) * (.42 + relief * .58);
+          const opacity = entrance * diagonalFront * calmBreaks * titleSafety * mass * (.018 + light * .12 + slope * .2 + relief * .18 + cursorInfluence * .14) * (.54 + relief * .46);
           const shade = clamp01(large * .38 + light * .3 + slope * .16 + relief * .12 + fine * .04);
           const index = (py * fieldWidth + px) * 4;
-          data[index] = Math.round(151 + shade * 25);
-          data[index + 1] = Math.round(126 + shade * 15);
-          data[index + 2] = Math.round(84 + shade * 7);
+          data[index] = Math.round(161 + shade * 15);
+          data[index + 1] = Math.round(132 + shade * 9);
+          data[index + 2] = Math.round(84 + shade * 4);
           data[index + 3] = Math.round(clamp01(opacity) * 255);
         }
       }
@@ -278,8 +283,8 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
         ctx.filter = 'none';
         ctx.globalAlpha = 1;
       };
-      paint(baseContext, .95, 2.5);
-      paint(detailContext, .84, 1, 2);
+      paint(baseContext, .92, 2.2);
+      paint(detailContext, .78, .85, 2);
     };
 
     const drawRevealMask = (time: number) => {
@@ -288,12 +293,12 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
       if (reveal < .002) return;
       const speed = Math.min(1, Math.hypot(velocityX, velocityY) / 34);
       const direction = Math.atan2(velocityY, velocityX || .001);
-      const radiusX = Math.min(340, Math.max(225, width * .245)) * (1 + speed * .22);
-      const radiusY = Math.min(270, Math.max(175, height * .245)) * (1 - speed * .05);
+      const radiusX = Math.min(190, Math.max(122, width * .115)) * (1 + speed * .2);
+      const radiusY = Math.min(165, Math.max(108, height * .15)) * (1 - speed * .04);
       maskContext.save();
       maskContext.translate(x, y);
       maskContext.rotate(direction * .13);
-      maskContext.filter = `blur(${52 + (1 - speed) * 20}px)`;
+      maskContext.filter = `blur(${42 + (1 - speed) * 16}px)`;
       const points = 14;
       const irregular = new Path2D();
       const coords: Array<[number, number]> = [];
@@ -348,7 +353,7 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
         velocityY += (targetVelocityY - velocityY) * .025;
         targetVelocityX *= .86;
         targetVelocityY *= .86;
-        reveal += ((pointerInside ? 1 : canTrackPointer ? 0 : .22) - reveal) * (pointerInside ? .065 : .024);
+        reveal += ((pointerInside ? 1 : 0) - reveal) * (pointerInside ? .06 : .024);
         element.style.setProperty('--mouse-x', `${x}px`);
         element.style.setProperty('--mouse-y', `${y}px`);
         title?.style.setProperty('--title-x', `${x - titleOffsetX}px`);
@@ -388,6 +393,10 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
 
 function InstagramMark() {
   return <svg className="instagram-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5" fill="none" stroke="currentColor" strokeWidth="1.7" /><circle cx="12" cy="12" r="3.7" fill="none" stroke="currentColor" strokeWidth="1.7" /><circle cx="17.4" cy="6.8" r="1" fill="currentColor" /></svg>;
+}
+
+function NorthEastArrow() {
+  return <svg className="hero-cta-arrow-svg" viewBox="0 0 20 20" aria-hidden="true"><path d="M5.25 14.75 14.75 5.25M7.15 5.25h7.6v7.6" /></svg>;
 }
 
 function ProjectCard({ project, onOpen }: { project: typeof projects[number]; onOpen: () => void }) {
@@ -539,7 +548,7 @@ export function TrivareSite() {
           <h1 className="hero-title"><span className="hero-title-base">Websites die vertrouwen uitstralen.</span><span className="hero-title-gold" aria-hidden="true">Websites die vertrouwen uitstralen.</span></h1>
           <div className="hero-lower">
             <div className="hero-actions">
-              <a className="primary-cta" href="#contact"><span>Plan een kennismaking</span><span className="cta-arrow"><ArrowUpRight /></span></a>
+              <a className="primary-cta hero-primary-cta" href="#contact"><span>Plan een kennismaking</span><span className="cta-arrow"><NorthEastArrow /></span></a>
               <a className="quiet-link" href="#werk">Bekijk ons werk</a>
             </div>
           </div>
@@ -555,7 +564,7 @@ export function TrivareSite() {
       </section>
 
       <section className="section work-section" id="werk">
-        <div className="section-intro work-intro" data-reveal><p className="section-label">SELECTIE VAN ONS WERK</p><div><h2>Een selectie<br /><span>van ons werk.</span></h2><p>Een aantal websites die we mochten ontwerpen, vernieuwen of verder uitwerken. Verschillende bedrijven en stijlen, met voor ieder project een aanpak die daarbij past.</p></div></div>
+        <div className="section-intro work-intro" data-reveal><p className="section-label">SELECTIE VAN ONS WERK</p><div><h2 className="work-heading">Een selectie <span>van ons werk.</span></h2><p>Een aantal websites die we mochten ontwerpen, vernieuwen of verder uitwerken. Verschillende bedrijven en stijlen, met voor ieder project een aanpak die daarbij past.</p></div></div>
         <div className="project-grid" data-reveal>{projects.map((project, index) => <ProjectCard key={project.slug} project={project} onOpen={() => setCaseIndex(index)} />)}</div>
         <div className="proof-strip"><div data-reveal><strong>Geselecteerd werk</strong><span>VERSCHILLENDE STIJLEN, ZORGVULDIG UITGEWERKT</span><i /></div><div data-reveal><strong>Persoonlijk</strong><span>BEGELEIDING EN AFSTEMMING</span><i /></div><div data-reveal><strong>Ontwerp + realisatie</strong><span>ÉÉN ZORGVULDIG PROCES</span><i /></div><div data-reveal><strong>Na livegang</strong><span>RUIMTE OM TE OPTIMALISEREN</span><i /></div></div>
       </section>
@@ -589,12 +598,12 @@ export function TrivareSite() {
       <section className="values-grid">{values.map((value) => <article key={value.number} data-reveal><span>{value.number}</span><h3>{value.title}</h3><p>{value.text}</p><i /></article>)}</section>
 
       <section className="section investment-section" id="investering">
-        <div className="investment-copy" data-reveal><p className="section-label">INVESTERING</p><h2>Vooraf duidelijk wat<br /><span>we gaan maken.</span></h2><p>Geen website is precies hetzelfde. Daarom bespreken we eerst wat je nodig hebt en wat we voor je gaan maken.<br /><br />Daarna ontvang je een duidelijk voorstel met de werkzaamheden, planning en investering. Zo weet je vóór de start waar je aan toe bent.</p><small><i /> Heldere afspraken vóór we beginnen.</small></div>
-        <aside className="investment-panel" data-reveal><p>ZO WERKT HET</p><h3>Zo starten we<br />een project.</h3><div>{investmentSteps.map((step) => <article key={step.number}><span>{step.number}</span><div><strong>{step.title}</strong><p>{step.text}</p></div></article>)}</div><small>PERSOONLIJK EN DUIDELIJK</small></aside>
+        <div className="investment-copy" data-reveal><p className="section-label">INVESTERING</p><h2 className="investment-heading">Vooraf duidelijk wat <span>we gaan maken.</span></h2><p>Geen website is precies hetzelfde. Daarom bespreken we eerst wat je nodig hebt en wat we voor je gaan maken.<br /><br />Daarna ontvang je een duidelijk voorstel met de werkzaamheden, planning en investering. Zo weet je vóór de start waar je aan toe bent.</p><small><i /> Heldere afspraken vóór we beginnen.</small></div>
+        <aside className="investment-panel" data-reveal><p>ZO WERKT HET</p><h3 className="investment-panel-heading">Zo starten we een project.</h3><div>{investmentSteps.map((step) => <article key={step.number}><span>{step.number}</span><div><strong>{step.title}</strong><p>{step.text}</p></div></article>)}</div><small>PERSOONLIJK EN DUIDELIJK</small></aside>
       </section>
 
       <section className="contact-section" id="contact">
-        <div className="contact-intro" data-reveal><p className="section-label light">CONTACT</p><h2>Laten we<br /><span>kennismaken.</span></h2><p>Vertel waar je mee bezig bent of waar je tegenaan loopt. Dan kijken we samen wat er nodig is.</p><button className="calendar-link" onClick={() => setCalendlyOpen(true)}>Plan direct een afspraak <ArrowUpRight /></button><div className="mail-direct"><span>Liever mailen?</span><a href="mailto:contact@trivare.nl">contact@trivare.nl</a></div></div>
+        <div className="contact-intro" data-reveal><p className="section-label light">CONTACT</p><h2 className="contact-heading">Laten we <span>kennismaken.</span></h2><p>Vertel waar je mee bezig bent of waar je tegenaan loopt. Dan kijken we samen wat er nodig is.</p><button className="calendar-link" onClick={() => setCalendlyOpen(true)}>Plan direct een afspraak <ArrowUpRight /></button><div className="mail-direct"><span>Liever mailen?</span><a href="mailto:contact@trivare.nl">contact@trivare.nl</a></div></div>
         <form className="contact-form" onSubmit={submitContact} data-reveal noValidate>
           <label htmlFor="contact-name"><span>Naam</span><Input id="contact-name" name="name" required autoComplete="name" placeholder="Jouw naam" /></label>
           <label htmlFor="contact-company"><span>Bedrijfsnaam</span><Input id="contact-company" name="company" required autoComplete="organization" placeholder="Naam van je bedrijf" /></label>
@@ -608,7 +617,7 @@ export function TrivareSite() {
       </section>
 
       <footer>
-        <div className="footer-top" data-reveal><div className="footer-brand"><button type="button" onClick={celebrateLogo} className="footer-logo" aria-label="Trivare logo-animatie"><Image src="/trivare-logo.png" alt="Trivare" width={1086} height={362} /></button><p>Websites die vertrouwen uitstralen.</p></div><div><h3>NAVIGATIE</h3><nav><a href="#diensten">Diensten</a><a href="#werk">Werk</a><a href="#werkwijze">Werkwijze</a><a href="#over">Over Trivare</a><a href="#contact">Contact</a></nav></div><div><h3>CONTACT</h3><a href="mailto:contact@trivare.nl">contact@trivare.nl</a><a className="footer-instagram" href="https://www.instagram.com/trivare.studio" target="_blank" rel="noreferrer"><InstagramMark /><span>trivare.studio</span><ArrowUpRight /></a><p>Overijssel, Nederland</p></div></div>
+        <div className="footer-top" data-reveal><div className="footer-brand"><button type="button" onClick={celebrateLogo} className="footer-logo" aria-label="Trivare logo-animatie"><Image src="/trivare-logo.png" alt="Trivare" width={1086} height={362} /></button></div><div><h3>NAVIGATIE</h3><nav><a href="#diensten">Diensten</a><a href="#werk">Werk</a><a href="#werkwijze">Werkwijze</a><a href="#over">Over Trivare</a><a href="#contact">Contact</a></nav></div><div><h3>CONTACT</h3><a href="mailto:contact@trivare.nl">contact@trivare.nl</a><a className="footer-instagram" href="https://www.instagram.com/trivare.studio" target="_blank" rel="noreferrer"><InstagramMark /><span>trivare.studio</span><ArrowUpRight /></a><p>Overijssel, Nederland</p></div></div>
         <div className="footer-bottom"><span>© 2026 Trivare</span><span>Webdesign · SEO · CRO · Branding · Onderhoud</span><span>Overijssel, Nederland</span></div>
       </footer>
 
