@@ -81,29 +81,64 @@ function setPointerPosition(event: ReactPointerEvent<HTMLElement>) {
   event.currentTarget.style.setProperty('--mouse-y', `${event.clientY - rect.top}px`);
 }
 
-function useHeroField(ref: React.RefObject<HTMLElement | null>) {
+const heroRibbons = [
+  { y: .12, width: .18, amp: .115, amp2: .06, freq: 1.35, speed: .000031, phase: .4, blur: 30, tilt: -.055 },
+  { y: .27, width: .23, amp: .155, amp2: .072, freq: 1.04, speed: -.000024, phase: 2.1, blur: 43, tilt: .075 },
+  { y: .42, width: .14, amp: .105, amp2: .07, freq: 1.66, speed: .000029, phase: 4.3, blur: 23, tilt: -.04 },
+  { y: .57, width: .25, amp: .16, amp2: .055, freq: .91, speed: -.000019, phase: 1.4, blur: 47, tilt: .06 },
+  { y: .72, width: .17, amp: .125, amp2: .08, freq: 1.28, speed: .000022, phase: 5.2, blur: 29, tilt: -.07 },
+  { y: .86, width: .22, amp: .105, amp2: .06, freq: 1.12, speed: -.000017, phase: 3.2, blur: 42, tilt: .045 },
+  { y: .98, width: .16, amp: .09, amp2: .068, freq: 1.5, speed: .00002, phase: 6.1, blur: 33, tilt: -.035 },
+];
+
+function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React.RefObject<HTMLCanvasElement | null>) {
   useEffect(() => {
     const element = ref.current;
-    if (!element || matchMedia('(pointer: coarse)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const canvas = canvasRef.current;
+    if (!element || !canvas) return;
+    const context = canvas.getContext('2d', { alpha: true });
+    if (!context) return;
+    const baseCanvas = document.createElement('canvas');
+    const detailCanvas = document.createElement('canvas');
+    const maskCanvas = document.createElement('canvas');
+    const baseContext = baseCanvas.getContext('2d');
+    const detailContext = detailCanvas.getContext('2d');
+    const maskContext = maskCanvas.getContext('2d');
+    if (!baseContext || !detailContext || !maskContext) return;
+
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const canTrackPointer = !matchMedia('(pointer: coarse)').matches && !reducedMotion;
     const title = element.querySelector<HTMLElement>('.hero-title');
     let visible = true;
     let frame = 0;
+    let width = element.clientWidth;
+    let height = element.clientHeight;
+    let renderScale = 1;
     let targetX = element.clientWidth * .72;
     let targetY = element.clientHeight * .47;
     let x = targetX;
     let y = targetY;
-    let lightX = targetX;
-    let lightY = targetY;
-    let stretch = 1;
-    let angle = 0;
-    let shiftX = 0;
-    let shiftY = 0;
-    let desiredStretch = 1;
-    let desiredAngle = 0;
-    let desiredShiftX = 0;
-    let desiredShiftY = 0;
+    let targetVelocityX = 0;
+    let targetVelocityY = 0;
+    let velocityX = 0;
+    let velocityY = 0;
+    let reveal = canTrackPointer ? 0 : .22;
+    let pointerInside = false;
     let titleOffsetX = 0;
     let titleOffsetY = 0;
+    let lastDraw = 0;
+
+    const resize = () => {
+      width = Math.max(1, element.clientWidth);
+      height = Math.max(1, element.clientHeight);
+      renderScale = Math.min(devicePixelRatio || 1, 1.25) * .76;
+      const pixelWidth = Math.max(1, Math.round(width * renderScale));
+      const pixelHeight = Math.max(1, Math.round(height * renderScale));
+      for (const surface of [canvas, baseCanvas, detailCanvas, maskCanvas]) {
+        surface.width = pixelWidth;
+        surface.height = pixelHeight;
+      }
+    };
 
     const measureTitle = () => {
       if (!title) return;
@@ -113,60 +148,167 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>) {
       titleOffsetY = titleRect.top - heroRect.top;
     };
 
+    const drawField = (ctx: CanvasRenderingContext2D, time: number, strength: number, detailed: boolean) => {
+      ctx.setTransform(renderScale, 0, 0, renderScale, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+      ctx.globalCompositeOperation = 'lighter';
+      const drift = time * .000011;
+      heroRibbons.forEach((ribbon, index) => {
+        const path = new Path2D();
+        const step = Math.max(24, width / 42);
+        for (let px = -width * .16; px <= width * 1.16; px += step) {
+          const progress = px / width;
+          const wave = progress * Math.PI * 2 * ribbon.freq + time * ribbon.speed + ribbon.phase;
+          const py = height * ribbon.y
+            + Math.sin(wave) * height * ribbon.amp
+            + Math.sin(wave * .57 + ribbon.phase * 1.8 + drift) * height * ribbon.amp2
+            + Math.cos(wave * 1.37 - ribbon.phase + drift * .6) * height * .022
+            + (px - width * .5) * ribbon.tilt;
+          if (px <= -width * .15) path.moveTo(px, py); else path.lineTo(px, py);
+        }
+        const gradient = ctx.createLinearGradient(0, 0, width, 0);
+        const left = detailed ? .018 : .009;
+        const middle = detailed ? .15 : .064;
+        const right = detailed ? .205 : .092;
+        gradient.addColorStop(0, `rgba(176,141,87,${left * strength})`);
+        gradient.addColorStop(.2, `rgba(176,141,87,${middle * .38 * strength})`);
+        gradient.addColorStop(.53, `rgba(176,141,87,${middle * .84 * strength})`);
+        gradient.addColorStop(.82, `rgba(176,141,87,${right * strength})`);
+        gradient.addColorStop(1, `rgba(176,141,87,${right * .76 * strength})`);
+        ctx.strokeStyle = gradient;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        const mainWidth = height * ribbon.width * (detailed ? .82 : 1.06);
+        ctx.lineWidth = mainWidth;
+        ctx.filter = `blur(${Math.max(14, ribbon.blur * (detailed ? .62 : 1))}px)`;
+        ctx.globalAlpha = .78 + (index % 3) * .07;
+        ctx.stroke(path);
+
+        ctx.save();
+        ctx.translate((index % 3 - 1) * width * .004, (index % 2 ? 1 : -1) * height * .012);
+        ctx.lineWidth = mainWidth * (detailed ? .34 : .42);
+        ctx.filter = `blur(${Math.max(8, ribbon.blur * (detailed ? .24 : .34))}px)`;
+        ctx.globalAlpha = detailed ? .38 : .16;
+        ctx.stroke(path);
+        ctx.restore();
+
+        if (detailed || index % 2 === 0) {
+          ctx.save();
+          ctx.translate(0, (index % 2 ? -1 : 1) * height * .018);
+          ctx.lineWidth = Math.max(7, mainWidth * .07);
+          ctx.filter = `blur(${detailed ? 7 : 11}px)`;
+          ctx.globalAlpha = detailed ? .19 : .07;
+          ctx.stroke(path);
+          ctx.restore();
+        }
+
+      });
+      ctx.filter = 'none';
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'source-over';
+    };
+
+    const drawRevealMask = (time: number) => {
+      maskContext.setTransform(renderScale, 0, 0, renderScale, 0, 0);
+      maskContext.clearRect(0, 0, width, height);
+      if (reveal < .002) return;
+      const speed = Math.min(1, Math.hypot(velocityX, velocityY) / 34);
+      const direction = Math.atan2(velocityY, velocityX || .001);
+      const radiusX = Math.min(340, Math.max(225, width * .245)) * (1 + speed * .22);
+      const radiusY = Math.min(270, Math.max(175, height * .245)) * (1 - speed * .05);
+      maskContext.save();
+      maskContext.translate(x, y);
+      maskContext.rotate(direction * .13);
+      maskContext.filter = `blur(${52 + (1 - speed) * 20}px)`;
+      const points = 14;
+      const irregular = new Path2D();
+      const coords: Array<[number, number]> = [];
+      for (let index = 0; index < points; index += 1) {
+        const angle = index / points * Math.PI * 2;
+        const variance = 1 + Math.sin(angle * 3 + time * .00019) * .13 + Math.sin(angle * 5 - time * .00013) * .065;
+        coords.push([Math.cos(angle) * radiusX * variance, Math.sin(angle) * radiusY * variance]);
+      }
+      coords.forEach((point, index) => {
+        const next = coords[(index + 1) % points];
+        const middleX = (point[0] + next[0]) / 2;
+        const middleY = (point[1] + next[1]) / 2;
+        if (index === 0) irregular.moveTo(middleX, middleY);
+        irregular.quadraticCurveTo(next[0], next[1], (next[0] + coords[(index + 2) % points][0]) / 2, (next[1] + coords[(index + 2) % points][1]) / 2);
+      });
+      irregular.closePath();
+      maskContext.fillStyle = `rgba(255,255,255,${.82 * reveal})`;
+      maskContext.fill(irregular);
+      maskContext.translate(-velocityX * 2.8, -velocityY * 2.8);
+      maskContext.scale(.72, .68);
+      maskContext.fillStyle = `rgba(255,255,255,${.28 * reveal})`;
+      maskContext.fill(irregular);
+      maskContext.restore();
+      maskContext.filter = 'none';
+    };
+
     const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }, { threshold: .05 });
     observer.observe(element);
+    resize();
     measureTitle();
     const move = (event: globalThis.PointerEvent) => {
       const rect = element.getBoundingClientRect();
       const nextX = event.clientX - rect.left;
       const nextY = event.clientY - rect.top;
-      const dx = nextX - targetX;
-      const dy = nextY - targetY;
-      const speed = Math.min(1, Math.hypot(dx, dy) / 82);
-      desiredStretch = 1 + speed * .07;
-      desiredAngle = Math.max(-2.2, Math.min(2.2, Math.atan2(dy, dx) * 180 / Math.PI * .025));
-      desiredShiftX = Math.max(-9, Math.min(9, dx * .075));
-      desiredShiftY = Math.max(-6, Math.min(6, dy * .055));
+      targetVelocityX = nextX - targetX;
+      targetVelocityY = nextY - targetY;
       targetX = nextX;
       targetY = nextY;
+      pointerInside = true;
       element.dataset.cloudReveal = 'true';
     };
-    const leave = () => { element.dataset.cloudReveal = 'false'; };
-    const render = () => {
-      if (visible) {
-        x += (targetX - x) * .08;
-        y += (targetY - y) * .08;
-        lightX += (targetX - lightX) * .03;
-        lightY += (targetY - lightY) * .03;
-        stretch += (desiredStretch - stretch) * .075;
-        angle += (desiredAngle - angle) * .06;
-        shiftX += (desiredShiftX - shiftX) * .07;
-        shiftY += (desiredShiftY - shiftY) * .07;
-        desiredStretch += (1 - desiredStretch) * .035;
-        desiredAngle *= .955;
-        desiredShiftX *= .94;
-        desiredShiftY *= .94;
+    const enter = () => { pointerInside = true; };
+    const leave = () => { pointerInside = false; element.dataset.cloudReveal = 'false'; };
+    const render = (time: number) => {
+      if (visible && (reducedMotion || time - lastDraw > 28)) {
+        lastDraw = time;
+        x += (targetX - x) * .06;
+        y += (targetY - y) * .06;
+        velocityX += (targetVelocityX - velocityX) * .025;
+        velocityY += (targetVelocityY - velocityY) * .025;
+        targetVelocityX *= .86;
+        targetVelocityY *= .86;
+        reveal += ((pointerInside ? 1 : canTrackPointer ? 0 : .22) - reveal) * (pointerInside ? .065 : .024);
         element.style.setProperty('--mouse-x', `${x}px`);
         element.style.setProperty('--mouse-y', `${y}px`);
-        element.style.setProperty('--light-x', `${lightX}px`);
-        element.style.setProperty('--light-y', `${lightY}px`);
-        element.style.setProperty('--field-stretch', stretch.toFixed(4));
-        element.style.setProperty('--field-angle', `${angle.toFixed(3)}deg`);
-        element.style.setProperty('--field-shift-x', `${shiftX.toFixed(2)}px`);
-        element.style.setProperty('--field-shift-y', `${shiftY.toFixed(2)}px`);
-        element.style.setProperty('--trail-x', `${(shiftX * 5).toFixed(2)}px`);
-        element.style.setProperty('--trail-y', `${(shiftY * 4).toFixed(2)}px`);
         title?.style.setProperty('--title-x', `${x - titleOffsetX}px`);
         title?.style.setProperty('--title-y', `${y - titleOffsetY}px`);
+        drawField(baseContext, reducedMotion ? 6000 : time, 1, false);
+        drawField(detailContext, reducedMotion ? 6000 : time, 1, true);
+        drawRevealMask(time);
+        detailContext.setTransform(1, 0, 0, 1, 0, 0);
+        detailContext.globalCompositeOperation = 'destination-in';
+        detailContext.drawImage(maskCanvas, 0, 0);
+        detailContext.globalCompositeOperation = 'source-over';
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(baseCanvas, 0, 0);
+        context.drawImage(detailCanvas, 0, 0);
       }
-      frame = requestAnimationFrame(render);
+      if (!reducedMotion) frame = requestAnimationFrame(render);
     };
-    element.addEventListener('pointermove', move);
-    element.addEventListener('pointerleave', leave);
+    if (canTrackPointer) {
+      element.addEventListener('pointerenter', enter);
+      element.addEventListener('pointermove', move);
+      element.addEventListener('pointerleave', leave);
+    }
+    addEventListener('resize', resize);
     addEventListener('resize', measureTitle);
     frame = requestAnimationFrame(render);
-    return () => { observer.disconnect(); element.removeEventListener('pointermove', move); element.removeEventListener('pointerleave', leave); removeEventListener('resize', measureTitle); cancelAnimationFrame(frame); };
-  }, [ref]);
+    return () => {
+      observer.disconnect();
+      element.removeEventListener('pointerenter', enter);
+      element.removeEventListener('pointermove', move);
+      element.removeEventListener('pointerleave', leave);
+      removeEventListener('resize', resize);
+      removeEventListener('resize', measureTitle);
+      cancelAnimationFrame(frame);
+    };
+  }, [ref, canvasRef]);
 }
 
 function InstagramMark() {
@@ -190,6 +332,7 @@ function ProjectCard({ project, onOpen }: { project: typeof projects[number]; on
 
 export function TrivareSite() {
   const heroRef = useRef<HTMLElement>(null);
+  const heroCanvasRef = useRef<HTMLCanvasElement>(null);
   const processRef = useRef<HTMLElement>(null);
   const confettiCanvasRef = useRef<HTMLCanvasElement>(null);
   const confettiFrameRef = useRef<number | null>(null);
@@ -204,7 +347,7 @@ export function TrivareSite() {
   const [formError, setFormError] = useState('');
   const [serviceChoice, setServiceChoice] = useState('Nieuwe website');
   const [logoMessageVisible, setLogoMessageVisible] = useState(false);
-  useHeroField(heroRef);
+  useHeroField(heroRef, heroCanvasRef);
 
   useEffect(() => {
     const onScroll = () => setScrolled(scrollY > 20);
@@ -316,10 +459,7 @@ export function TrivareSite() {
       </div>
 
       <section className="hero-section" id="top" ref={heroRef}>
-        <div className="hero-atmosphere" aria-hidden="true">
-          {['base', 'reveal', 'echo'].map((layer) => <div className={`hero-cloud-layer hero-cloud-${layer}`} key={layer}>{['a', 'b', 'c', 'd'].map((shape) => <i className={`hero-cloud-shape hero-cloud-${shape}`} key={shape} />)}</div>)}
-        </div>
-        <div className="grain" aria-hidden="true" />
+        <canvas className="hero-fluid-canvas" ref={heroCanvasRef} aria-hidden="true" />
         <div className="hero-content">
           <h1 className="hero-title"><span className="hero-title-base">Websites die vertrouwen uitstralen.</span><span className="hero-title-gold" aria-hidden="true">Websites die vertrouwen uitstralen.</span></h1>
           <div className="hero-lower">
