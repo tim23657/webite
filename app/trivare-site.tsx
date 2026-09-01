@@ -542,77 +542,43 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         vec2 trail = vec2(uTrail.x * aspect, uTrail.y);
         vec2 pointerDelta = point - pointer;
         vec2 trailDelta = point - trail;
-        float pointerShape = noise(point * 3.2 + uTime * 0.035) * 0.24 + 0.88;
-        float pointerForce = exp(-dot(pointerDelta, pointerDelta) * (10.0 / pointerShape)) * uEnergy;
-        float trailForce = exp(-dot(trailDelta, trailDelta) * 7.2) * uEnergy * 0.46;
-        vec2 swirl = vec2(-pointerDelta.y, pointerDelta.x);
-        vec2 trailSwirl = vec2(-trailDelta.y, trailDelta.x);
+        vec2 tangent = vec2(-direction.y, direction.x);
+        float activeSpeed = max(speed, 0.08);
 
-        vec2 interaction = swirl * pointerForce * (0.035 + speed * 0.13);
-        interaction += direction * pointerForce * speed * 0.115;
-        interaction += trailSwirl * trailForce * 0.055;
-        interaction -= velocity * trailForce * 0.085;
-        vec2 flowPoint = point + interaction;
+        vec2 pointerLocal = vec2(
+          dot(pointerDelta, direction) / (0.12 + activeSpeed * 0.17),
+          dot(pointerDelta, tangent) / (0.09 + activeSpeed * 0.045)
+        );
+        vec2 trailLocal = vec2(
+          dot(trailDelta, direction) / (0.17 + activeSpeed * 0.22),
+          dot(trailDelta, tangent) / (0.11 + activeSpeed * 0.055)
+        );
 
-        float density = 0.0;
-        float shadeMix = 0.0;
-        for (int index = 0; index < 7; index++) {
-          float fi = float(index);
-          float seed = 2.17 + fi * 4.73;
-          float speedRate = 0.0065 + hash(vec2(seed, 3.4)) * 0.006;
-          float phase = fract(fi / 7.0 + hash(vec2(seed, 8.1)) * 0.11 + uTime * speedRate);
-          float startY = 0.03 + hash(vec2(seed, 1.2)) * 0.42;
-          float descend = 0.28 + hash(vec2(seed, 9.7)) * 0.34;
-          float meander = sin(uTime * (0.012 + fi * 0.0013) + seed) * 0.035;
-          vec2 center = vec2(
-            aspect * (1.13 - phase * 1.34) + sin(seed + uTime * 0.009) * 0.045,
-            startY + phase * descend + meander
-          );
-          float width = 0.13 + hash(vec2(seed, 4.6)) * 0.15;
-          float height = 0.065 + hash(vec2(seed, 6.3)) * 0.095;
-          float stretch = 0.86 + sin(phase * 3.14159) * (0.34 + hash(vec2(seed, 2.8)) * 0.36);
-          vec2 size = vec2(width * stretch, height * (1.08 - phase * 0.18));
-          float angle = -0.5 + hash(vec2(seed, 5.5)) * 0.32 + sin(uTime * 0.008 + seed) * 0.1;
-          float introDelay = 0.38 + fi * 0.19;
-          float introPresence = smoothstep(introDelay, introDelay + 0.78, uTime);
-          float field = inkShape(flowPoint, center, size, angle, seed, phase) * introPresence;
-          float fieldOpacity = 0.65 + hash(vec2(seed, 11.3)) * 0.28;
-          density += field * fieldOpacity;
-          shadeMix += field * hash(vec2(seed, 15.8));
-        }
+        float pointerNoise = fbmCompact(pointerLocal * 1.12 + vec2(uTime * 0.035, -uTime * 0.024));
+        float trailNoise = fbmCompact(trailLocal * 0.94 + vec2(-uTime * 0.021, uTime * 0.017) + 4.3);
+        vec2 pointerWarp = pointerLocal + vec2(
+          (pointerNoise - 0.5) * 0.72,
+          sin(pointerNoise * 6.2 + pointerLocal.x * 1.4) * 0.24
+        );
+        vec2 trailWarp = trailLocal + vec2(
+          (trailNoise - 0.5) * 0.88,
+          sin(trailNoise * 5.6 - trailLocal.x * 1.15) * 0.3
+        );
 
-        float localDetail = fbmCompact(flowPoint * 2.25 + vec2(uTime * 0.004, -uTime * 0.005));
-        float nearbyFluid = smoothstep(0.03, 0.38, density);
-        float localLift = (pointerForce * 0.18 + trailForce * 0.07) * nearbyFluid;
-        float alpha = density * (0.14 + localDetail * 0.1) + localLift * 0.055;
-        alpha = min(alpha, 0.19);
+        float pointerContour = 1.0 - smoothstep(0.36 + pointerNoise * 0.16, 1.12, length(pointerWarp));
+        float trailContour = 1.0 - smoothstep(0.3 + trailNoise * 0.18, 1.18, length(trailWarp));
+        float innerDetail = noise(pointerWarp * 2.2 + vec2(7.1, uTime * 0.045));
+        float density = pointerContour * (0.62 + innerDetail * 0.38);
+        density += trailContour * (0.31 + trailNoise * 0.24);
+        density *= uEnergy;
+        float alpha = min(0.22, density * (0.16 + speed * 0.08));
 
         vec3 darkGold = vec3(0.541, 0.408, 0.220);
         vec3 trivareGold = vec3(0.725, 0.584, 0.341);
         vec3 champagne = vec3(0.788, 0.651, 0.416);
-        vec3 warmWhite = vec3(0.969, 0.953, 0.929);
-        float normalizedShade = shadeMix / max(density, 0.001);
-        vec3 color = mix(darkGold, trivareGold, smoothstep(0.28, 0.72, normalizedShade));
-        color = mix(color, champagne, smoothstep(0.62, 0.94, localDetail) * 0.42);
-        color = mix(color, warmWhite, smoothstep(0.79, 0.98, localDetail) * 0.16);
-
-        float cursorAlpha = 0.0;
-        if (uEnergy > 0.01) {
-          vec2 cursorPixels = (uv - uPointer) * uResolution;
-          float cursorDistance = length(cursorPixels);
-          float radius = 14.0 * uPixelRatio;
-          float outlineWidth = max(0.8, 0.8 * uPixelRatio);
-          float ring = 1.0 - smoothstep(outlineWidth, outlineWidth + 1.05 * uPixelRatio, abs(cursorDistance - radius));
-          float dot = 1.0 - smoothstep(1.25 * uPixelRatio, 2.25 * uPixelRatio, cursorDistance);
-          cursorAlpha = (ring * 0.25 + dot * 0.45) * smoothstep(0.03, 0.24, uEnergy);
-        }
-
-        float combinedAlpha = alpha + cursorAlpha * (1.0 - alpha);
-        vec3 cursorColor = vec3(0.541, 0.408, 0.220);
-        vec3 combinedColor = combinedAlpha > 0.0
-          ? (color * alpha + cursorColor * cursorAlpha * (1.0 - alpha)) / combinedAlpha
-          : color;
-        gl_FragColor = vec4(combinedColor * combinedAlpha, combinedAlpha);
+        vec3 color = mix(darkGold, trivareGold, smoothstep(0.28, 0.76, pointerNoise));
+        color = mix(color, champagne, smoothstep(0.68, 0.96, innerDetail) * 0.28);
+        gl_FragColor = vec4(color * alpha, alpha);
       }
     `;
 
@@ -728,8 +694,8 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         targetVelocityX *= 0.8;
         targetVelocityY *= 0.8;
         const movement = Math.min(1, Math.hypot(velocityX, velocityY) / 52);
-        const targetEnergy = pointerInside ? Math.min(1, 0.2 + movement * 0.9) : 0;
-        energy += (targetEnergy - energy) * (pointerInside ? 0.08 : 0.025);
+        const targetEnergy = pointerInside ? Math.min(1, movement * 1.35) : 0;
+        energy += (targetEnergy - energy) * (targetEnergy > energy ? 0.18 : 0.035);
 
         activateProgram(program);
         gl.uniform2f(uniforms.resolution, canvas.width, canvas.height);
