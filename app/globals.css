@@ -1895,6 +1895,12 @@ footer { background: #050505; }
   -webkit-text-stroke: .48px rgba(255,255,255,.94);
   text-shadow: 0 0 1px rgba(255,255,255,.84), 0 2px 10px rgba(176,141,87,.14);
 }
+.hero-services-link,
+.hero-services-link:hover {
+  color: var(--gold) !important;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+}
 .hero-cta-arrow-svg {
   width: 23px !important;
   height: 23px !important;
