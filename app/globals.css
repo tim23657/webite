@@ -1944,7 +1944,11 @@ footer { background: #050505; }
 }
 
 @media (min-width: 1101px) {
-  .work-intro > div { padding-left: clamp(34px, 3vw, 48px); }
+  .work-section .work-intro {
+    grid-template-columns: minmax(220px, .38fr) minmax(0, 1.62fr);
+    gap: clamp(56px, 6vw, 92px);
+  }
+  .work-intro > div { padding-left: 0; }
   .services-heading,
   .work-heading,
   .personality-intro h2,
