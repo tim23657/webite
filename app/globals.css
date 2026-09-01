@@ -1944,7 +1944,7 @@ footer { background: #050505; }
 }
 
 @media (min-width: 1101px) {
-  .work-intro > div { padding-left: clamp(18px, 2vw, 30px); }
+  .work-intro > div { padding-left: clamp(34px, 3vw, 48px); }
   .services-heading,
   .work-heading,
   .personality-intro h2,
