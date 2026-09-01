@@ -457,6 +457,7 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
       uniform vec2 uTrail;
       uniform vec2 uVelocity;
       uniform float uEnergy;
+      uniform float uPixelRatio;
 
       float hash(vec2 p) {
         p = fract(p * vec2(123.34, 456.21));
@@ -487,18 +488,43 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         return value;
       }
 
-      float smokeLayer(vec2 point, float seed, float scale, float threshold) {
-        vec2 firstWarp = vec2(
-          fbm(point * scale + vec2(seed, uTime * 0.018)),
-          fbm(point * scale + vec2(4.8 + seed, -uTime * 0.014))
+      float fbmCompact(vec2 p) {
+        float value = 0.0;
+        float amplitude = 0.58;
+        mat2 turn = mat2(0.82, -0.57, 0.57, 0.82);
+        for (int octave = 0; octave < 3; octave++) {
+          value += amplitude * noise(p);
+          p = turn * p * 1.91 + vec2(5.31, 2.79);
+          amplitude *= 0.46;
+        }
+        return value;
+      }
+
+      mat2 rotate2d(float angle) {
+        float sine = sin(angle);
+        float cosine = cos(angle);
+        return mat2(cosine, -sine, sine, cosine);
+      }
+
+      float inkShape(vec2 point, vec2 center, vec2 size, float angle, float seed, float life) {
+        vec2 local = rotate2d(angle) * (point - center);
+        local /= size;
+
+        float broadNoise = fbmCompact(local * 0.76 + vec2(seed, uTime * 0.006));
+        vec2 broadWarp = vec2(
+          broadNoise - 0.5,
+          sin(broadNoise * 5.4 + local.x * 0.9 + seed) * 0.24
         );
-        vec2 secondWarp = vec2(
-          fbm(point * scale * 1.17 + firstWarp * 2.45 + vec2(2.1, seed)),
-          fbm(point * scale * 1.08 + firstWarp * 2.2 + vec2(seed, 6.7))
-        );
-        float body = fbm(point * scale * 0.82 + firstWarp * 2.8 + secondWarp * 1.35);
-        float detail = fbm(point * scale * 1.72 + secondWarp * 2.05 - firstWarp * 0.72);
-        return smoothstep(threshold, threshold + 0.22, body * 0.72 + detail * 0.28);
+        vec2 warped = local + broadWarp * 0.5;
+        warped.x += sin(warped.y * 1.72 + seed + uTime * 0.013) * 0.12;
+        float contourNoise = fbmCompact(warped * 1.18 + vec2(seed * 1.7, -seed));
+        float distanceField = length(warped) + (contourNoise - 0.5) * 0.38;
+        float envelope = 1.0 - smoothstep(0.43, 1.08, distanceField);
+
+        float inner = noise(warped * 2.15 + broadWarp * 2.1 + vec2(uTime * 0.006, seed));
+        float density = envelope * (0.45 + inner * 0.55);
+        density *= smoothstep(0.0, 0.14, life) * (1.0 - smoothstep(0.76, 1.0, life));
+        return density;
       }
 
       void main() {
@@ -522,58 +548,71 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         vec2 swirl = vec2(-pointerDelta.y, pointerDelta.x);
         vec2 trailSwirl = vec2(-trailDelta.y, trailDelta.x);
 
-        vec2 interaction = swirl * pointerForce * (0.09 + speed * 0.2);
-        interaction += direction * pointerForce * speed * 0.17;
-        interaction += trailSwirl * trailForce * 0.08;
-        interaction -= velocity * trailForce * 0.12;
-
-        float drift = uTime * 0.018;
+        vec2 interaction = swirl * pointerForce * (0.035 + speed * 0.13);
+        interaction += direction * pointerForce * speed * 0.115;
+        interaction += trailSwirl * trailForce * 0.055;
+        interaction -= velocity * trailForce * 0.085;
         vec2 flowPoint = point + interaction;
-        flowPoint += vec2(-drift * 0.42, drift * 0.19);
 
-        float diagonalCenter = 0.04 + (1.0 - uv.x) * 0.58;
-        diagonalCenter += sin(uv.x * 3.4 - uTime * 0.055) * 0.055;
-        float diagonalDistance = abs(uv.y - diagonalCenter);
-        float plumeWidth = 0.22 + noise(vec2(uv.x * 1.7 - drift, uTime * 0.012)) * 0.16;
-        float primaryPlume = 1.0 - smoothstep(plumeWidth, plumeWidth + 0.24, diagonalDistance);
+        float density = 0.0;
+        float shadeMix = 0.0;
+        for (int index = 0; index < 7; index++) {
+          float fi = float(index);
+          float seed = 2.17 + fi * 4.73;
+          float speedRate = 0.0065 + hash(vec2(seed, 3.4)) * 0.006;
+          float phase = fract(fi / 7.0 + hash(vec2(seed, 8.1)) * 0.11 + uTime * speedRate);
+          float startY = 0.03 + hash(vec2(seed, 1.2)) * 0.42;
+          float descend = 0.28 + hash(vec2(seed, 9.7)) * 0.34;
+          float meander = sin(uTime * (0.012 + fi * 0.0013) + seed) * 0.035;
+          vec2 center = vec2(
+            aspect * (1.13 - phase * 1.34) + sin(seed + uTime * 0.009) * 0.045,
+            startY + phase * descend + meander
+          );
+          float width = 0.13 + hash(vec2(seed, 4.6)) * 0.15;
+          float height = 0.065 + hash(vec2(seed, 6.3)) * 0.095;
+          float stretch = 0.86 + sin(phase * 3.14159) * (0.34 + hash(vec2(seed, 2.8)) * 0.36);
+          vec2 size = vec2(width * stretch, height * (1.08 - phase * 0.18));
+          float angle = -0.5 + hash(vec2(seed, 5.5)) * 0.32 + sin(uTime * 0.008 + seed) * 0.1;
+          float introDelay = 0.38 + fi * 0.19;
+          float introPresence = smoothstep(introDelay, introDelay + 0.78, uTime);
+          float field = inkShape(flowPoint, center, size, angle, seed, phase) * introPresence;
+          float fieldOpacity = 0.65 + hash(vec2(seed, 11.3)) * 0.28;
+          density += field * fieldOpacity;
+          shadeMix += field * hash(vec2(seed, 15.8));
+        }
 
-        float upperCenter = -0.04 + (1.0 - uv.x) * 0.39;
-        upperCenter += sin(uv.x * 2.3 + uTime * 0.038) * 0.045;
-        float upperPlume = 1.0 - smoothstep(0.16, 0.42, abs(uv.y - upperCenter));
+        float localDetail = fbmCompact(flowPoint * 2.25 + vec2(uTime * 0.004, -uTime * 0.005));
+        float nearbyFluid = smoothstep(0.03, 0.38, density);
+        float localLift = (pointerForce * 0.18 + trailForce * 0.07) * nearbyFluid;
+        float alpha = density * (0.14 + localDetail * 0.1) + localLift * 0.055;
+        alpha = min(alpha, 0.19);
 
-        float lowerCenter = 0.25 + (1.0 - uv.x) * 0.64;
-        lowerCenter += sin(uv.x * 2.8 - uTime * 0.031) * 0.05;
-        float lowerPlume = 1.0 - smoothstep(0.13, 0.38, abs(uv.y - lowerCenter));
-
-        float rightWeight = 0.34 + smoothstep(0.05, 0.95, uv.x) * 0.66;
-        float entranceFront = smoothstep(1.2 - uIntro * 1.52, 1.56 - uIntro * 1.52, uv.x + (1.0 - uv.y) * 0.26);
-
-        float smokeA = smokeLayer(flowPoint * vec2(0.96, 1.12), 1.7, 1.23, 0.38);
-        float smokeB = smokeLayer(flowPoint * vec2(1.08, 0.92) + vec2(-0.17, 0.09), 5.4, 1.04, 0.41);
-        float smokeC = smokeLayer(flowPoint * vec2(0.8, 1.28) + vec2(0.23, -0.12), 9.1, 1.46, 0.43);
-
-        float field = primaryPlume * (smokeA * 0.7 + smokeB * 0.34);
-        field += upperPlume * smokeC * 0.31;
-        field += lowerPlume * smokeB * 0.23;
-        field *= rightWeight * entranceFront;
-
-        float erosion = fbm(flowPoint * 2.08 + vec2(uTime * 0.008, -uTime * 0.011));
-        float softDensity = smoothstep(0.045, 0.52, field * (0.72 + erosion * 0.58));
-        float wisps = smoothstep(0.4, 0.7, smokeC * 0.7 + erosion * 0.3) * primaryPlume;
-        float alpha = softDensity * (0.2 + smokeA * 0.27 + smokeB * 0.16);
-        alpha += wisps * 0.095;
-        alpha = min(alpha, 0.58);
-
-        vec3 deepGold = vec3(0.725, 0.584, 0.341);
+        vec3 darkGold = vec3(0.541, 0.408, 0.220);
+        vec3 trivareGold = vec3(0.725, 0.584, 0.341);
         vec3 champagne = vec3(0.788, 0.651, 0.416);
-        vec3 lightGold = vec3(0.886, 0.784, 0.573);
-        vec3 softWhite = vec3(1.0, 0.988, 0.957);
-        float colorFlow = clamp(smokeA * 0.54 + smokeB * 0.28 + erosion * 0.18, 0.0, 1.0);
-        vec3 color = mix(deepGold, champagne, smoothstep(0.3, 0.64, colorFlow));
-        color = mix(color, lightGold, smoothstep(0.58, 0.82, smokeC));
-        color = mix(color, softWhite, wisps * 0.48);
+        vec3 warmWhite = vec3(0.969, 0.953, 0.929);
+        float normalizedShade = shadeMix / max(density, 0.001);
+        vec3 color = mix(darkGold, trivareGold, smoothstep(0.28, 0.72, normalizedShade));
+        color = mix(color, champagne, smoothstep(0.62, 0.94, localDetail) * 0.42);
+        color = mix(color, warmWhite, smoothstep(0.79, 0.98, localDetail) * 0.16);
 
-        gl_FragColor = vec4(color * alpha, alpha);
+        float cursorAlpha = 0.0;
+        if (uEnergy > 0.01) {
+          vec2 cursorPixels = (uv - uPointer) * uResolution;
+          float cursorDistance = length(cursorPixels);
+          float radius = 14.0 * uPixelRatio;
+          float outlineWidth = max(0.8, 0.8 * uPixelRatio);
+          float ring = 1.0 - smoothstep(outlineWidth, outlineWidth + 1.05 * uPixelRatio, abs(cursorDistance - radius));
+          float dot = 1.0 - smoothstep(1.25 * uPixelRatio, 2.25 * uPixelRatio, cursorDistance);
+          cursorAlpha = (ring * 0.25 + dot * 0.45) * smoothstep(0.03, 0.24, uEnergy);
+        }
+
+        float combinedAlpha = alpha + cursorAlpha * (1.0 - alpha);
+        vec3 cursorColor = vec3(0.541, 0.408, 0.220);
+        vec3 combinedColor = combinedAlpha > 0.0
+          ? (color * alpha + cursorColor * cursorAlpha * (1.0 - alpha)) / combinedAlpha
+          : color;
+        gl_FragColor = vec4(combinedColor * combinedAlpha, combinedAlpha);
       }
     `;
 
@@ -623,6 +662,7 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
       trail: gl.getUniformLocation(program, 'uTrail'),
       velocity: gl.getUniformLocation(program, 'uVelocity'),
       energy: gl.getUniformLocation(program, 'uEnergy'),
+      pixelRatio: gl.getUniformLocation(program, 'uPixelRatio'),
     };
 
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -648,7 +688,7 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
     const resize = () => {
       width = Math.max(1, element.clientWidth);
       height = Math.max(1, element.clientHeight);
-      const pixelRatio = Math.min(devicePixelRatio || 1, 1.35);
+      const pixelRatio = Math.min(devicePixelRatio || 1, 1.0);
       const pixelWidth = Math.max(1, Math.round(width * pixelRatio));
       const pixelHeight = Math.max(1, Math.round(height * pixelRatio));
       if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
@@ -699,6 +739,7 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         gl.uniform2f(uniforms.trail, trailX / width, trailY / height);
         gl.uniform2f(uniforms.velocity, velocityX / width, velocityY / height);
         gl.uniform1f(uniforms.energy, energy);
+        gl.uniform1f(uniforms.pixelRatio, Math.min(devicePixelRatio || 1, 1.0));
         gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
