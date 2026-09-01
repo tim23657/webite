@@ -586,11 +586,11 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         float outerInk = max(veinB, max(veinC, max(veinD, veinE))) * pointerContour;
         float filaments = max(coreInk, outerInk);
 
-        float fluidInk = pointerContour * (1.0 - smoothstep(0.1, 0.34, abs(pointerWarp.y - axis))) * (0.045 + innerDetail * 0.045);
+        float fluidInk = pointerContour * (1.0 - smoothstep(0.1, 0.34, abs(pointerWarp.y - axis))) * (0.09 + innerDetail * 0.07);
         float trailVein = (1.0 - smoothstep(0.012, 0.044, abs(trailWarp.y - (trailNoise - 0.5) * 0.13))) * trailContour;
-        float density = fluidInk + coreInk * (0.37 + speed * 0.24) + outerInk * (0.24 + speed * 0.19) + trailVein * (0.045 + speed * 0.06);
+        float density = fluidInk + coreInk * (0.62 + speed * 0.32) + outerInk * (0.38 + speed * 0.25) + trailVein * (0.08 + speed * 0.09);
         density *= uEnergy;
-        float alpha = min(0.48, density);
+        float alpha = min(0.68, density);
 
         vec3 darkGold = vec3(0.4, 0.255, 0.08);
         vec3 trivareGold = vec3(0.725, 0.584, 0.341);
@@ -718,8 +718,8 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         targetVelocityX *= 0.8;
         targetVelocityY *= 0.8;
         const movement = Math.min(1, Math.hypot(velocityX, velocityY) / 52);
-        const targetEnergy = pointerInside ? Math.min(1, movement * 1.35) : 0;
-        energy += (targetEnergy - energy) * (targetEnergy > energy ? 0.18 : 0.035);
+        const targetEnergy = pointerInside ? Math.min(1, movement * 1.7) : 0;
+        energy += (targetEnergy - energy) * (targetEnergy > energy ? 0.24 : 0.035);
 
         activateProgram(program);
         gl.uniform2f(uniforms.resolution, canvas.width, canvas.height);
