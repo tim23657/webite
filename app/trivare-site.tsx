@@ -546,12 +546,12 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         float activeSpeed = max(speed, 0.08);
 
         vec2 pointerLocal = vec2(
-          dot(pointerDelta, direction) / (0.12 + activeSpeed * 0.17),
-          dot(pointerDelta, tangent) / (0.09 + activeSpeed * 0.045)
+          dot(pointerDelta, direction) / (0.145 + activeSpeed * 0.2),
+          dot(pointerDelta, tangent) / (0.105 + activeSpeed * 0.052)
         );
         vec2 trailLocal = vec2(
-          dot(trailDelta, direction) / (0.17 + activeSpeed * 0.22),
-          dot(trailDelta, tangent) / (0.11 + activeSpeed * 0.055)
+          dot(trailDelta, direction) / (0.205 + activeSpeed * 0.26),
+          dot(trailDelta, tangent) / (0.125 + activeSpeed * 0.064)
         );
 
         float pointerNoise = fbmCompact(pointerLocal * 1.12 + vec2(uTime * 0.035, -uTime * 0.024));
@@ -571,13 +571,13 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         float density = pointerContour * (0.62 + innerDetail * 0.38);
         density += trailContour * (0.31 + trailNoise * 0.24);
         density *= uEnergy;
-        float alpha = min(0.22, density * (0.16 + speed * 0.08));
+        float alpha = min(0.29, density * (0.215 + speed * 0.105));
 
-        vec3 darkGold = vec3(0.541, 0.408, 0.220);
+        vec3 darkGold = vec3(0.42, 0.295, 0.125);
         vec3 trivareGold = vec3(0.725, 0.584, 0.341);
         vec3 champagne = vec3(0.788, 0.651, 0.416);
         vec3 color = mix(darkGold, trivareGold, smoothstep(0.28, 0.76, pointerNoise));
-        color = mix(color, champagne, smoothstep(0.68, 0.96, innerDetail) * 0.28);
+        color = mix(color, champagne, smoothstep(0.74, 0.98, innerDetail) * 0.2);
         gl_FragColor = vec4(color * alpha, alpha);
       }
     `;
