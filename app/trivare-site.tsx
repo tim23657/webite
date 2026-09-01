@@ -546,11 +546,11 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         float activeSpeed = max(speed, 0.08);
 
         vec2 pointerLocal = vec2(
-          dot(pointerDelta, direction) / (0.108 + activeSpeed * 0.15),
+          dot(pointerDelta, direction) / (0.189 + activeSpeed * 0.262),
           dot(pointerDelta, tangent) / (0.105 + activeSpeed * 0.052)
         );
         vec2 trailLocal = vec2(
-          dot(trailDelta, direction) / (0.105 + activeSpeed * 0.112),
+          dot(trailDelta, direction) / (0.184 + activeSpeed * 0.196),
           dot(trailDelta, tangent) / (0.1 + activeSpeed * 0.038)
         );
 
@@ -570,25 +570,27 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         float innerDetail = noise(pointerWarp * 5.4 + vec2(7.1, uTime * 0.07));
         float slowGate = smoothstep(0.05, 0.32, speed);
         float fastGate = smoothstep(0.34, 0.82, speed);
-        float jitter = (innerDetail - 0.5) * (0.07 + speed * 0.04);
-        float axis = (pointerNoise - 0.5) * 0.18 + sin(pointerWarp.x * 4.7 + uTime * 0.35) * 0.036;
+        float linePulse = noise(pointerWarp * 8.2 + vec2(-uTime * 0.11, 3.7));
+        float jitter = (innerDetail - 0.5) * (0.075 + speed * 0.065);
+        float axis = (pointerNoise - 0.5) * 0.2 + sin(pointerWarp.x * 5.3 + uTime * 0.42) * (0.034 + speed * 0.025);
 
-        float veinA = 1.0 - smoothstep(0.01, 0.04, abs(pointerWarp.y - axis - jitter));
-        float veinB = (1.0 - smoothstep(0.009, 0.036, abs(pointerWarp.y - axis * 0.62 + 0.105 + jitter * 0.7))) * (0.46 + slowGate * 0.38);
+        float coreWidth = 0.034 + linePulse * 0.026 + speed * 0.012;
+        float veinA = 1.0 - smoothstep(0.007, coreWidth, abs(pointerWarp.y - axis - jitter));
+        float veinB = (1.0 - smoothstep(0.008, 0.04 + linePulse * 0.012, abs(pointerWarp.y - axis * 0.62 + 0.105 + jitter * 0.7))) * (0.58 + slowGate * 0.35);
         float branchWindowA = smoothstep(-0.58, -0.12, pointerWarp.x) * (1.0 - smoothstep(0.18, 0.68, pointerWarp.x));
         float branchWindowB = smoothstep(-0.12, 0.2, pointerWarp.x) * (1.0 - smoothstep(0.48, 0.94, pointerWarp.x));
-        float veinC = (1.0 - smoothstep(0.009, 0.034, abs(pointerWarp.y - axis - (pointerWarp.x + 0.08) * 0.42 - 0.025))) * branchWindowA * slowGate;
-        float veinD = (1.0 - smoothstep(0.008, 0.031, abs(pointerWarp.y - axis + (pointerWarp.x - 0.18) * 0.54 + 0.055))) * branchWindowB * fastGate;
-        float veinE = (1.0 - smoothstep(0.008, 0.03, abs(pointerWarp.y + axis * 0.38 - (pointerWarp.x + 0.12) * 0.3 - 0.16))) * fastGate;
+        float veinC = (1.0 - smoothstep(0.007, 0.035 + linePulse * 0.01, abs(pointerWarp.y - axis - (pointerWarp.x + 0.08) * 0.46 - 0.025))) * branchWindowA * (0.34 + slowGate * 0.66);
+        float veinD = (1.0 - smoothstep(0.006, 0.033 + linePulse * 0.009, abs(pointerWarp.y - axis + (pointerWarp.x - 0.18) * 0.62 + 0.055))) * branchWindowB * fastGate;
+        float veinE = (1.0 - smoothstep(0.006, 0.032, abs(pointerWarp.y + axis * 0.38 - (pointerWarp.x + 0.12) * 0.38 - 0.16))) * fastGate;
         float coreInk = veinA * pointerContour;
         float outerInk = max(veinB, max(veinC, max(veinD, veinE))) * pointerContour;
         float filaments = max(coreInk, outerInk);
 
-        float compactBase = (1.0 - smoothstep(0.2, 0.62, length(pointerWarp * vec2(0.96, 1.38)))) * (0.032 + innerDetail * 0.032);
+        float fluidInk = pointerContour * (1.0 - smoothstep(0.1, 0.34, abs(pointerWarp.y - axis))) * (0.045 + innerDetail * 0.045);
         float trailVein = (1.0 - smoothstep(0.012, 0.044, abs(trailWarp.y - (trailNoise - 0.5) * 0.13))) * trailContour;
-        float density = compactBase + coreInk * (0.29 + speed * 0.19) + outerInk * (0.17 + speed * 0.13) + trailVein * (0.018 + speed * 0.027);
+        float density = fluidInk + coreInk * (0.37 + speed * 0.24) + outerInk * (0.24 + speed * 0.19) + trailVein * (0.045 + speed * 0.06);
         density *= uEnergy;
-        float alpha = min(0.35, density);
+        float alpha = min(0.48, density);
 
         vec3 darkGold = vec3(0.4, 0.255, 0.08);
         vec3 trivareGold = vec3(0.725, 0.584, 0.341);
@@ -596,10 +598,10 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         vec3 warmWhite = vec3(1.0, 0.976, 0.933);
         float coreWeight = smoothstep(0.34, 0.92, coreInk);
         float outerWeight = smoothstep(0.22, 0.9, outerInk);
-        vec3 color = mix(trivareGold, darkGold, coreWeight * 0.62);
-        color = mix(color, champagne, outerWeight * (1.0 - coreWeight * 0.48) * 0.38);
-        float electricGlint = smoothstep(0.9, 0.998, filaments * (0.82 + innerDetail * 0.24)) * fastGate;
-        color = mix(color, warmWhite, electricGlint * 0.2);
+        vec3 color = mix(trivareGold, darkGold, coreWeight * 0.68);
+        color = mix(color, champagne, outerWeight * (1.0 - coreWeight * 0.42) * 0.46);
+        float electricGlint = smoothstep(0.86, 0.997, filaments * (0.84 + innerDetail * 0.28)) * fastGate;
+        color = mix(color, warmWhite, electricGlint * 0.24);
         gl_FragColor = vec4(color * alpha, alpha);
       }
     `;
