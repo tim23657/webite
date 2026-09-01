@@ -550,8 +550,8 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
           dot(pointerDelta, tangent) / (0.105 + activeSpeed * 0.052)
         );
         vec2 trailLocal = vec2(
-          dot(trailDelta, direction) / (0.205 + activeSpeed * 0.26),
-          dot(trailDelta, tangent) / (0.125 + activeSpeed * 0.064)
+          dot(trailDelta, direction) / (0.14 + activeSpeed * 0.15),
+          dot(trailDelta, tangent) / (0.1 + activeSpeed * 0.038)
         );
 
         float pointerNoise = fbmCompact(pointerLocal * 1.12 + vec2(uTime * 0.035, -uTime * 0.024));
@@ -569,15 +569,18 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         float trailContour = 1.0 - smoothstep(0.3 + trailNoise * 0.18, 1.18, length(trailWarp));
         float innerDetail = noise(pointerWarp * 2.2 + vec2(7.1, uTime * 0.045));
         float density = pointerContour * (0.62 + innerDetail * 0.38);
-        density += trailContour * (0.31 + trailNoise * 0.24);
+        density += trailContour * (0.18 + trailNoise * 0.16);
         density *= uEnergy;
         float alpha = min(0.29, density * (0.215 + speed * 0.105));
 
-        vec3 darkGold = vec3(0.42, 0.295, 0.125);
+        vec3 darkGold = vec3(0.46, 0.325, 0.145);
         vec3 trivareGold = vec3(0.725, 0.584, 0.341);
         vec3 champagne = vec3(0.788, 0.651, 0.416);
+        vec3 warmWhite = vec3(0.975, 0.952, 0.9);
         vec3 color = mix(darkGold, trivareGold, smoothstep(0.28, 0.76, pointerNoise));
-        color = mix(color, champagne, smoothstep(0.74, 0.98, innerDetail) * 0.2);
+        float highlight = smoothstep(0.74, 0.98, innerDetail) * pointerContour;
+        color = mix(color, champagne, highlight * 0.26);
+        color = mix(color, warmWhite, highlight * speed * 0.12);
         gl_FragColor = vec4(color * alpha, alpha);
       }
     `;
@@ -687,8 +690,8 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         const intro = reducedMotion ? 1 : smoothstep(0.15, 2.35, seconds);
         pointerX += (targetX - pointerX) * 0.075;
         pointerY += (targetY - pointerY) * 0.075;
-        trailX += (pointerX - trailX) * 0.028;
-        trailY += (pointerY - trailY) * 0.028;
+        trailX += (pointerX - trailX) * 0.062;
+        trailY += (pointerY - trailY) * 0.062;
         velocityX += (targetVelocityX - velocityX) * 0.085;
         velocityY += (targetVelocityY - velocityY) * 0.085;
         targetVelocityX *= 0.8;
