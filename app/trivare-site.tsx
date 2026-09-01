@@ -120,6 +120,17 @@ function fractalNoise(x: number, y: number, seed: number, octaves: number) {
   return sum / total;
 }
 
+function organicCloudLobe(x: number, y: number, centerX: number, centerY: number, radiusX: number, radiusY: number, angle: number) {
+  const cosine = Math.cos(angle);
+  const sine = Math.sin(angle);
+  const offsetX = x - centerX;
+  const offsetY = y - centerY;
+  const rotatedX = (offsetX * cosine + offsetY * sine) / radiusX;
+  const rotatedY = (-offsetX * sine + offsetY * cosine) / radiusY;
+  const distance = Math.sqrt(rotatedX * rotatedX + rotatedY * rotatedY);
+  return Math.exp(-Math.pow(distance, 2.35) * 1.12);
+}
+
 function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React.RefObject<HTMLCanvasElement | null>) {
   useEffect(() => {
     const element = ref.current;
@@ -197,6 +208,12 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
     const drawField = (time: number) => {
       const seconds = reducedMotion ? 12 : Math.max(0, (time - startedAt) / 1000);
       const entrance = reducedMotion ? 1 : smoothstep(.7, 5.2, seconds);
+      const introDrift = smoothstep(.15, 12, seconds) * .5;
+      const mainDrift = seconds < 12 ? introDrift : .5 + Math.sin((seconds - 12) * .024) * .36;
+      const companionDrift = .5 + Math.sin(seconds * .019 + 1.7) * .44;
+      const returningDrift = .5 + Math.sin(seconds * .015 - 1.08) * .43;
+      const companionPresence = reducedMotion ? .72 : smoothstep(4.5, 13, seconds);
+      const returningPresence = reducedMotion ? .38 : smoothstep(8, 18, seconds);
       const pointerU = x / width;
       const pointerV = y / height;
       const slowPointerU = slowX / width;
@@ -232,38 +249,51 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
           warpedX += dx * cursorInfluence * .058 - pullX * cursorInfluence * (1.45 + speed * 1.9);
           warpedY += dy * cursorInfluence * .052 - pullY * cursorInfluence * (1.3 + speed * 1.65);
 
-          const large = fractalNoise(warpedX * .68, warpedY * .68, 71, 4);
-          const secondary = fractalNoise(warpedX * .91 + 2.7, warpedY * .91 - 1.2, 83, 3);
-          const folds = fractalNoise(warpedX * 2.35 + 3.1, warpedY * 2.35 - 1.7, 113, 3);
-          const fine = valueNoise(warpedX * 4.8 - seconds * .006, warpedY * 4.8 + seconds * .004, 157);
-          const broadFlow = .5 + Math.sin(warpedX * 1.46 - warpedY * .68 + (coarseWarpY - .5) * 2.5 + seconds * .012) * .5;
-          const foldWave = .5 + Math.sin((warpedX * 2.18 + warpedY * .72 + (folds - .5) * 2.9 + seconds * .017) * Math.PI) * .5;
-          const density = large * .57 + secondary * .18 + broadFlow * .17 + folds * .08;
-          const largeRight = fractalNoise((warpedX + .032) * .68, warpedY * .68, 71, 3);
-          const largeDown = fractalNoise(warpedX * .68, (warpedY + .032) * .68, 71, 3);
-          const foldsRight = fractalNoise((warpedX + .018) * 2.35 + 3.1, warpedY * 2.35 - 1.7, 113, 2);
-          const foldsDown = fractalNoise(warpedX * 2.35 + 3.1, (warpedY + .018) * 2.35 - 1.7, 113, 2);
-          const normalX = (large - largeRight) * .72 + (folds - foldsRight) * .28;
-          const normalY = (large - largeDown) * .72 + (folds - foldsDown) * .28;
-          const slope = Math.min(1, Math.hypot(normalX, normalY) * 16);
-          const light = clamp01(.48 + (-normalX * .78 - normalY * .63) * 11);
-          const ridge = 1 - Math.abs(foldWave * 2 - 1);
-          const relief = smoothstep(.32, .82, ridge * .7 + folds * .22 + fine * .08);
-          const breathing = .93 + Math.sin(seconds * .071 + large * 5.2) * .055 + Math.sin(seconds * .033 + folds * 3.7) * .035;
-          const mass = smoothstep(.42, .58, density * breathing + cursorInfluence * .07);
-          const diagonalFront = smoothstep(.78 - entrance * 1.28, 1.08 - entrance * 1.28, u * .82 + (1 - v) * .36);
-          const calmBreaks = .72 + smoothstep(.38, .7, fractalNoise(warpedX * .52 - 2.4, warpedY * .52 + 4.2, 211, 2)) * .28;
+          let cloudU = u + (coarseWarpX - .5) * .24 + Math.sin(warpedY * 1.17 + seconds * .012) * .028;
+          let cloudV = v + (coarseWarpY - .5) * .2 + Math.cos(warpedX * 1.08 - seconds * .01) * .025;
+          cloudU += dx * cursorInfluence * .018 - pullX * cursorInfluence * (1.05 + speed * 1.3);
+          cloudV += dy * cursorInfluence * .016 - pullY * cursorInfluence * (.92 + speed * 1.16);
+
+          const mainX = 1.2 - mainDrift * .98;
+          const mainY = -.14 + mainDrift * 1.02;
+          const mainA = organicCloudLobe(cloudU, cloudV, mainX, mainY, .31, .17, -.68);
+          const mainB = organicCloudLobe(cloudU, cloudV, mainX + .2, mainY - .015, .25, .19, -.37);
+          const mainC = organicCloudLobe(cloudU, cloudV, mainX - .18, mainY + .13, .29, .18, -.86);
+          const mainD = organicCloudLobe(cloudU, cloudV, mainX + .045, mainY + .22, .22, .17, -.18);
+          const mainE = organicCloudLobe(cloudU, cloudV, mainX - .29, mainY + .025, .21, .15, -.44);
+          const mainEnvelope = 1 - (1 - mainA) * (1 - mainB * .92) * (1 - mainC * .92) * (1 - mainD * .82) * (1 - mainE * .78);
+
+          const companionX = 1.32 - companionDrift * .94;
+          const companionY = -.2 + companionDrift * .94;
+          const companionA = organicCloudLobe(cloudU, cloudV, companionX, companionY, .3, .16, -.7);
+          const companionB = organicCloudLobe(cloudU, cloudV, companionX - .19, companionY + .14, .24, .18, -.48);
+          const companionEnvelope = (1 - (1 - companionA) * (1 - companionB * .82)) * companionPresence;
+
+          const returningX = 1.3 - returningDrift * .9;
+          const returningY = -.21 + returningDrift * .9;
+          const returningEnvelope = organicCloudLobe(cloudU, cloudV, returningX, returningY, .3, .17, -.61) * returningPresence;
+          const envelope = clamp01(1 - (1 - mainEnvelope) * (1 - companionEnvelope * .52) * (1 - returningEnvelope * .31));
+          const volume = fractalNoise(cloudU * .92 + seconds * .003, cloudV * .92 - seconds * .002, 71, 4);
+          const innerDepth = fractalNoise(cloudU * 1.72 + 3.1, cloudV * 1.72 - 1.7, 113, 3);
+          const fine = valueNoise(cloudU * 3.6 - seconds * .004, cloudV * 3.6 + seconds * .003, 157);
+          const airyBreaks = .62 + fractalNoise(cloudU * .68 - 2.4, cloudV * .68 + 4.2, 211, 3) * .38;
+          const erodedVolume = smoothstep(.38, .68, volume * .68 + innerDepth * .24 + fine * .08);
+          const cloudDensity = envelope * (.12 + erodedVolume * .75) * airyBreaks;
+          const mass = smoothstep(.28, .44, cloudDensity + cursorInfluence * envelope * .1);
+          const softFold = smoothstep(.49, .62, innerDepth * .58 + volume * .34 + fine * .08);
+          const boundary = smoothstep(.14, .32, cloudDensity) * (1 - smoothstep(.45, .65, cloudDensity));
           const safeDx = (u - titleCenterX) / Math.max(.18, titleWidth / width * .6);
           const safeDy = (v - titleCenterY) / Math.max(.08, titleHeight / height * 1.45);
           const safeDistance = Math.sqrt(safeDx * safeDx + safeDy * safeDy);
-          const titleSafety = .48 + smoothstep(.52, 1.22, safeDistance) * .52;
-          const opacity = entrance * diagonalFront * calmBreaks * titleSafety * mass * (.018 + light * .12 + slope * .2 + relief * .18 + cursorInfluence * .14) * (.54 + relief * .46);
-          const shade = clamp01(large * .38 + light * .3 + slope * .16 + relief * .12 + fine * .04);
+          const titleSafety = .88 + smoothstep(.5, 1.2, safeDistance) * .12;
+          const connectiveMist = smoothstep(.16, .48, envelope * volume) * .01;
+          const opacity = entrance * titleSafety * (connectiveMist + mass * (.08 + volume * .1 + softFold * .42 + boundary * .28 + cursorInfluence * envelope * .25));
+          const shade = clamp01(volume * .44 + innerDepth * .31 + boundary * .15 + fine * .1);
           const index = (py * fieldWidth + px) * 4;
           data[index] = Math.round(161 + shade * 15);
           data[index + 1] = Math.round(132 + shade * 9);
           data[index + 2] = Math.round(84 + shade * 4);
-          data[index + 3] = Math.round(clamp01(opacity) * 255);
+          data[index + 3] = Math.round(clamp01(opacity * 1.25) * 255);
         }
       }
 
@@ -396,7 +426,11 @@ function InstagramMark() {
 }
 
 function NorthEastArrow() {
-  return <svg className="hero-cta-arrow-svg" viewBox="0 0 20 20" aria-hidden="true"><path d="M5.25 14.75 14.75 5.25M7.15 5.25h7.6v7.6" /></svg>;
+  return <svg className="hero-cta-arrow-svg" viewBox="0 0 22 22" aria-hidden="true"><path d="M3.7 18.15 17.65 4.2" /><path d="M8.55 4.2h9.1v9.1" /></svg>;
+}
+
+function DownArrow() {
+  return <svg className="hero-secondary-arrow-svg" viewBox="0 0 22 24" aria-hidden="true"><path d="M11 2.6v17.1" /><path d="m4.9 13.7 6.1 6.1 6.1-6.1" /></svg>;
 }
 
 function ProjectCard({ project, onOpen }: { project: typeof projects[number]; onOpen: () => void }) {
@@ -549,7 +583,7 @@ export function TrivareSite() {
           <div className="hero-lower">
             <div className="hero-actions">
               <a className="primary-cta hero-primary-cta" href="#contact"><span>Plan een kennismaking</span><span className="cta-arrow"><NorthEastArrow /></span></a>
-              <a className="quiet-link" href="#werk">Bekijk ons werk</a>
+              <a className="quiet-link" href="#werk"><span>Bekijk ons werk</span><DownArrow /></a>
             </div>
           </div>
         </div>
