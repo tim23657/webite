@@ -933,7 +933,7 @@ export function TrivareSite() {
       </section>
 
       <section className="section work-section" id="werk">
-        <div className="section-intro work-intro" data-reveal><p className="section-label">SELECTIE VAN ONS WERK</p><div><h2 className="work-heading">Een selectie <span>van ons werk.</span></h2><p>Een aantal websites die we mochten ontwerpen, vernieuwen of verder uitwerken. Verschillende bedrijven en stijlen, met voor ieder project een aanpak die daarbij past.</p></div></div>
+        <div className="section-intro work-intro" data-reveal><p className="section-label">SELECTIE</p><div><h2 className="work-heading">Een selectie <span>van ons werk.</span></h2><p>Een aantal websites die we mochten ontwerpen, vernieuwen of verder uitwerken. Verschillende bedrijven en stijlen, met voor ieder project een aanpak die daarbij past.</p></div></div>
         <div className="project-grid" data-reveal>{projects.map((project, index) => <ProjectCard key={project.slug} project={project} onOpen={() => setCaseIndex(index)} />)}</div>
         <div className="proof-strip"><div data-reveal><strong>Geselecteerd werk</strong><span>VERSCHILLENDE STIJLEN, ZORGVULDIG UITGEWERKT</span><i /></div><div data-reveal><strong>Persoonlijk</strong><span>BEGELEIDING EN AFSTEMMING</span><i /></div><div data-reveal><strong>Ontwerp + realisatie</strong><span>ÉÉN ZORGVULDIG PROCES</span><i /></div><div data-reveal><strong>Na livegang</strong><span>RUIMTE OM TE OPTIMALISEREN</span><i /></div></div>
       </section>
