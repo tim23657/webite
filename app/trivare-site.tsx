@@ -571,16 +571,19 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         float density = pointerContour * (0.62 + innerDetail * 0.38);
         density += trailContour * (0.18 + trailNoise * 0.16);
         density *= uEnergy;
-        float alpha = min(0.29, density * (0.215 + speed * 0.105));
+        float alpha = min(0.28, density * (0.235 + speed * 0.09));
 
-        vec3 darkGold = vec3(0.46, 0.325, 0.145);
+        vec3 darkGold = vec3(0.502, 0.376, 0.2);
         vec3 trivareGold = vec3(0.725, 0.584, 0.341);
-        vec3 champagne = vec3(0.788, 0.651, 0.416);
-        vec3 warmWhite = vec3(0.975, 0.952, 0.9);
-        vec3 color = mix(darkGold, trivareGold, smoothstep(0.28, 0.76, pointerNoise));
-        float highlight = smoothstep(0.74, 0.98, innerDetail) * pointerContour;
-        color = mix(color, champagne, highlight * 0.26);
-        color = mix(color, warmWhite, highlight * speed * 0.12);
+        vec3 warmWhite = vec3(1.0, 0.992, 0.973);
+        float goldLayer = smoothstep(0.24, 0.74, pointerNoise);
+        vec3 color = mix(darkGold, trivareGold, goldLayer * 0.78);
+        float filament = smoothstep(
+          0.84,
+          0.985,
+          innerDetail + sin(pointerWarp.x * 7.5 + pointerWarp.y * 2.4 + uTime * 0.18) * 0.08
+        ) * pointerContour * smoothstep(0.08, 0.72, speed);
+        color = mix(color, warmWhite, filament * 0.32);
         gl_FragColor = vec4(color * alpha, alpha);
       }
     `;
