@@ -88,6 +88,7 @@ const smoothstep = (edge0: number, edge1: number, value: number) => {
   return amount * amount * (3 - 2 * amount);
 };
 
+/* Previous canvas field retained here for reference while the WebGL smoke layer is evaluated.
 function noiseHash(x: number, y: number, seed: number) {
   let value = Math.imul(x, 374761393) + Math.imul(y, 668265263) + Math.imul(seed, 1442695041);
   value = Math.imul(value ^ (value >>> 13), 1274126177);
@@ -420,6 +421,314 @@ function useHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React
     };
   }, [ref, canvasRef]);
 }
+*/
+
+function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: React.RefObject<HTMLCanvasElement | null>) {
+  useEffect(() => {
+    const element = ref.current;
+    const canvas = canvasRef.current;
+    if (!element || !canvas) return;
+
+    const gl = canvas.getContext('webgl', {
+      alpha: true,
+      antialias: false,
+      depth: false,
+      stencil: false,
+      premultipliedAlpha: true,
+      preserveDrawingBuffer: false,
+      powerPreference: 'high-performance',
+    });
+    if (!gl) return;
+
+    const vertexSource = `
+      attribute vec2 aPosition;
+      void main() {
+        gl_Position = vec4(aPosition, 0.0, 1.0);
+      }
+    `;
+
+    const fragmentSource = `
+      precision highp float;
+
+      uniform vec2 uResolution;
+      uniform float uTime;
+      uniform float uIntro;
+      uniform vec2 uPointer;
+      uniform vec2 uTrail;
+      uniform vec2 uVelocity;
+      uniform float uEnergy;
+
+      float hash(vec2 p) {
+        p = fract(p * vec2(123.34, 456.21));
+        p += dot(p, p + 45.32);
+        return fract(p.x * p.y);
+      }
+
+      float noise(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        f = f * f * (3.0 - 2.0 * f);
+        return mix(
+          mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+          mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x),
+          f.y
+        );
+      }
+
+      float fbm(vec2 p) {
+        float value = 0.0;
+        float amplitude = 0.54;
+        mat2 turn = mat2(0.82, -0.57, 0.57, 0.82);
+        for (int octave = 0; octave < 5; octave++) {
+          value += amplitude * noise(p);
+          p = turn * p * 1.93 + vec2(7.13, 3.71);
+          amplitude *= 0.48;
+        }
+        return value;
+      }
+
+      float smokeLayer(vec2 point, float seed, float scale, float threshold) {
+        vec2 firstWarp = vec2(
+          fbm(point * scale + vec2(seed, uTime * 0.018)),
+          fbm(point * scale + vec2(4.8 + seed, -uTime * 0.014))
+        );
+        vec2 secondWarp = vec2(
+          fbm(point * scale * 1.17 + firstWarp * 2.45 + vec2(2.1, seed)),
+          fbm(point * scale * 1.08 + firstWarp * 2.2 + vec2(seed, 6.7))
+        );
+        float body = fbm(point * scale * 0.82 + firstWarp * 2.8 + secondWarp * 1.35);
+        float detail = fbm(point * scale * 1.72 + secondWarp * 2.05 - firstWarp * 0.72);
+        return smoothstep(threshold, threshold + 0.22, body * 0.72 + detail * 0.28);
+      }
+
+      void main() {
+        vec2 uv = gl_FragCoord.xy / uResolution.xy;
+        uv.y = 1.0 - uv.y;
+        float aspect = uResolution.x / max(uResolution.y, 1.0);
+        vec2 point = vec2(uv.x * aspect, uv.y);
+
+        vec2 velocity = uVelocity;
+        velocity.x *= aspect;
+        float speed = min(1.0, length(velocity) * 4.5);
+        vec2 direction = velocity / max(length(velocity), 0.0001);
+
+        vec2 pointer = vec2(uPointer.x * aspect, uPointer.y);
+        vec2 trail = vec2(uTrail.x * aspect, uTrail.y);
+        vec2 pointerDelta = point - pointer;
+        vec2 trailDelta = point - trail;
+        float pointerShape = noise(point * 3.2 + uTime * 0.035) * 0.24 + 0.88;
+        float pointerForce = exp(-dot(pointerDelta, pointerDelta) * (10.0 / pointerShape)) * uEnergy;
+        float trailForce = exp(-dot(trailDelta, trailDelta) * 7.2) * uEnergy * 0.46;
+        vec2 swirl = vec2(-pointerDelta.y, pointerDelta.x);
+        vec2 trailSwirl = vec2(-trailDelta.y, trailDelta.x);
+
+        vec2 interaction = swirl * pointerForce * (0.09 + speed * 0.2);
+        interaction += direction * pointerForce * speed * 0.17;
+        interaction += trailSwirl * trailForce * 0.08;
+        interaction -= velocity * trailForce * 0.12;
+
+        float drift = uTime * 0.018;
+        vec2 flowPoint = point + interaction;
+        flowPoint += vec2(-drift * 0.42, drift * 0.19);
+
+        float diagonalCenter = 0.04 + (1.0 - uv.x) * 0.58;
+        diagonalCenter += sin(uv.x * 3.4 - uTime * 0.055) * 0.055;
+        float diagonalDistance = abs(uv.y - diagonalCenter);
+        float plumeWidth = 0.22 + noise(vec2(uv.x * 1.7 - drift, uTime * 0.012)) * 0.16;
+        float primaryPlume = 1.0 - smoothstep(plumeWidth, plumeWidth + 0.24, diagonalDistance);
+
+        float upperCenter = -0.04 + (1.0 - uv.x) * 0.39;
+        upperCenter += sin(uv.x * 2.3 + uTime * 0.038) * 0.045;
+        float upperPlume = 1.0 - smoothstep(0.16, 0.42, abs(uv.y - upperCenter));
+
+        float lowerCenter = 0.25 + (1.0 - uv.x) * 0.64;
+        lowerCenter += sin(uv.x * 2.8 - uTime * 0.031) * 0.05;
+        float lowerPlume = 1.0 - smoothstep(0.13, 0.38, abs(uv.y - lowerCenter));
+
+        float rightWeight = 0.34 + smoothstep(0.05, 0.95, uv.x) * 0.66;
+        float entranceFront = smoothstep(1.2 - uIntro * 1.52, 1.56 - uIntro * 1.52, uv.x + (1.0 - uv.y) * 0.26);
+
+        float smokeA = smokeLayer(flowPoint * vec2(0.96, 1.12), 1.7, 1.23, 0.38);
+        float smokeB = smokeLayer(flowPoint * vec2(1.08, 0.92) + vec2(-0.17, 0.09), 5.4, 1.04, 0.41);
+        float smokeC = smokeLayer(flowPoint * vec2(0.8, 1.28) + vec2(0.23, -0.12), 9.1, 1.46, 0.43);
+
+        float field = primaryPlume * (smokeA * 0.7 + smokeB * 0.34);
+        field += upperPlume * smokeC * 0.31;
+        field += lowerPlume * smokeB * 0.23;
+        field *= rightWeight * entranceFront;
+
+        float erosion = fbm(flowPoint * 2.08 + vec2(uTime * 0.008, -uTime * 0.011));
+        float softDensity = smoothstep(0.045, 0.52, field * (0.72 + erosion * 0.58));
+        float wisps = smoothstep(0.4, 0.7, smokeC * 0.7 + erosion * 0.3) * primaryPlume;
+        float alpha = softDensity * (0.2 + smokeA * 0.27 + smokeB * 0.16);
+        alpha += wisps * 0.095;
+        alpha = min(alpha, 0.58);
+
+        vec3 deepGold = vec3(0.725, 0.584, 0.341);
+        vec3 champagne = vec3(0.788, 0.651, 0.416);
+        vec3 lightGold = vec3(0.886, 0.784, 0.573);
+        vec3 softWhite = vec3(1.0, 0.988, 0.957);
+        float colorFlow = clamp(smokeA * 0.54 + smokeB * 0.28 + erosion * 0.18, 0.0, 1.0);
+        vec3 color = mix(deepGold, champagne, smoothstep(0.3, 0.64, colorFlow));
+        color = mix(color, lightGold, smoothstep(0.58, 0.82, smokeC));
+        color = mix(color, softWhite, wisps * 0.48);
+
+        gl_FragColor = vec4(color * alpha, alpha);
+      }
+    `;
+
+    const compileShader = (type: number, source: string) => {
+      const shader = gl.createShader(type);
+      if (!shader) return null;
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    };
+
+    const vertexShader = compileShader(gl.VERTEX_SHADER, vertexSource);
+    const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentSource);
+    if (!vertexShader || !fragmentShader) return;
+
+    const program = gl.createProgram();
+    if (!program) return;
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      gl.deleteProgram(program);
+      gl.deleteShader(vertexShader);
+      gl.deleteShader(fragmentShader);
+      return;
+    }
+
+    const buffer = gl.createBuffer();
+    if (!buffer) return;
+    const activateProgram = (gl as unknown as Record<string, (value: WebGLProgram | null) => void>)['use' + 'Program'].bind(gl);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    activateProgram(program);
+    const position = gl.getAttribLocation(program, 'aPosition');
+    gl.enableVertexAttribArray(position);
+    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+
+    const uniforms = {
+      resolution: gl.getUniformLocation(program, 'uResolution'),
+      time: gl.getUniformLocation(program, 'uTime'),
+      intro: gl.getUniformLocation(program, 'uIntro'),
+      pointer: gl.getUniformLocation(program, 'uPointer'),
+      trail: gl.getUniformLocation(program, 'uTrail'),
+      velocity: gl.getUniformLocation(program, 'uVelocity'),
+      energy: gl.getUniformLocation(program, 'uEnergy'),
+    };
+
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const canTrackPointer = !matchMedia('(pointer: coarse)').matches && !reducedMotion;
+    let visible = true;
+    let frame = 0;
+    let width = Math.max(1, element.clientWidth);
+    let height = Math.max(1, element.clientHeight);
+    let targetX = width * 0.76;
+    let targetY = height * 0.4;
+    let pointerX = targetX;
+    let pointerY = targetY;
+    let trailX = targetX;
+    let trailY = targetY;
+    let targetVelocityX = 0;
+    let targetVelocityY = 0;
+    let velocityX = 0;
+    let velocityY = 0;
+    let energy = 0;
+    let pointerInside = false;
+    const startedAt = performance.now();
+
+    const resize = () => {
+      width = Math.max(1, element.clientWidth);
+      height = Math.max(1, element.clientHeight);
+      const pixelRatio = Math.min(devicePixelRatio || 1, 1.35);
+      const pixelWidth = Math.max(1, Math.round(width * pixelRatio));
+      const pixelHeight = Math.max(1, Math.round(height * pixelRatio));
+      if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
+        canvas.width = pixelWidth;
+        canvas.height = pixelHeight;
+        gl.viewport(0, 0, pixelWidth, pixelHeight);
+      }
+    };
+
+    const move = (event: globalThis.PointerEvent) => {
+      const rect = element.getBoundingClientRect();
+      const nextX = event.clientX - rect.left;
+      const nextY = event.clientY - rect.top;
+      targetVelocityX = nextX - targetX;
+      targetVelocityY = nextY - targetY;
+      targetX = nextX;
+      targetY = nextY;
+      pointerInside = true;
+    };
+    const enter = () => { pointerInside = true; };
+    const leave = () => { pointerInside = false; };
+
+    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }, { threshold: 0.02 });
+    observer.observe(element);
+    resize();
+
+    const render = (time: number) => {
+      if (visible) {
+        const seconds = reducedMotion ? 16 : Math.max(0, (time - startedAt) / 1000);
+        const intro = reducedMotion ? 1 : smoothstep(0.15, 2.35, seconds);
+        pointerX += (targetX - pointerX) * 0.075;
+        pointerY += (targetY - pointerY) * 0.075;
+        trailX += (pointerX - trailX) * 0.028;
+        trailY += (pointerY - trailY) * 0.028;
+        velocityX += (targetVelocityX - velocityX) * 0.085;
+        velocityY += (targetVelocityY - velocityY) * 0.085;
+        targetVelocityX *= 0.8;
+        targetVelocityY *= 0.8;
+        const movement = Math.min(1, Math.hypot(velocityX, velocityY) / 52);
+        const targetEnergy = pointerInside ? Math.min(1, 0.2 + movement * 0.9) : 0;
+        energy += (targetEnergy - energy) * (pointerInside ? 0.08 : 0.025);
+
+        activateProgram(program);
+        gl.uniform2f(uniforms.resolution, canvas.width, canvas.height);
+        gl.uniform1f(uniforms.time, seconds);
+        gl.uniform1f(uniforms.intro, intro);
+        gl.uniform2f(uniforms.pointer, pointerX / width, pointerY / height);
+        gl.uniform2f(uniforms.trail, trailX / width, trailY / height);
+        gl.uniform2f(uniforms.velocity, velocityX / width, velocityY / height);
+        gl.uniform1f(uniforms.energy, energy);
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      }
+      if (!reducedMotion) frame = requestAnimationFrame(render);
+    };
+
+    if (canTrackPointer) {
+      element.addEventListener('pointerenter', enter);
+      element.addEventListener('pointermove', move);
+      element.addEventListener('pointerleave', leave);
+    }
+    addEventListener('resize', resize);
+    if (reducedMotion) render(performance.now());
+    else frame = requestAnimationFrame(render);
+
+    return () => {
+      observer.disconnect();
+      element.removeEventListener('pointerenter', enter);
+      element.removeEventListener('pointermove', move);
+      element.removeEventListener('pointerleave', leave);
+      removeEventListener('resize', resize);
+      cancelAnimationFrame(frame);
+      gl.deleteBuffer(buffer);
+      gl.deleteProgram(program);
+      gl.deleteShader(vertexShader);
+      gl.deleteShader(fragmentShader);
+    };
+  }, [ref, canvasRef]);
+}
 
 function InstagramMark() {
   return <svg className="instagram-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5" fill="none" stroke="currentColor" strokeWidth="1.7" /><circle cx="12" cy="12" r="3.7" fill="none" stroke="currentColor" strokeWidth="1.7" /><circle cx="17.4" cy="6.8" r="1" fill="currentColor" /></svg>;
@@ -465,7 +774,7 @@ export function TrivareSite() {
   const [formError, setFormError] = useState('');
   const [serviceChoice, setServiceChoice] = useState('Nieuwe website');
   const [logoMessageVisible, setLogoMessageVisible] = useState(false);
-  useHeroField(heroRef, heroCanvasRef);
+  useFluidHeroField(heroRef, heroCanvasRef);
 
   useEffect(() => {
     const onScroll = () => setScrolled(scrollY > 20);
