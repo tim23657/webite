@@ -546,11 +546,11 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         float activeSpeed = max(speed, 0.08);
 
         vec2 pointerLocal = vec2(
-          dot(pointerDelta, direction) / (0.145 + activeSpeed * 0.2),
+          dot(pointerDelta, direction) / (0.13 + activeSpeed * 0.18),
           dot(pointerDelta, tangent) / (0.105 + activeSpeed * 0.052)
         );
         vec2 trailLocal = vec2(
-          dot(trailDelta, direction) / (0.14 + activeSpeed * 0.15),
+          dot(trailDelta, direction) / (0.126 + activeSpeed * 0.135),
           dot(trailDelta, tangent) / (0.1 + activeSpeed * 0.038)
         );
 
@@ -570,31 +570,31 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         float innerDetail = noise(pointerWarp * 5.4 + vec2(7.1, uTime * 0.07));
         float slowGate = smoothstep(0.05, 0.32, speed);
         float fastGate = smoothstep(0.34, 0.82, speed);
-        float jitter = (innerDetail - 0.5) * (0.055 + speed * 0.045);
-        float axis = sin(pointerWarp.x * 5.1 + uTime * 0.42) * 0.072 + (pointerNoise - 0.5) * 0.14;
+        float jitter = (innerDetail - 0.5) * (0.07 + speed * 0.04);
+        float axis = (pointerNoise - 0.5) * 0.18 + sin(pointerWarp.x * 4.7 + uTime * 0.35) * 0.036;
 
-        float veinA = 1.0 - smoothstep(0.015, 0.052, abs(pointerWarp.y - axis - jitter));
-        float veinB = (1.0 - smoothstep(0.014, 0.048, abs(pointerWarp.y - axis * 0.62 + 0.12 + jitter * 0.7))) * (0.46 + slowGate * 0.38);
+        float veinA = 1.0 - smoothstep(0.01, 0.04, abs(pointerWarp.y - axis - jitter));
+        float veinB = (1.0 - smoothstep(0.009, 0.036, abs(pointerWarp.y - axis * 0.62 + 0.105 + jitter * 0.7))) * (0.46 + slowGate * 0.38);
         float branchWindowA = smoothstep(-0.58, -0.12, pointerWarp.x) * (1.0 - smoothstep(0.18, 0.68, pointerWarp.x));
         float branchWindowB = smoothstep(-0.12, 0.2, pointerWarp.x) * (1.0 - smoothstep(0.48, 0.94, pointerWarp.x));
-        float veinC = (1.0 - smoothstep(0.014, 0.047, abs(pointerWarp.y - axis - (pointerWarp.x + 0.08) * 0.42 - 0.025))) * branchWindowA * slowGate;
-        float veinD = (1.0 - smoothstep(0.012, 0.043, abs(pointerWarp.y - axis + (pointerWarp.x - 0.18) * 0.54 + 0.055))) * branchWindowB * fastGate;
-        float veinE = (1.0 - smoothstep(0.012, 0.04, abs(pointerWarp.y + axis * 0.38 - (pointerWarp.x + 0.12) * 0.3 - 0.18))) * fastGate;
+        float veinC = (1.0 - smoothstep(0.009, 0.034, abs(pointerWarp.y - axis - (pointerWarp.x + 0.08) * 0.42 - 0.025))) * branchWindowA * slowGate;
+        float veinD = (1.0 - smoothstep(0.008, 0.031, abs(pointerWarp.y - axis + (pointerWarp.x - 0.18) * 0.54 + 0.055))) * branchWindowB * fastGate;
+        float veinE = (1.0 - smoothstep(0.008, 0.03, abs(pointerWarp.y + axis * 0.38 - (pointerWarp.x + 0.12) * 0.3 - 0.16))) * fastGate;
         float filaments = max(max(veinA, veinB), max(veinC, max(veinD, veinE))) * pointerContour;
 
-        float compactBase = (1.0 - smoothstep(0.2, 0.68, length(pointerWarp * vec2(0.96, 1.34)))) * (0.055 + innerDetail * 0.045);
-        float trailVein = (1.0 - smoothstep(0.02, 0.065, abs(trailWarp.y - sin(trailWarp.x * 4.4 - uTime * 0.31) * 0.07))) * trailContour;
-        float density = compactBase + filaments * (0.2 + speed * 0.17) + trailVein * (0.025 + speed * 0.035);
+        float compactBase = (1.0 - smoothstep(0.2, 0.62, length(pointerWarp * vec2(0.96, 1.38)))) * (0.032 + innerDetail * 0.032);
+        float trailVein = (1.0 - smoothstep(0.012, 0.044, abs(trailWarp.y - (trailNoise - 0.5) * 0.13))) * trailContour;
+        float density = compactBase + filaments * (0.255 + speed * 0.18) + trailVein * (0.02 + speed * 0.03);
         density *= uEnergy;
-        float alpha = min(0.31, density);
+        float alpha = min(0.33, density);
 
         vec3 darkGold = vec3(0.455, 0.318, 0.149);
         vec3 trivareGold = vec3(0.725, 0.584, 0.341);
         vec3 champagne = vec3(0.839, 0.714, 0.459);
         vec3 warmWhite = vec3(1.0, 0.976, 0.933);
         vec3 color = mix(darkGold, trivareGold, smoothstep(0.16, 0.78, filaments) * 0.72);
-        float brightCore = smoothstep(0.64, 0.94, filaments) * (0.34 + speed * 0.34);
-        color = mix(color, champagne, brightCore * 0.38);
+        float brightCore = smoothstep(0.62, 0.94, filaments) * (0.36 + speed * 0.34);
+        color = mix(color, champagne, brightCore * 0.42);
         float whiteCore = smoothstep(0.86, 0.995, filaments * (0.78 + innerDetail * 0.3)) * fastGate;
         color = mix(color, warmWhite, whiteCore * 0.42);
         gl_FragColor = vec4(color * alpha, alpha);
@@ -918,7 +918,7 @@ export function TrivareSite() {
           <div className="hero-lower">
             <div className="hero-actions">
               <a className="primary-cta hero-primary-cta" href="#contact"><span>Plan een kennismaking</span><span className="cta-arrow"><NorthEastArrow /></span></a>
-              <a className="quiet-link" href="#werk"><span>Bekijk ons werk</span><DownArrow /></a>
+              <a className="quiet-link hero-services-link" href="#diensten"><span>Diensten</span></a>
             </div>
           </div>
         </div>
