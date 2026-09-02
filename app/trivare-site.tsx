@@ -545,6 +545,22 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         vec2 tangent = vec2(-direction.y, direction.x);
         float activeSpeed = max(speed, 0.08);
 
+        // A quiet, continuously moving material field gives the hero depth even
+        // before the pointer arrives. It is deliberately built from warped
+        // ribbons rather than radial lights so it reads as one fluid landscape.
+        vec2 field = vec2(uv.x, uv.y);
+        field.x += field.y * 0.34 - uTime * 0.018;
+        field.y += sin(field.x * 3.8 - uTime * 0.055) * 0.032;
+        float fieldNoise = fbm(field * vec2(2.15, 1.55) + vec2(1.8, -0.7));
+        float fieldDetail = fbmCompact(field * vec2(4.8, 3.1) + vec2(-uTime * 0.028, uTime * 0.021) + 5.3);
+        float fieldRidge = 0.49 + sin(field.x * 2.15 + uTime * 0.075) * 0.15 + (fieldNoise - 0.5) * 0.24;
+        float fieldDistance = abs(field.y - fieldRidge);
+        float fieldRibbon = 1.0 - smoothstep(0.025, 0.2, fieldDistance);
+        float fieldTexture = smoothstep(0.38, 0.72, fieldDetail) * (0.42 + fieldNoise * 0.58);
+        float fieldRightWeight = smoothstep(0.12, 0.94, uv.x);
+        float ambientField = fieldRibbon * fieldTexture * fieldRightWeight;
+        float ambientAlpha = ambientField * (0.022 + fieldRightWeight * 0.052) * uIntro;
+
         vec2 pointerLocal = vec2(
           dot(pointerDelta, direction) / (0.331 + activeSpeed * 0.39),
           dot(pointerDelta, tangent) / (0.105 + activeSpeed * 0.052)
@@ -602,7 +618,11 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         color = mix(color, champagne, outerWeight * (1.0 - coreWeight * 0.42) * 0.46);
         float electricGlint = smoothstep(0.86, 0.997, filaments * (0.84 + innerDetail * 0.28)) * fastGate;
         color = mix(color, warmWhite, electricGlint * 0.24);
-        gl_FragColor = vec4(color * alpha, alpha);
+        vec3 ambientColor = mix(trivareGold, darkGold, smoothstep(0.44, 0.78, fieldNoise) * 0.34);
+        ambientColor = mix(ambientColor, champagne, smoothstep(0.68, 0.94, fieldDetail) * 0.22);
+        float totalAlpha = min(0.82, alpha + ambientAlpha);
+        vec3 finalColor = mix(ambientColor, color, alpha / max(totalAlpha, 0.0001));
+        gl_FragColor = vec4(finalColor * totalAlpha, totalAlpha);
       }
     `;
 
