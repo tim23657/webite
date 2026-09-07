@@ -882,46 +882,10 @@ export function TrivareSite() {
   const selectedCase = caseIndex === null ? null : projects[caseIndex];
   const closeMenuAndNavigate = () => setMenuOpen(false);
 
-  const celebrateLogo = (event: ReactMouseEvent<HTMLButtonElement>) => {
-    setLogoMessageVisible(true);
-    if (logoMessageTimerRef.current) clearTimeout(logoMessageTimerRef.current);
-    logoMessageTimerRef.current = setTimeout(() => setLogoMessageVisible(false), 3000);
-    document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' });
-
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const canvas = confettiCanvasRef.current;
-    const context = canvas?.getContext('2d');
-    if (!canvas || !context) return;
-    if (confettiFrameRef.current) cancelAnimationFrame(confettiFrameRef.current);
-    const ratio = Math.min(devicePixelRatio || 1, 2);
-    canvas.width = innerWidth * ratio;
-    canvas.height = innerHeight * ratio;
-    canvas.style.width = `${innerWidth}px`;
-    canvas.style.height = `${innerHeight}px`;
-    context.setTransform(ratio, 0, 0, ratio, 0, 0);
-    const rect = event.currentTarget.getBoundingClientRect();
-    const palette = ['#b08d57', '#d7bc8c', '#fffef9', '#87683b'];
-    const pieces = Array.from({ length: 92 }, (_, index) => {
-      const angle = Math.random() * Math.PI * 2;
-      const speed = 2.8 + Math.random() * 7.2;
-      return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 4.5, gravity: .16, size: 2.5 + Math.random() * 4.5, rotation: Math.random() * Math.PI, spin: (Math.random() - .5) * .2, life: 1, decay: .012 + Math.random() * .01, color: palette[index % palette.length] };
-    });
-    const render = () => {
-      context.clearRect(0, 0, innerWidth, innerHeight);
-      pieces.forEach((piece) => {
-        piece.vy += piece.gravity; piece.x += piece.vx; piece.y += piece.vy; piece.rotation += piece.spin; piece.life -= piece.decay;
-        context.save(); context.globalAlpha = Math.max(piece.life, 0); context.translate(piece.x, piece.y); context.rotate(piece.rotation); context.fillStyle = piece.color; context.fillRect(-piece.size, -piece.size / 3, piece.size * 2, piece.size / 1.5); context.restore();
-      });
-      if (pieces.some((piece) => piece.life > 0 && piece.y < innerHeight + 30)) confettiFrameRef.current = requestAnimationFrame(render);
-      else { context.clearRect(0, 0, innerWidth, innerHeight); confettiFrameRef.current = null; }
-    };
-    render();
-  };
-
   return (
     <main>
       <header className={`site-nav ${scrolled ? 'is-scrolled' : ''}`}>
-        <button type="button" className="official-logo" onClick={celebrateLogo} aria-label="Trivare home en logo-animatie"><Image src="/trivare-logo.png" alt="Trivare" width={1086} height={362} priority /></button>
+        <button type="button" className="official-logo" aria-label="Trivare home en logo-animatie"><Image src="/trivare-logo.png" alt="Trivare" width={1086} height={362} priority /></button>
         <nav className="nav-links" aria-label="Hoofdnavigatie">
           <a href="#diensten">Diensten</a><a href="#werk">Werk</a><a href="#werkwijze">Werkwijze</a><a href="#over">Over Trivare</a><a href="#contact">Contact</a>
         </nav>
@@ -1011,7 +975,7 @@ export function TrivareSite() {
       </section>
 
       <footer>
-        <div className="footer-top" data-reveal><div className="footer-brand"><button type="button" onClick={celebrateLogo} className="footer-logo" aria-label="Trivare logo-animatie"><Image src="/trivare-logo.png" alt="Trivare" width={1086} height={362} /></button></div><div><h3>NAVIGATIE</h3><nav><a href="#diensten">Diensten</a><a href="#werk">Werk</a><a href="#werkwijze">Werkwijze</a><a href="#over">Over Trivare</a><a href="#contact">Contact</a></nav></div><div><h3>CONTACT</h3><a href="mailto:contact@trivare.nl">contact@trivare.nl</a><a className="footer-instagram" href="https://www.instagram.com/trivare.studio" target="_blank" rel="noreferrer"><InstagramMark /><span>trivare.studio</span><ArrowUpRight /></a><p>Overijssel, Nederland</p></div></div>
+        <div className="footer-top" data-reveal><div className="footer-brand"><button type="button" className="footer-logo" aria-label="Trivare logo-animatie"><Image src="/trivare-logo.png" alt="Trivare" width={1086} height={362} /></button></div><div><h3>NAVIGATIE</h3><nav><a href="#diensten">Diensten</a><a href="#werk">Werk</a><a href="#werkwijze">Werkwijze</a><a href="#over">Over Trivare</a><a href="#contact">Contact</a></nav></div><div><h3>CONTACT</h3><a href="mailto:contact@trivare.nl">contact@trivare.nl</a><a className="footer-instagram" href="https://www.instagram.com/trivare.studio" target="_blank" rel="noreferrer"><InstagramMark /><span>trivare.studio</span><ArrowUpRight /></a><p>Overijssel, Nederland</p></div></div>
         <div className="footer-bottom"><span>© 2026 Trivare</span><span>Webdesign · SEO · CRO · Branding · Onderhoud</span><span>Overijssel, Nederland</span></div>
       </footer>
 
