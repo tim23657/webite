@@ -1,5 +1,5 @@
-import { TrivarePolished } from './trivare-polished';
+import { TrivarePolishedV2 } from './trivare-polished-v2';
 
 export default function Home() {
-  return <TrivarePolished />;
+  return <TrivarePolishedV2 />;
 }
