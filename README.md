@@ -18,3 +18,5 @@ pnpm build
 ## WordPress
 
 De code bevat een voorbereide WordPress REST-koppeling. Zie `WORDPRESS.md` voor de twee mogelijke migratiepaden: WordPress als headless CMS of omzetting naar een custom WordPress-theme.
+
+<!-- trigger Cloudflare preview build -->
