@@ -3385,3 +3385,13 @@ main { animation: pageEnter .55s var(--ease) both; }
   background: linear-gradient(90deg, transparent, rgba(176, 141, 87, .5) 50%, transparent);
   pointer-events: none;
 }
+
+/* Lightning cursor effect — scoped to the homepage hero only, layered
+   above the ambient cloud canvas but below the headline/CTA content.
+   Purely decorative: must never affect layout or intercept input. */
+.hero-lightning-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none !important;
+}

@@ -9,6 +9,7 @@ import { SiteFooter } from '@/app/components/site-footer';
 import { WorkIndex } from '@/app/components/work-index';
 import { ProcessIndex } from '@/app/components/process-index';
 import { ServiceStage } from '@/app/components/service-stage';
+import { LightningCursor } from '@/app/components/LightningCursor';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { faqs, projects } from '@/app/lib/site-data';
 
@@ -408,6 +409,7 @@ export function TrivareSite() {
           </filter>
         </svg>
         <canvas className="hero-fluid-canvas" ref={heroCanvasRef} aria-hidden="true" />
+        <LightningCursor containerRef={heroRef} />
         <p className="hero-meta-top" data-reveal-hero="2">ONTWERP · REALISATIE · OPTIMALISATIE</p>
         <div className="hero-row">
           <p className="hero-kicker" data-reveal-hero="1">DIGITAL AGENCY</p>
