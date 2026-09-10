@@ -3395,3 +3395,24 @@ main { animation: pageEnter .55s var(--ease) both; }
   z-index: 0;
   pointer-events: none !important;
 }
+
+/* Touch-only: mirrors the desktop :hover gold-accent states so the same
+   effect plays automatically once an element scrolls into view, instead
+   of requiring a hover that touch devices can't perform. Class is toggled
+   by a small inline script in layout.tsx, scoped to (pointer: coarse). */
+@media (pointer: coarse) {
+  .service-row.scroll-glow .service-number { color: var(--gold); }
+  .service-row.scroll-glow h3 { color: var(--gold); }
+  .capability-item.scroll-glow strong { color: var(--gold); }
+  .project-card.scroll-glow strong { transform: translateY(-3px); color: var(--gold); }
+  .proof-band-grid > div.scroll-glow strong { color: var(--gold); }
+  .proof-strip > div.scroll-glow strong { color: var(--gold); }
+  .approach-words span.scroll-glow { color: var(--gold); background: rgba(176,141,87,.065); }
+  .about-copy h2 span.scroll-glow { color: var(--gold); padding-left: 8px; background: linear-gradient(90deg, rgba(176,141,87,.06), transparent 68%); }
+  .about-image.scroll-glow { border-color: var(--gold); }
+  .values-grid article.scroll-glow { border-color: var(--gold); }
+  .values-grid article.scroll-glow h3 { color: var(--gold); }
+  .investment-panel article.scroll-glow > span { color: var(--gold); }
+  .quiet-link.scroll-glow { color: var(--gold); }
+  .hero-services-link.scroll-glow { color: var(--gold); }
+}

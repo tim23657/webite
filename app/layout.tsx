@@ -28,7 +28,30 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="nl">
-      <body className={`${inter.variable} ${manrope.variable} ${bricolage.variable}`}>{children}</body>
+      <body className={`${inter.variable} ${manrope.variable} ${bricolage.variable}`}>
+        {children}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){
+              if (!matchMedia('(pointer: coarse)').matches) return;
+              var selectors = ['.service-row','.capability-item','.project-card','.proof-band-grid > div','.proof-strip > div','.approach-words span','.about-copy h2 span','.about-image','.values-grid article','.investment-panel article','.quiet-link','.hero-services-link'];
+              var io = new IntersectionObserver(function(entries){
+                entries.forEach(function(entry){ entry.target.classList.toggle('scroll-glow', entry.isIntersecting); });
+              }, { threshold: 0.55 });
+              function scan(){
+                selectors.forEach(function(sel){
+                  document.querySelectorAll(sel).forEach(function(el){ io.observe(el); });
+                });
+              }
+              function start(){
+                scan();
+                new MutationObserver(function(){ scan(); }).observe(document.body, { childList: true, subtree: true });
+              }
+              if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+            })();`,
+          }}
+        />
+      </body>
     </html>
   );
 }

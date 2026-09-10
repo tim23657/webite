@@ -69,4 +69,4 @@ export const faqs = [
   { q: 'Blijven jullie ook na livegang beschikbaar?', a: 'Ja. Na de livegang blijft er ruimte voor onderhoud, kleine aanpassingen en gerichte optimalisatie.' },
 ];
 
-export const CALENDLY_URL = 'PLAATS_HIER_DE_CALENDLY_LINK';
+export const CALENDLY_URL = 'https://calendly.com/trivarestudio/30min';
