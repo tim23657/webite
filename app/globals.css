@@ -3572,3 +3572,18 @@ main { animation: pageEnter .55s var(--ease); }
   .quiet-link.scroll-glow { color: var(--gold); }
   .hero-services-link.scroll-glow { color: var(--gold); }
 }
+
+/* The dedicated-page/section headings ("Een selectie van ons werk.",
+   "Van idee naar een website die staat.", "Het belang van een sterke
+   website.", "Een website die past bij je bedrijf.") read cleanly as
+   one or two lines on desktop, but the shared 2.75-4.75rem clamp forced
+   them onto 3 cramped lines on narrow phones. Trimmed down specifically
+   on mobile so they keep the same clean, short-line proportions. */
+@media (max-width: 760px) {
+  .case-flow-intro .section-intro h2,
+  .stats-section .section-intro h2,
+  .services .section-intro h2,
+  .work-index-section .section-intro h2 {
+    font-size: clamp(2rem, 8vw, 2.6rem) !important;
+  }
+}
