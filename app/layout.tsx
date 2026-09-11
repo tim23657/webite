@@ -29,6 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="nl">
       <body className={`${inter.variable} ${manrope.variable} ${bricolage.variable}`}>
+        <div className="scroll-progress" aria-hidden="true" />
         {children}
         <script
           dangerouslySetInnerHTML={{
@@ -48,6 +49,29 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 new MutationObserver(function(){ scan(); }).observe(document.body, { childList: true, subtree: true });
               }
               if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+            })();`,
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){
+              if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+              var bar = document.querySelector('.scroll-progress');
+              if (!bar) return;
+              var ticking = false;
+              function update(){
+                ticking = false;
+                var scrollTop = window.scrollY || document.documentElement.scrollTop;
+                var height = document.documentElement.scrollHeight - window.innerHeight;
+                var ratio = height > 0 ? Math.min(1, Math.max(0, scrollTop / height)) : 0;
+                bar.style.setProperty('--scroll-progress', String(ratio));
+              }
+              function onScroll(){
+                if (!ticking) { ticking = true; requestAnimationFrame(update); }
+              }
+              document.addEventListener('scroll', onScroll, { passive: true });
+              window.addEventListener('resize', onScroll);
+              update();
             })();`,
           }}
         />

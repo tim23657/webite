@@ -263,7 +263,7 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
 
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const isCompact = matchMedia('(max-width: 760px)').matches || matchMedia('(pointer: coarse)').matches;
-    const formationCount = isCompact ? 2 : 7;
+    const formationCount = isCompact ? 4 : 7;
     const pointerEnabled = !reducedMotion && !isCompact;
     let visible = true;
     let frame = 0;

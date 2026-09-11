@@ -1,14 +1,35 @@
 'use client';
 
 import Image from 'next/image';
+import { useEffect, useRef } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { projects } from '@/app/lib/site-data';
 
 export function WorkIndex({ active, onHover, onOpen }: { active: number; onHover: (index: number) => void; onOpen: (index: number) => void }) {
   const activeProject = projects[active];
+  const listRef = useRef<HTMLDivElement>(null);
+  const onHoverRef = useRef(onHover);
+  useEffect(() => { onHoverRef.current = onHover; });
+
+  useEffect(() => {
+    if (!matchMedia('(pointer: coarse)').matches) return;
+    const container = listRef.current;
+    if (!container) return;
+    const rows = Array.from(container.querySelectorAll<HTMLButtonElement>('.work-index-row'));
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const index = rows.indexOf(entry.target as HTMLButtonElement);
+        if (index !== -1) onHoverRef.current(index);
+      });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+    rows.forEach((row) => observer.observe(row));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="work-index" data-reveal>
-      <div className="work-index-list">
+      <div className="work-index-list" ref={listRef}>
         {projects.map((project, index) => (
           <button
             key={project.slug}

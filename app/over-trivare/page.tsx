@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { SiteHeader } from '@/app/components/site-header';
 import { SiteFooter } from '@/app/components/site-footer';
@@ -15,6 +15,23 @@ const points = [
 
 export default function AboutTrivarePage() {
   const [activePoint, setActivePoint] = useState(0);
+  const pointsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!matchMedia('(pointer: coarse)').matches) return;
+    const container = pointsRef.current;
+    if (!container) return;
+    const rows = Array.from(container.querySelectorAll<HTMLButtonElement>('button'));
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const index = rows.indexOf(entry.target as HTMLButtonElement);
+        if (index !== -1) setActivePoint(index);
+      });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+    rows.forEach((row) => observer.observe(row));
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
@@ -52,7 +69,7 @@ export default function AboutTrivarePage() {
           <p className="section-label light">WAT JE MAG VERWACHTEN</p>
           <h2>Zo werk ik.</h2>
         </div>
-        <div className="about-page-points">
+        <div className="about-page-points" ref={pointsRef}>
           {points.map((point, index) => (
             <button
               type="button"
