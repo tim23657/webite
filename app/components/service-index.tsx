@@ -27,7 +27,7 @@ export function ServiceIndex({ active, onHover }: { active: number; onHover: (in
   }, []);
 
   return (
-    <div className="work-index" data-reveal>
+    <div className="work-index service-index" data-reveal>
       <div className="work-index-list" ref={listRef}>
         {services.map((service, index) => (
           <button

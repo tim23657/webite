@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SiteHeader } from '@/app/components/site-header';
 import { SiteFooter } from '@/app/components/site-footer';
 import { ServiceIndex } from '@/app/components/service-index';
@@ -8,6 +8,24 @@ import { capabilities, investmentSteps } from '@/app/lib/site-data';
 
 export default function DienstenPage() {
   const [serviceActive, setServiceActive] = useState(0);
+  const [investmentActive, setInvestmentActive] = useState(0);
+  const investmentListRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!matchMedia('(pointer: coarse)').matches) return;
+    const container = investmentListRef.current;
+    if (!container) return;
+    const rows = Array.from(container.querySelectorAll<HTMLButtonElement>('.investment-block-row'));
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const index = rows.indexOf(entry.target as HTMLButtonElement);
+        if (index !== -1) setInvestmentActive(index);
+      });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+    rows.forEach((row) => observer.observe(row));
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
@@ -35,12 +53,19 @@ export default function DienstenPage() {
             <h2>Vooraf duidelijk <span>wat we gaan maken.</span></h2>
             <p>Je weet vooraf wat er gebeurt, wat het kost en wanneer je live gaat.</p>
           </div>
-          <div className="investment-block-list">
-            {investmentSteps.map((step) => (
-              <div className="investment-block-row" key={step.number}>
+          <div className="investment-block-list" ref={investmentListRef}>
+            {investmentSteps.map((step, index) => (
+              <button
+                type="button"
+                className={`investment-block-row ${index === investmentActive ? 'is-active' : ''}`}
+                key={step.number}
+                onMouseEnter={() => setInvestmentActive(index)}
+                onFocus={() => setInvestmentActive(index)}
+                onClick={() => setInvestmentActive(index)}
+              >
                 <span>{step.number}</span>
                 <div><strong>{step.title}</strong><p>{step.text}</p></div>
-              </div>
+              </button>
             ))}
           </div>
         </div>

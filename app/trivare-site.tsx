@@ -9,6 +9,7 @@ import { SiteFooter } from '@/app/components/site-footer';
 import { WorkIndex } from '@/app/components/work-index';
 import { ProcessIndex } from '@/app/components/process-index';
 import { ServiceStage } from '@/app/components/service-stage';
+import { StatsStage } from '@/app/components/stats-stage';
 import { LightningCursor } from '@/app/components/LightningCursor';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { faqs, projects } from '@/app/lib/site-data';
@@ -431,6 +432,14 @@ export function TrivareSite() {
         </div>
         <ServiceStage />
         <p className="wwd-tags" data-reveal>SEO · CRO · BRANDING · ONDERHOUD · GEBRUIKSGEMAK · PERSOONLIJKE SAMENWERKING</p>
+      </section>
+
+      <section className="section stats-section" id="waarom-een-website">
+        <div className="section-intro" data-reveal>
+          <p className="section-label">IN CIJFERS</p>
+          <h2 className="display-heading">Het belang van een sterke website.</h2>
+        </div>
+        <StatsStage />
       </section>
 
       <section className="work-index-section" id="werk">
