@@ -3063,7 +3063,12 @@ footer { padding-top: clamp(64px, 7vw, 100px); padding-bottom: 30px; }
 .investment-block-row span { color: var(--gold); font-size: .7rem; padding-top: 3px; }
 .investment-block-row strong { display: block; font-size: 1.05rem; font-weight: 620; margin-bottom: 6px; }
 .investment-block-row p { margin: 0; color: var(--muted); font-size: .88rem; line-height: 1.6; max-width: 420px; }
-@media (max-width: 900px) { .investment-block { grid-template-columns: 1fr; gap: 30px; } }
+@media (max-width: 900px) {
+  .investment-block { grid-template-columns: 1fr; gap: 30px; }
+  .investment-copy { text-align: center; }
+  .investment-copy h2 { margin-left: auto; margin-right: auto; }
+  .investment-copy > p { margin-left: auto; margin-right: auto; }
+}
 .investment-copy h2 { margin: 11px 0 0; }
 .investment-copy > p { margin: 22px 0 0; max-width: 420px; }
 
@@ -3143,6 +3148,7 @@ footer { padding-top: clamp(64px, 7vw, 100px); padding-bottom: 30px; }
 .faq-heading,
 h2.services-heading,
 h2.work-heading,
+.investment-copy h2,
 .about-page-hero-copy h1 {
   font-family: var(--font-display), var(--font-heading), sans-serif;
   font-weight: 500;
@@ -3571,19 +3577,4 @@ main { animation: pageEnter .55s var(--ease); }
   .investment-panel article.scroll-glow > span { color: var(--gold); }
   .quiet-link.scroll-glow { color: var(--gold); }
   .hero-services-link.scroll-glow { color: var(--gold); }
-}
-
-/* The dedicated-page/section headings ("Een selectie van ons werk.",
-   "Van idee naar een website die staat.", "Het belang van een sterke
-   website.", "Een website die past bij je bedrijf.") read cleanly as
-   one or two lines on desktop, but the shared 2.75-4.75rem clamp forced
-   them onto 3 cramped lines on narrow phones. Trimmed down specifically
-   on mobile so they keep the same clean, short-line proportions. */
-@media (max-width: 760px) {
-  .case-flow-intro .section-intro h2,
-  .stats-section .section-intro h2,
-  .services .section-intro h2,
-  .work-index-section .section-intro h2 {
-    font-size: clamp(2rem, 8vw, 2.6rem) !important;
-  }
 }
