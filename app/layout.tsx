@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, Manrope, Bricolage_Grotesque } from 'next/font/google';
+import { CookieBanner } from '@/app/components/cookie-banner';
 import './globals.css';
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' });
@@ -10,6 +11,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://trivare.nl'),
   title: 'Trivare — Websites die vertrouwen uitstralen',
   description: 'Professioneel webdesign, redesign en website-optimalisatie voor bedrijven in Overijssel en daarbuiten.',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+  },
   openGraph: {
     title: 'Trivare — Websites die vertrouwen uitstralen',
     description: 'Professioneel webdesign, redesign en website-optimalisatie voor bedrijven in Overijssel en daarbuiten.',
@@ -31,6 +36,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className={`${inter.variable} ${manrope.variable} ${bricolage.variable}`}>
         <div className="scroll-progress" aria-hidden="true" />
         {children}
+        <CookieBanner />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){

@@ -29,7 +29,7 @@ export function SiteFooter() {
           <p>Overijssel, Nederland</p>
         </div>
       </div>
-      <div className="footer-bottom"><span>© 2026 Trivare</span><span>Webdesign · SEO · CRO · Branding · Onderhoud</span><span>Overijssel, Nederland</span></div>
+      <div className="footer-bottom"><span>© 2026 Trivare</span><span>Webdesign · SEO · CRO · Branding · Onderhoud</span><span className="footer-legal"><Link href="/privacybeleid">Privacybeleid</Link><Link href="/algemene-voorwaarden">Algemene voorwaarden</Link></span><span>Overijssel, Nederland</span></div>
     </footer>
   );
 }

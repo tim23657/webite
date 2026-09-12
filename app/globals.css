@@ -3054,6 +3054,10 @@ h2.work-index-heading.process-bold-heading {
 footer { padding-top: clamp(64px, 7vw, 100px); padding-bottom: 30px; }
 .footer-top { gap: clamp(40px, 6vw, 100px); }
 .footer-bottom { margin-top: 44px; padding-top: 20px; }
+.footer-legal { display: flex; gap: 18px; }
+.footer-legal a { color: #817e78; transition: color .3s var(--ease); }
+.footer-legal a:hover { color: var(--gold); }
+@media (max-width: 620px) { .footer-legal { justify-content: center; } }
 
 /* ---- 29: investment index (added to /diensten) ---- */
 .investment-block { margin-top: clamp(70px, 9vw, 120px); padding-top: clamp(70px, 9vw, 120px); border-top: 1px solid var(--line); display: grid; grid-template-columns: minmax(180px, .47fr) minmax(0, 1.53fr); gap: clamp(40px, 7vw, 112px); align-items: start; }
@@ -3577,4 +3581,40 @@ main { animation: pageEnter .55s var(--ease); }
   .investment-panel article.scroll-glow > span { color: var(--gold); }
   .quiet-link.scroll-glow { color: var(--gold); }
   .hero-services-link.scroll-glow { color: var(--gold); }
+}
+
+.hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+.legal-content { max-width: 760px; margin: 0 auto; padding-bottom: clamp(80px, 10vw, 140px); }
+.legal-content h1 { margin: 14px 0 4px; font-size: clamp(2.6rem, 5vw, 4.2rem); font-weight: 600; letter-spacing: -.03em; line-height: 1.05; }
+.legal-updated { margin: 0 0 48px; color: var(--muted); font-size: .82rem; }
+.legal-content h2 { margin: 40px 0 14px; font-size: 1.3rem; font-weight: 650; letter-spacing: -.01em; }
+.legal-content p { margin: 0 0 14px; color: var(--muted); font-size: .96rem; line-height: 1.7; }
+.legal-content a { color: var(--gold); text-decoration: underline; text-underline-offset: 2px; }
+
+.cookie-banner {
+  position: fixed;
+  z-index: 90;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  max-width: 620px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .3);
+}
+.cookie-banner p { margin: 0; flex: 1 1 260px; font-size: .82rem; line-height: 1.55; color: rgba(255, 255, 255, .82); }
+.cookie-banner p a { color: var(--gold); text-decoration: underline; text-underline-offset: 2px; }
+.cookie-banner button { flex: 0 0 auto; padding: 11px 22px; background: var(--gold); color: var(--ink); font-size: .78rem; font-weight: 650; border-radius: 999px; transition: background .3s var(--ease); }
+.cookie-banner button:hover { background: #c7a56e; }
+@media (max-width: 500px) {
+  .cookie-banner { flex-direction: column; align-items: stretch; text-align: center; }
+  .cookie-banner button { width: 100%; }
 }

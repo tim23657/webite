@@ -7,6 +7,14 @@ const textValue = (value: unknown) => typeof value === 'string' ? value : '';
 export async function POST(request: Request) {
   try {
     const body = await request.json() as Record<string, unknown>;
+
+    // Honeypot: a hidden field real visitors never fill in. Bots that
+    // auto-fill every input trip it — pretend success so they don't
+    // learn to skip it, but silently drop the submission.
+    if (textValue(body.website).trim()) {
+      return Response.json({ ok: true });
+    }
+
     const submission = {
       name: textValue(body.name).trim().slice(0, 120),
       company: textValue(body.company).trim().slice(0, 160),
