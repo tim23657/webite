@@ -12,8 +12,8 @@ export const metadata: Metadata = {
   title: 'Trivare — Websites die vertrouwen uitstralen',
   description: 'Professioneel webdesign, redesign en website-optimalisatie voor bedrijven in Overijssel en daarbuiten.',
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
+    icon: '/favicon.svg?v=2',
+    shortcut: '/favicon.svg?v=2',
   },
   openGraph: {
     title: 'Trivare — Websites die vertrouwen uitstralen',

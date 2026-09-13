@@ -8,11 +8,11 @@ export const services = [
 // If `image` is ever swapped for a new asset that fails to load, StatsStage
 // falls back to it automatically instead of showing a broken image.
 export const stats = [
-  { headline: 'Bezoekers oordelen razendsnel.', supporting: 'Binnen enkele seconden vormen mensen een eerste indruk van je website.', image: '/stats/stat-first-impression.jpg', fallbackImage: '/stats/stat-first-impression.jpg' },
-  { headline: 'Ontwerp maakt het verschil.', supporting: 'Het grootste deel van de eerste indruk van een website wordt bepaald door het ontwerp.', image: '/stats/stat-design.jpg', fallbackImage: '/stats/stat-design.jpg' },
-  { headline: 'Vertrouwen begint bij je website.', supporting: 'De meeste bezoekers beoordelen de betrouwbaarheid van een bedrijf op basis van de website.', image: '/stats/stat-trust.jpg', fallbackImage: '/stats/stat-trust.jpg' },
-  { headline: 'Mobiel bepaalt de ervaring.', supporting: 'Het grootste deel van al het internetverkeer komt inmiddels van mobiele telefoons.', image: '/stats/stat-mobile.jpg', fallbackImage: '/stats/stat-mobile.jpg' },
-  { headline: 'Een goede website loont.', supporting: 'Bedrijven met een sterke website realiseren aantoonbaar meer omzet.', image: '/stats/stat-revenue.jpg', fallbackImage: '/stats/stat-revenue.jpg' },
+  { headline: 'Bezoekers oordelen razendsnel.', supporting: 'Nog voor ze verder lezen.', image: '/stats/stat-first-impression.jpg', fallbackImage: '/stats/stat-first-impression.jpg' },
+  { headline: 'Ontwerp maakt het verschil.', supporting: 'Belangrijker dan de tekst zelf.', image: '/stats/stat-design.jpg', fallbackImage: '/stats/stat-design.jpg' },
+  { headline: 'Vertrouwen begint bij je website.', supporting: 'Nog voor het eerste contact.', image: '/stats/stat-trust.jpg', fallbackImage: '/stats/stat-trust.jpg' },
+  { headline: 'Mobiel bepaalt de ervaring.', supporting: 'Verreweg de meeste bezoekers.', image: '/stats/stat-mobile.jpg', fallbackImage: '/stats/stat-mobile.jpg' },
+  { headline: 'Een goede website loont.', supporting: 'Aantoonbaar meer omzet.', image: '/stats/stat-revenue.jpg', fallbackImage: '/stats/stat-revenue.jpg' },
 ];
 
 export const capabilities = [

@@ -3526,10 +3526,12 @@ main { animation: pageEnter .55s var(--ease); }
 @keyframes statsSupportingIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
 .stats-footer { position: relative; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: auto; padding-top: clamp(28px, 3.5vw, 44px); }
 .stats-controls { display: flex; gap: 10px; }
-.stats-arrow { position: relative; width: 52px; height: 52px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .28); color: #fff; background: transparent; overflow: hidden; transition: background .35s var(--stats-ease), border-color .35s var(--stats-ease), color .35s var(--stats-ease); }
-.stats-arrow:hover, .stats-arrow:focus-visible { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+.stats-arrow { position: relative; width: 52px; height: 52px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .28); color: #fff; background: transparent; overflow: hidden; isolation: isolate; transition: border-color .4s var(--stats-ease), color .4s var(--stats-ease), box-shadow .4s var(--stats-ease), transform .3s var(--stats-ease); }
+.stats-arrow::before { content: ''; position: absolute; inset: 0; z-index: 0; border-radius: 50%; background: var(--gold); transform: scale(0); transition: transform .5s var(--stats-ease); }
+.stats-arrow:hover, .stats-arrow:focus-visible { border-color: var(--gold); color: var(--ink); box-shadow: 0 8px 20px rgba(176, 141, 87, .35); }
+.stats-arrow:hover::before, .stats-arrow:focus-visible::before { transform: scale(1); }
 .stats-arrow:active { transform: scale(.94); }
-.stats-arrow-icon { position: absolute; inset: 0; display: grid; place-items: center; transition: transform .35s var(--stats-ease), opacity .35s var(--stats-ease); }
+.stats-arrow-icon { position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; transition: transform .35s var(--stats-ease), opacity .35s var(--stats-ease); }
 .stats-arrow-icon svg { width: 16px; height: 16px; }
 .stats-arrow-icon-b { opacity: 0; }
 .stats-arrow[data-dir='next'] .stats-arrow-icon-b { transform: translateX(-10px); }
