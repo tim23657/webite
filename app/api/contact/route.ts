@@ -1,7 +1,7 @@
 import { saveContactSubmission } from '@/lib/contact-db';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const services = new Set(['Nieuwe website', 'Redesign', 'Optimalisatie', 'Anders']);
+const services = new Set(['Nieuwe website', 'Redesign', 'SEO / CRO', 'Branding', 'Onderhoud', 'Anders']);
 const textValue = (value: unknown) => typeof value === 'string' ? value : '';
 
 export async function POST(request: Request) {

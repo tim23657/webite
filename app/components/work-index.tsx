@@ -36,7 +36,7 @@ export function WorkIndex({ active, onHover, onOpen }: { active: number; onHover
             className={`work-index-row ${index === active ? 'is-active' : ''}`}
             onMouseEnter={() => onHover(index)}
             onFocus={() => onHover(index)}
-            onClick={() => onOpen(index)}
+            onClick={() => onHover(index)}
           >
             <span className="work-index-title">{project.title}</span>
             <span className="work-index-label">{project.label}</span>

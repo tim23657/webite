@@ -4,12 +4,15 @@ export const services = [
   { number: '03', title: 'Website optimalisatie', text: 'Gerichte verbeteringen in snelheid, gebruiksgemak, SEO en conversie.', image: '/robert-clark-guP70X3HWtY-unsplash.jpg' },
 ];
 
+// `fallbackImage` is the previously-used, known-good image for each slide.
+// If `image` is ever swapped for a new asset that fails to load, StatsStage
+// falls back to it automatically instead of showing a broken image.
 export const stats = [
-  { number: '01', stat: '0,05 seconden', title: 'Zo snel vormt iemand een eerste oordeel over je website.', image: '/stats/stat-first-impression.jpg' },
-  { number: '02', stat: '94%', title: '94% van de eerste indruk van een website wordt bepaald door het ontwerp.', image: '/stats/stat-design.jpg' },
-  { number: '03', stat: '75%', title: '75% van bezoekers beoordeelt de betrouwbaarheid van een bedrijf op basis van de website.', image: '/stats/stat-trust.jpg' },
-  { number: '04', stat: '60%', title: '60% van al het internetverkeer komt inmiddels van mobiele telefoons.', image: '/stats/stat-mobile.jpg' },
-  { number: '05', stat: '39%', title: 'Bedrijven met een goede website maken 39% meer omzet, blijkt uit onderzoek.', image: '/stats/stat-revenue.jpg' },
+  { headline: 'Bezoekers oordelen razendsnel.', supporting: 'Binnen enkele seconden vormen mensen een eerste indruk van je website.', image: '/stats/stat-first-impression.jpg', fallbackImage: '/stats/stat-first-impression.jpg' },
+  { headline: 'Ontwerp maakt het verschil.', supporting: 'Het grootste deel van de eerste indruk van een website wordt bepaald door het ontwerp.', image: '/stats/stat-design.jpg', fallbackImage: '/stats/stat-design.jpg' },
+  { headline: 'Vertrouwen begint bij je website.', supporting: 'De meeste bezoekers beoordelen de betrouwbaarheid van een bedrijf op basis van de website.', image: '/stats/stat-trust.jpg', fallbackImage: '/stats/stat-trust.jpg' },
+  { headline: 'Mobiel bepaalt de ervaring.', supporting: 'Het grootste deel van al het internetverkeer komt inmiddels van mobiele telefoons.', image: '/stats/stat-mobile.jpg', fallbackImage: '/stats/stat-mobile.jpg' },
+  { headline: 'Een goede website loont.', supporting: 'Bedrijven met een sterke website realiseren aantoonbaar meer omzet.', image: '/stats/stat-revenue.jpg', fallbackImage: '/stats/stat-revenue.jpg' },
 ];
 
 export const capabilities = [

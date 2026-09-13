@@ -1,20 +1,23 @@
 'use client';
 
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { lazy, Suspense, SyntheticEvent, useEffect, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { SiteHeader } from '@/app/components/site-header';
 import { SiteFooter } from '@/app/components/site-footer';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { CALENDLY_URL } from '@/app/lib/site-data';
+
+const CalendlyDialog = lazy(() => import('@/app/components/calendly-dialog'));
 
 export function ContactContent() {
   const [calendlyOpen, setCalendlyOpen] = useState(false);
+  const [calendlyLoaded, setCalendlyLoaded] = useState(false);
   const [formState, setFormState] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [formError, setFormError] = useState('');
   const [serviceChoice, setServiceChoice] = useState('Nieuwe website');
+
+  const openCalendly = () => { setCalendlyOpen(true); setCalendlyLoaded(true); };
 
   useEffect(() => {
     const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
@@ -44,7 +47,7 @@ export function ContactContent() {
       <SiteHeader />
 
       <section className="contact-section" id="contact" style={{ paddingTop: 'clamp(150px, 17vw, 220px)' }}>
-        <div className="contact-intro" data-reveal><p className="section-label light">CONTACT</p><h2 className="contact-heading">Laten we <span>kennismaken.</span></h2><p>Vertel waar je mee bezig bent. Dan kijken we samen wat er nodig is.</p><button className="calendar-link" onClick={() => setCalendlyOpen(true)}>Plan direct een afspraak <ArrowUpRight /></button><div className="mail-direct"><span>Liever mailen?</span><a href="mailto:contact@trivare.nl">contact@trivare.nl</a></div></div>
+        <div className="contact-intro" data-reveal><p className="section-label light">CONTACT</p><h2 className="contact-heading">Laten we <span>kennismaken.</span></h2><p>Vertel waar je mee bezig bent. Dan kijken we samen wat er nodig is.</p><button className="calendar-link" onClick={openCalendly}>Plan direct een afspraak <ArrowUpRight /></button><div className="mail-direct"><span>Liever mailen?</span><a href="mailto:contact@trivare.nl">contact@trivare.nl</a></div></div>
         <form className="contact-form" onSubmit={submitContact} data-reveal noValidate>
           <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hp-field" aria-hidden="true" />
           <label htmlFor="contact-name"><span>Naam</span><Input id="contact-name" name="name" required autoComplete="name" placeholder="Jouw naam" /></label>
@@ -60,9 +63,11 @@ export function ContactContent() {
 
       <SiteFooter />
 
-      <Dialog open={calendlyOpen} onOpenChange={setCalendlyOpen}>
-        <DialogContent className="calendar-dialog"><DialogHeader><DialogTitle>Plan direct een afspraak</DialogTitle><DialogDescription>Kies via Calendly een moment dat voor jou goed uitkomt.</DialogDescription></DialogHeader>{CALENDLY_URL.startsWith('http') ? <iframe title="Plan een afspraak via Calendly" src={CALENDLY_URL} /> : <div className="calendar-placeholder"><span>CALENDLY</span><h3>De agenda wordt hier gekoppeld.</h3><p>De integratie staat technisch klaar. Tot de definitieve link is ingevuld kun je mailen naar <a href="mailto:contact@trivare.nl">contact@trivare.nl</a>.</p></div>}</DialogContent>
-      </Dialog>
+      {calendlyLoaded && (
+        <Suspense fallback={null}>
+          <CalendlyDialog open={calendlyOpen} onOpenChange={setCalendlyOpen} />
+        </Suspense>
+      )}
     </main>
   );
 }

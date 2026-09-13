@@ -26,7 +26,6 @@ export function ServiceStage() {
       <div className="process-shade" />
       {services.map((service, index) => (
         <div className={`process-copy ${index === active ? 'is-active' : ''}`} key={service.number} aria-hidden={index !== active}>
-          <p>DIENST</p>
           <h3>{service.title}</h3>
           <span>{service.text}</span>
         </div>
@@ -36,7 +35,6 @@ export function ServiceStage() {
         <button type="button" onClick={() => go(1)} aria-label="Volgende dienst"><ArrowRight /></button>
       </div>
       <div className="process-progress">
-        <span>{String(active + 1).padStart(2, '0')} / {String(services.length).padStart(2, '0')}</span>
         <div><i style={{ width: `${((active + 1) / services.length) * 100}%` }} /></div>
       </div>
     </div>

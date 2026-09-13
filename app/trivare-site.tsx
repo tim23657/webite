@@ -1,8 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { SiteHeader } from '@/app/components/site-header';
 import { SiteFooter } from '@/app/components/site-footer';
@@ -11,8 +10,9 @@ import { ProcessIndex } from '@/app/components/process-index';
 import { ServiceStage } from '@/app/components/service-stage';
 import { StatsStage } from '@/app/components/stats-stage';
 import { LightningCursor } from '@/app/components/LightningCursor';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { faqs, projects } from '@/app/lib/site-data';
+import { faqs } from '@/app/lib/site-data';
+
+const CaseDialog = lazy(() => import('@/app/components/case-dialog'));
 
 const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
 const smoothstep = (edge0: number, edge1: number, value: number) => {
@@ -315,7 +315,10 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
       }
     };
 
-    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }, { threshold: 0.02 });
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible && !reducedMotion && !frame) frame = requestAnimationFrame(render);
+    }, { threshold: 0.02 });
     observer.observe(element);
     resize();
 
@@ -357,7 +360,10 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       }
-      if (!reducedMotion) frame = requestAnimationFrame(render);
+      // Stop scheduling entirely once scrolled out of view — the
+      // IntersectionObserver above restarts the loop on re-entry —
+      // instead of burning a GPU pass every frame off-screen.
+      frame = !reducedMotion && visible ? requestAnimationFrame(render) : 0;
     };
 
     addEventListener('resize', resize);
@@ -386,7 +392,10 @@ export function TrivareSite() {
   const [workActive, setWorkActive] = useState(0);
   const [processActive, setProcessActive] = useState(0);
   const [caseIndex, setCaseIndex] = useState<number | null>(null);
+  const [caseDialogLoaded, setCaseDialogLoaded] = useState(false);
   useFluidHeroField(heroRef, heroCanvasRef);
+
+  const openCase = (index: number) => { setCaseIndex(index); setCaseDialogLoaded(true); };
 
   useEffect(() => {
     const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
@@ -447,7 +456,7 @@ export function TrivareSite() {
           <p className="section-label">SELECTIE</p>
           <h2 className="work-heading work-index-heading display-heading">Een selectie van ons werk.</h2>
         </div>
-        <WorkIndex active={workActive} onHover={setWorkActive} onOpen={setCaseIndex} />
+        <WorkIndex active={workActive} onHover={setWorkActive} onOpen={openCase} />
       </section>
 
       <section className="work-index-section" id="werkwijze">
@@ -479,22 +488,11 @@ export function TrivareSite() {
 
       <SiteFooter />
 
-      <Dialog open={caseIndex !== null} onOpenChange={(open) => !open && setCaseIndex(null)}>
-        {caseIndex !== null && (
-          <DialogContent className="case-dialog">
-            <DialogHeader><DialogTitle>{projects[caseIndex].title}</DialogTitle><DialogDescription>{projects[caseIndex].label}</DialogDescription></DialogHeader>
-            <div className="case-visual"><Image src={`/projects/${projects[caseIndex].slug}.jpg`} alt="" fill sizes="90vw" /></div>
-            <div className="case-detail-grid">
-              <div><span>PROBLEEM</span><p>{projects[caseIndex].problem}</p></div>
-              <div><span>AANPAK</span><p>{projects[caseIndex].approach}</p></div>
-              <div><span>UITVOERING</span><p>{projects[caseIndex].execution}</p></div>
-              <div><span>RESULTAAT</span><p>{projects[caseIndex].result}</p></div>
-            </div>
-            <div className="case-proof">{projects[caseIndex].proof.map((item) => <span key={item}>{item}</span>)}</div>
-            <Link className="primary-cta" href="/contact" onClick={() => setCaseIndex(null)}><span>Bespreek jouw project</span><span className="cta-arrow"><ArrowUpRight /></span></Link>
-          </DialogContent>
-        )}
-      </Dialog>
+      {caseDialogLoaded && (
+        <Suspense fallback={null}>
+          <CaseDialog caseIndex={caseIndex} onClose={() => setCaseIndex(null)} />
+        </Suspense>
+      )}
     </main>
   );
 }

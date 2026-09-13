@@ -2,17 +2,21 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { SiteHeader } from '@/app/components/site-header';
 import { SiteFooter } from '@/app/components/site-footer';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { projects } from '@/app/lib/site-data';
+
+const CaseDialog = lazy(() => import('@/app/components/case-dialog'));
 
 const layouts = ['full', 'right', 'left'] as const;
 
 export function WerkContent() {
   const [caseIndex, setCaseIndex] = useState<number | null>(null);
+  const [caseDialogLoaded, setCaseDialogLoaded] = useState(false);
+
+  const openCase = (index: number) => { setCaseIndex(index); setCaseDialogLoaded(true); };
 
   useEffect(() => {
     const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
@@ -23,8 +27,6 @@ export function WerkContent() {
     revealItems.forEach((item) => observer.observe(item));
     return () => observer.disconnect();
   }, []);
-
-  const selectedCase = caseIndex === null ? null : projects[caseIndex];
 
   return (
     <main>
@@ -50,7 +52,7 @@ export function WerkContent() {
               <span className="case-block-eyebrow">{project.label}</span>
               <h3>{project.title}</h3>
               <p>{project.description}</p>
-              <button type="button" onClick={() => setCaseIndex(index)}>Bekijk case <ArrowUpRight /></button>
+              <button type="button" onClick={() => openCase(index)}>Bekijk case <ArrowUpRight /></button>
             </div>
           </section>
         ))}
@@ -62,22 +64,11 @@ export function WerkContent() {
 
       <SiteFooter />
 
-      <Dialog open={caseIndex !== null} onOpenChange={(open) => !open && setCaseIndex(null)}>
-        {selectedCase && (
-          <DialogContent className="case-dialog">
-            <DialogHeader><DialogTitle>{selectedCase.title}</DialogTitle><DialogDescription>{selectedCase.label}</DialogDescription></DialogHeader>
-            <div className="case-visual"><Image src={`/projects/${selectedCase.slug}.jpg`} alt="" fill sizes="90vw" /></div>
-            <div className="case-detail-grid">
-              <div><span>PROBLEEM</span><p>{selectedCase.problem}</p></div>
-              <div><span>AANPAK</span><p>{selectedCase.approach}</p></div>
-              <div><span>UITVOERING</span><p>{selectedCase.execution}</p></div>
-              <div><span>RESULTAAT</span><p>{selectedCase.result}</p></div>
-            </div>
-            <div className="case-proof">{selectedCase.proof.map((item) => <span key={item}>{item}</span>)}</div>
-            <Link className="primary-cta" href="/contact" onClick={() => setCaseIndex(null)}><span>Bespreek jouw project</span><span className="cta-arrow"><ArrowUpRight /></span></Link>
-          </DialogContent>
-        )}
-      </Dialog>
+      {caseDialogLoaded && (
+        <Suspense fallback={null}>
+          <CaseDialog caseIndex={caseIndex} onClose={() => setCaseIndex(null)} />
+        </Suspense>
+      )}
     </main>
   );
 }

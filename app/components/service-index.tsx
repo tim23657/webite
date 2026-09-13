@@ -42,7 +42,6 @@ export function ServiceIndex({ active, onHover }: { active: number; onHover: (in
         ))}
       </div>
       <div className="work-index-preview">
-        <span className="work-index-eyebrow">DIENST</span>
         <Image key={activeService.number} src={activeService.image} alt="" fill sizes="(max-width: 900px) 100vw, 66vw" />
         <div className="work-index-preview-caption">
           <strong>{activeService.title}</strong>

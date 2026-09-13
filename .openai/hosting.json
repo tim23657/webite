@@ -1,5 +1,7 @@
 {
   "project_id": "appgprj_6a9477d1036881918c6b09d5932e5edb",
-  "d1": null,
+  "d1": "DB",
+  "d1DatabaseName": "trivare-contact",
+  "d1DatabaseId": "34f0869a-05bb-49d5-adef-f296d562d3d2",
   "r2": null
 }

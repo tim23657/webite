@@ -41,7 +41,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           dangerouslySetInnerHTML={{
             __html: `(function(){
               if (!matchMedia('(pointer: coarse)').matches) return;
-              var selectors = ['.service-row','.capability-item','.project-card','.proof-band-grid > div','.proof-strip > div','.approach-words span','.about-copy h2 span','.about-image','.values-grid article','.investment-panel article','.quiet-link','.hero-services-link'];
+              var selectors = ['.service-row','.capability-item','.project-card','.proof-band-grid > div','.proof-strip > div','.approach-words span','.about-copy h2 span','.about-image','.values-grid article','.investment-panel article','.quiet-link','.hero-services-link','h2.process-bold-heading','h2.contact-heading','.display-heading','h2.work-heading','h2.services-heading'];
               var io = new IntersectionObserver(function(entries){
                 entries.forEach(function(entry){ entry.target.classList.toggle('scroll-glow', entry.isIntersecting); });
               }, { threshold: 0.55 });
