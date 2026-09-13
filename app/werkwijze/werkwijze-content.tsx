@@ -40,7 +40,7 @@ export function WerkwijzeContent() {
               <Image src={step.image} alt="" fill quality={68} sizes="(max-width: 900px) 100vw, 60vw" />
             </div>
             <div className="case-block-copy">
-              <span className="case-block-eyebrow">{step.number} · {step.label}</span>
+              <span className="case-block-eyebrow">{step.label}</span>
               <h3>{step.title}</h3>
             </div>
           </section>

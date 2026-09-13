@@ -75,11 +75,11 @@ export function OverTrivareContent() {
               type="button"
               key={point.number}
               className={index === activePoint ? 'is-active' : ''}
+              aria-label={point.title}
               onMouseEnter={() => setActivePoint(index)}
               onFocus={() => setActivePoint(index)}
               data-reveal
             >
-              <span>{point.number}</span>
               <div><strong>{point.title}</strong><p>{point.text}</p></div>
             </button>
           ))}

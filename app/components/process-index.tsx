@@ -37,13 +37,12 @@ export function ProcessIndex({ active, onHover }: { active: number; onHover: (in
             onFocus={() => onHover(index)}
             onClick={() => onHover(index)}
           >
-            <span className="work-index-number">{step.number}</span>
             <span className="work-index-title">{step.label}</span>
           </button>
         ))}
       </div>
       <div className="work-index-preview">
-        <span className="work-index-eyebrow">STAP {activeStep.number}</span>
+        <span className="work-index-eyebrow">STAP</span>
         <Image key={activeStep.number} src={activeStep.image} alt="" fill quality={68} sizes="(max-width: 900px) 100vw, 66vw" />
         <div className="work-index-preview-caption">
           <strong>{activeStep.title}</strong>

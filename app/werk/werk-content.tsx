@@ -47,7 +47,7 @@ export function WerkContent() {
               <Image src={`/projects/${project.slug}.jpg`} alt="" fill quality={68} sizes="(max-width: 900px) 100vw, 70vw" />
             </div>
             <div className="case-block-copy">
-              <span className="case-block-eyebrow">CASE {project.number} · {project.label}</span>
+              <span className="case-block-eyebrow">{project.label}</span>
               <h3>{project.title}{project.concept ? <span className="concept-badge">Conceptproject</span> : null}</h3>
               <p>{project.description}</p>
               {project.concept ? <p className="concept-note">Zelfbedacht conceptproject om onze stijl te laten zien.</p> : null}
