@@ -7,7 +7,6 @@ import { services } from '@/app/lib/site-data';
 
 export function ServiceStage() {
   const [active, setActive] = useState(0);
-  const activeService = services[active];
   const go = (dir: number) => setActive((prev) => (prev + dir + services.length) % services.length);
 
   return (
@@ -25,11 +24,13 @@ export function ServiceStage() {
         />
       ))}
       <div className="process-shade" />
-      <div className="process-copy" key={activeService.number}>
-        <p><span>{activeService.number}</span>DIENST</p>
-        <h3>{activeService.title}</h3>
-        <span>{activeService.text}</span>
-      </div>
+      {services.map((service, index) => (
+        <div className={`process-copy ${index === active ? 'is-active' : ''}`} key={service.number} aria-hidden={index !== active}>
+          <p>DIENST</p>
+          <h3>{service.title}</h3>
+          <span>{service.text}</span>
+        </div>
+      ))}
       <div className="process-controls">
         <button type="button" onClick={() => go(-1)} aria-label="Vorige dienst"><ArrowLeft /></button>
         <button type="button" onClick={() => go(1)} aria-label="Volgende dienst"><ArrowRight /></button>

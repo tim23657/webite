@@ -59,11 +59,11 @@ export function DienstenContent() {
                 type="button"
                 className={`investment-block-row ${index === investmentActive ? 'is-active' : ''}`}
                 key={step.number}
+                aria-label={step.title}
                 onMouseEnter={() => setInvestmentActive(index)}
                 onFocus={() => setInvestmentActive(index)}
                 onClick={() => setInvestmentActive(index)}
               >
-                <span>{step.number}</span>
                 <div><strong>{step.title}</strong><p>{step.text}</p></div>
               </button>
             ))}

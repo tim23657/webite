@@ -199,8 +199,8 @@ h2.services-heading, h2.investment-heading, h2.contact-heading { font-size: clam
 .process-stage > img { object-fit: cover; object-position: 50% 10%; opacity: 0; transform: scale(1.018); transition: opacity .7s var(--ease), transform .75s var(--ease); }
 .process-stage > img.is-active { opacity: 1; transform: scale(1); }
 .process-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(11,11,10,.82), rgba(11,11,10,.25) 66%, rgba(11,11,10,.12)), linear-gradient(0deg, rgba(11,11,10,.48), transparent 50%); }
-.process-copy { position: absolute; left: clamp(28px, 5vw, 78px); bottom: clamp(88px, 9vw, 134px); max-width: 680px; animation: processIn .7s var(--ease) both; }
-@keyframes processIn { from { opacity: 0; transform: translateY(12px); } }
+.process-copy { position: absolute; left: clamp(28px, 5vw, 78px); bottom: clamp(88px, 9vw, 134px); max-width: 680px; opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .5s var(--ease), transform .5s var(--ease), visibility 0s .5s linear; visibility: hidden; }
+.process-copy.is-active { opacity: 1; transform: translateY(0); pointer-events: auto; visibility: visible; transition: opacity .5s var(--ease), transform .5s var(--ease); }
 .process-copy > p { margin: 0 0 24px; font-size: .62rem; letter-spacing: .16em; }
 .process-copy > p span { color: var(--gold); margin-right: 12px; }
 .process-copy h3 { margin: 0; font-size: clamp(2.4rem, 5vw, 5.6rem); line-height: .96; letter-spacing: -.05em; max-width: 760px; font-weight: 580; }
@@ -3524,6 +3524,7 @@ main { animation: pageEnter .55s var(--ease); }
 .stats-dots button:hover:not(.is-active) { background: rgba(255, 255, 255, .6); transform: scale(1.4); }
 .stats-dot-tooltip { position: absolute; bottom: 100%; left: 50%; margin-bottom: 10px; padding: 5px 10px; border-radius: 6px; background: #fff; color: var(--ink); font-family: var(--font-display), var(--font-heading), sans-serif; font-size: .68rem; font-weight: 650; white-space: nowrap; opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(4px) scale(.92); transition: opacity .25s var(--ease), transform .25s var(--ease); }
 .stats-dots button:hover .stats-dot-tooltip { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+.stats-source { position: relative; z-index: 1; margin: 20px 0 0; color: rgba(255, 255, 255, .38); font-size: .68rem; line-height: 1.5; }
 @media (max-width: 760px) {
   .stats-stage { padding: 26px 20px; border-radius: 16px; margin-top: 32px; }
   .stats-grid { grid-template-columns: 1fr; gap: 18px; }
@@ -3582,6 +3583,9 @@ main { animation: pageEnter .55s var(--ease); }
   .quiet-link.scroll-glow { color: var(--gold); }
   .hero-services-link.scroll-glow { color: var(--gold); }
 }
+
+.concept-badge { display: inline-block; margin-left: 12px; padding: 3px 10px; border: 1px solid rgba(176, 141, 87, .5); border-radius: 999px; vertical-align: middle; color: var(--gold); font-size: .58rem; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+.concept-note { margin-top: 6px; color: var(--muted); font-size: .74rem; font-style: italic; opacity: .8; }
 
 .hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 

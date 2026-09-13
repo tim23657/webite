@@ -461,7 +461,7 @@ export function TrivareSite() {
 
       <section className="section faq-section" id="faq">
         <div className="faq-intro" data-reveal><h2 className="faq-heading display-heading">Veelgestelde <span>vragen.</span></h2></div>
-        <div className="faq-list" data-reveal>{faqs.map((item, index) => <details className="faq-item" key={item.q}><summary><span className="faq-item-number">{String(index + 1).padStart(2, '0')}</span><span className="faq-item-question">{item.q}</span><i aria-hidden="true" /></summary><p>{item.a}</p></details>)}</div>
+        <div className="faq-list" data-reveal>{faqs.map((item) => <details className="faq-item" key={item.q}><summary><span className="faq-item-question">{item.q}</span><i aria-hidden="true" /></summary><p>{item.a}</p></details>)}</div>
       </section>
 
       <section className="contact-section contact-teaser" id="contact">
@@ -472,7 +472,7 @@ export function TrivareSite() {
           <div className="mail-direct"><span>Liever mailen?</span><a href="mailto:contact@trivare.nl">contact@trivare.nl</a></div>
         </div>
         <div className="contact-teaser-panel" data-reveal>
-          <Link className="primary-cta" href="/contact"><span>Neem contact op</span><span className="cta-arrow"><NorthEastArrow /></span></Link>
+          <Link className="primary-cta" href="/contact"><span>Laten we kennismaken</span><span className="cta-arrow"><NorthEastArrow /></span></Link>
           <span className="contact-teaser-note">Reactie meestal binnen 1 werkdag.</span>
         </div>
       </section>

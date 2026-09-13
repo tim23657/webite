@@ -37,13 +37,12 @@ export function ServiceIndex({ active, onHover }: { active: number; onHover: (in
             onFocus={() => onHover(index)}
             onClick={() => onHover(index)}
           >
-            <span className="work-index-number">{service.number}</span>
             <span className="work-index-title">{service.title}</span>
           </button>
         ))}
       </div>
       <div className="work-index-preview">
-        <span className="work-index-eyebrow">DIENST {activeService.number}</span>
+        <span className="work-index-eyebrow">DIENST</span>
         <Image key={activeService.number} src={activeService.image} alt="" fill sizes="(max-width: 900px) 100vw, 66vw" />
         <div className="work-index-preview-caption">
           <strong>{activeService.title}</strong>

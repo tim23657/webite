@@ -57,6 +57,7 @@ export function StatsStage() {
           ))}
         </div>
       </div>
+      <p className="stats-source">Bron: Stanford Web Credibility Research, StatCounter en gepubliceerd onderzoek naar webdesign en conversie.</p>
     </div>
   );
 }

@@ -21,7 +21,7 @@ export const capabilities = [
 
 export const projects = [
   {
-    slug: 'north', number: '01', label: 'WEBDESIGN', title: 'North',
+    slug: 'north', number: '01', label: 'WEBDESIGN', title: 'North', concept: true,
     description: 'Nieuwbouw webdesign · rustige merkbeleving · sterke mobiele ervaring',
     proof: ['Heldere structuur', 'Rustige merkbeleving', 'Sterke mobiele ervaring'],
     problem: 'De uitstraling miste rust en een duidelijke inhoudelijke hiërarchie.',
@@ -30,7 +30,7 @@ export const projects = [
     result: 'Een rustige website die het karakter van North professioneel en herkenbaar overbrengt.',
   },
   {
-    slug: 'abc-construction', number: '02', label: 'REDESIGN', title: 'ABC Construction',
+    slug: 'abc-construction', number: '02', label: 'REDESIGN', title: 'ABC Construction', concept: true,
     description: 'Complete redesign · duidelijkere navigatie · geloofwaardige presentatie',
     proof: ['Professionelere uitstraling', 'Duidelijkere navigatie', 'Snellere oriëntatie'],
     problem: 'De bestaande website sloot niet meer aan bij de kwaliteit en betrouwbaarheid van het bedrijf.',
@@ -39,7 +39,7 @@ export const projects = [
     result: 'Een geloofwaardige presentatie die bezoekers sneller laat begrijpen wat ABC Construction doet.',
   },
   {
-    slug: 'bloom-weddings', number: '03', label: 'WEBDESIGN & BRANDING', title: 'Bloom Weddings',
+    slug: 'bloom-weddings', number: '03', label: 'WEBDESIGN & BRANDING', title: 'Bloom Weddings', concept: true,
     description: 'Webdesign en branding · warme uitstraling · verfijnde mobiele ervaring',
     proof: ['Consistente uitstraling', 'Prettige gebruikersroute', 'Verfijnde mobiele ervaring'],
     problem: 'De sfeer en persoonlijke aanpak kwamen online onvoldoende tot hun recht.',

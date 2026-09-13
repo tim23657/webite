@@ -47,7 +47,7 @@ export function WorkIndex({ active, onHover, onOpen }: { active: number; onHover
         <span className="work-index-eyebrow">CASE {activeProject.number}</span>
         <Image key={activeProject.slug} src={`/projects/${activeProject.slug}.jpg`} alt="" fill quality={68} sizes="(max-width: 900px) 100vw, 66vw" />
         <div className="work-index-preview-caption">
-          <strong>{activeProject.title}</strong>
+          <strong>{activeProject.title}{activeProject.concept ? <span className="concept-badge">Conceptproject</span> : null}</strong>
           <p>{activeProject.description}</p>
           <button type="button" onClick={() => onOpen(active)}>Bekijk case <ArrowUpRight /></button>
         </div>
