@@ -48,9 +48,8 @@ export function WerkContent() {
             </div>
             <div className="case-block-copy">
               <span className="case-block-eyebrow">{project.label}</span>
-              <h3>{project.title}{project.concept ? <span className="concept-badge">Conceptproject</span> : null}</h3>
+              <h3>{project.title}</h3>
               <p>{project.description}</p>
-              {project.concept ? <p className="concept-note">Zelfbedacht conceptproject om onze stijl te laten zien.</p> : null}
               <button type="button" onClick={() => setCaseIndex(index)}>Bekijk case <ArrowUpRight /></button>
             </div>
           </section>
@@ -66,7 +65,7 @@ export function WerkContent() {
       <Dialog open={caseIndex !== null} onOpenChange={(open) => !open && setCaseIndex(null)}>
         {selectedCase && (
           <DialogContent className="case-dialog">
-            <DialogHeader><DialogTitle>{selectedCase.title}{selectedCase.concept ? <span className="concept-badge">Conceptproject</span> : null}</DialogTitle><DialogDescription>{selectedCase.label}{selectedCase.concept ? ' · Zelfbedacht conceptproject om onze stijl te laten zien.' : ''}</DialogDescription></DialogHeader>
+            <DialogHeader><DialogTitle>{selectedCase.title}</DialogTitle><DialogDescription>{selectedCase.label}</DialogDescription></DialogHeader>
             <div className="case-visual"><Image src={`/projects/${selectedCase.slug}.jpg`} alt="" fill sizes="90vw" /></div>
             <div className="case-detail-grid">
               <div><span>PROBLEEM</span><p>{selectedCase.problem}</p></div>
