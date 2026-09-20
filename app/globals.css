@@ -3234,7 +3234,7 @@ h2.investment-heading,
 .outline-cta::before { background: rgba(255,255,255,.12); opacity: 1; }
 .outline-cta:hover { border-color: rgba(255,255,255,.9); background: rgba(255,255,255,.05); }
 .outline-cta svg { color: currentColor; }
-.menu-button { color: var(--ink); }
+.menu-button { color: var(--white); }
 @media (max-width: 760px) {
   .mobile-menu { background: var(--paper); color: var(--gold); }
   .mobile-menu nav a { border-color: var(--line); }
