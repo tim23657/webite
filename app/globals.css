@@ -2851,6 +2851,15 @@ footer { background: #050505; }
 .work-index-number { color: var(--gold); font-size: .68rem; font-weight: 600; }
 .work-index-title { font-family: var(--font-heading); font-size: clamp(1.3rem, 1.9vw, 1.85rem); font-weight: 560; letter-spacing: -.03em; color: var(--ink); }
 .work-index-label { margin-left: auto; color: var(--muted); font-size: .6rem; letter-spacing: .1em; white-space: nowrap; }
+/* Desktop list column was too narrow for its own padding: titles wrapped
+   to 2 lines and the label hung past the divider. Widen the column and
+   trim the padding so rows fill it; wrapped in min-width so mobile (which
+   already overrides these below at max-width:900px) is untouched. */
+@media (min-width: 901px) {
+  .work-index { grid-template-columns: minmax(380px, .44fr) 1fr; }
+  .work-index-list { padding-right: clamp(12px, 1.2vw, 20px); }
+  .work-index-title { white-space: nowrap; }
+}
 .work-index-preview { position: relative; min-height: min(48vw, 600px); overflow: hidden; background: #161613; }
 .work-index-preview img { object-fit: cover; filter: brightness(.62) saturate(.94); animation: workPreviewIn .6s var(--ease) both; }
 .service-index .work-index-preview img { object-position: center 5%; }
