@@ -2531,6 +2531,11 @@ footer { background: #050505; }
   overflow: visible;
 }
 .hero-primary-cta .cta-arrow { width: 64px; }
+/* Only .hero-primary-cta gets width:100% (mobile-only, see max-width:760px
+   above), so this has no effect on desktop where the button is
+   content-sized — it just lets the text cell absorb that extra mobile
+   width instead of leaving a gap before the fixed-width arrow cell. */
+.hero-primary-cta > span:first-child { flex: 1; }
 .hero-secondary-arrow-svg {
   width: 20px !important;
   height: 22px !important;
