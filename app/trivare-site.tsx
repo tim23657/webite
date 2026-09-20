@@ -422,7 +422,7 @@ export function TrivareSite() {
         <LightningCursor containerRef={heroRef} />
         <p className="hero-meta-top" data-reveal-hero="2">ONTWERP · REALISATIE · OPTIMALISATIE</p>
         <div className="hero-row">
-          <p className="hero-kicker" data-reveal-hero="1">DIGITAL AGENCY</p>
+          <p className="hero-kicker" data-reveal-hero="1">WEBDESIGN STUDIO</p>
           <h1 className="hero-title" data-reveal-hero="3">
             <span className="hero-line-mask"><span className="hero-title-base hero-line">Websites die <span className="hero-gold-word">vertrouwen</span></span></span>
             <span className="hero-line-mask"><span className="hero-title-base hero-line">uitstralen.</span></span>
