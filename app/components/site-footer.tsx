@@ -26,12 +26,11 @@ export function SiteFooter() {
             <a href="mailto:contact@trivare.nl">contact@trivare.nl</a>
             <a className="footer-instagram" href="https://www.instagram.com/trivare.studio" target="_blank" rel="noreferrer"><InstagramMark /><span>Instagram</span><ArrowUpRight /></a>
           </div>
-          <p>Overijssel, Nederland</p>
           <p className="footer-kvk">KVK: 87778882</p>
           {/* TODO: BTW-nummer hier toevoegen zodra bekend, bijv. <p className="footer-kvk">BTW: NL000000000B00</p> */}
         </div>
       </div>
-      <div className="footer-bottom"><span>© 2026 Trivare</span><span>Webdesign · SEO · CRO · Branding · Onderhoud</span><span className="footer-legal"><Link href="/privacybeleid">Privacybeleid</Link><Link href="/algemene-voorwaarden">Algemene voorwaarden</Link></span><span>Overijssel, Nederland</span></div>
+      <div className="footer-bottom"><span>© 2026 Trivare</span><span>Webdesign · SEO · CRO · Branding · Onderhoud</span><span className="footer-legal"><Link href="/privacybeleid">Privacybeleid</Link><Link href="/algemene-voorwaarden">Algemene voorwaarden</Link></span><span>Websites voor ondernemers</span></div>
     </footer>
   );
 }
