@@ -18,7 +18,7 @@ export default function PrivacyPage() {
         <p className="legal-updated">Laatst bijgewerkt: 12 september 2026</p>
 
         <h2>Wie is verantwoordelijk?</h2>
-        <p>Trivare, gevestigd in Overijssel, Nederland, is verantwoordelijk voor de verwerking van persoonsgegevens zoals beschreven in dit privacybeleid. Vragen? Mail naar <a href="mailto:contact@trivare.nl">contact@trivare.nl</a>.</p>
+        <p>Trivare is verantwoordelijk voor de verwerking van persoonsgegevens zoals beschreven in dit privacybeleid. Vragen? Mail naar <a href="mailto:contact@trivare.nl">contact@trivare.nl</a>.</p>
 
         <h2>Welke gegevens verzamelen we?</h2>
         <p>Wanneer je het contactformulier op deze website invult, verzamelen we de gegevens die je zelf invoert: naam, bedrijfsnaam, e-mailadres, eventueel telefoonnummer, het type dienst waarin je geïnteresseerd bent en je bericht. Deze gegevens worden gebruikt om contact met je op te nemen naar aanleiding van je aanvraag.</p>

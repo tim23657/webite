@@ -2,12 +2,14 @@ import type { Metadata } from 'next';
 import { WerkContent } from './werk-content';
 
 export const metadata: Metadata = {
-  title: 'Ons werk — Trivare',
-  description: 'Een selectie van websites die we mochten ontwerpen, vernieuwen of verder uitwerken voor bedrijven in Overijssel en daarbuiten.',
+  title: 'Werk: geselecteerde websites | Trivare',
+  description: 'Een selectie van websites die Trivare ontwierp, vernieuwde of verder uitwerkte, van eerste idee tot een resultaat waar bedrijven trots op zijn.',
   alternates: { canonical: '/werk' },
   openGraph: {
-    title: 'Ons werk — Trivare',
-    description: 'Een selectie van websites die we mochten ontwerpen, vernieuwen of verder uitwerken.',
+    title: 'Werk: geselecteerde websites | Trivare',
+    description: 'Een selectie van websites die Trivare ontwierp, vernieuwde of verder uitwerkte, van eerste idee tot een resultaat waar bedrijven trots op zijn.',
+    url: '/werk',
+    siteName: 'Trivare',
   },
 };
 

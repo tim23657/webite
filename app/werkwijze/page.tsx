@@ -2,12 +2,14 @@ import type { Metadata } from 'next';
 import { WerkwijzeContent } from './werkwijze-content';
 
 export const metadata: Metadata = {
-  title: 'Werkwijze — Trivare',
-  description: 'Van idee naar een website die staat: hoe Trivare stap voor stap van richting naar ontwerp, realisatie en livegang werkt.',
+  title: 'Werkwijze: van idee naar website | Trivare',
+  description: 'Hoe Trivare te werk gaat: van richting en ontwerp tot realisatie en livegang, stap voor stap en met korte lijnen tijdens het traject.',
   alternates: { canonical: '/werkwijze' },
   openGraph: {
-    title: 'Werkwijze — Trivare',
-    description: 'Van idee naar een website die staat: hoe we stap voor stap te werk gaan.',
+    title: 'Werkwijze: van idee naar website | Trivare',
+    description: 'Hoe Trivare te werk gaat: van richting en ontwerp tot realisatie en livegang, stap voor stap en met korte lijnen tijdens het traject.',
+    url: '/werkwijze',
+    siteName: 'Trivare',
   },
 };
 

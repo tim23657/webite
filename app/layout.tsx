@@ -10,16 +10,17 @@ const bricolage = Bricolage_Grotesque({ variable: '--font-display', subsets: ['l
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://trivare.nl'),
   title: 'Trivare — Websites die vertrouwen uitstralen',
-  description: 'Professioneel webdesign, redesign en website-optimalisatie voor bedrijven in Overijssel en daarbuiten.',
+  description: 'Professioneel webdesign, redesign en website-optimalisatie voor ondernemers.',
   icons: {
     icon: '/favicon.svg?v=2',
     shortcut: '/favicon.svg?v=2',
   },
   openGraph: {
     title: 'Trivare — Websites die vertrouwen uitstralen',
-    description: 'Professioneel webdesign, redesign en website-optimalisatie voor bedrijven in Overijssel en daarbuiten.',
+    description: 'Professioneel webdesign, redesign en website-optimalisatie voor ondernemers.',
     type: 'website',
     locale: 'nl_NL',
+    siteName: 'Trivare',
     images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Trivare — Websites die vertrouwen uitstralen.' }],
   },
   twitter: {

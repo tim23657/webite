@@ -2,12 +2,14 @@ import type { Metadata } from 'next';
 import { ContactContent } from './contact-content';
 
 export const metadata: Metadata = {
-  title: 'Contact — Trivare',
-  description: 'Plan een kennismaking of stuur een bericht. Trivare reageert meestal binnen 1 werkdag.',
+  title: 'Contact en kennismaking | Trivare',
+  description: 'Plan een vrijblijvende kennismaking of stuur een bericht. Trivare denkt met je mee over je website en reageert meestal binnen een werkdag.',
   alternates: { canonical: '/contact' },
   openGraph: {
-    title: 'Contact — Trivare',
-    description: 'Plan een kennismaking of stuur een bericht. Trivare reageert meestal binnen 1 werkdag.',
+    title: 'Contact en kennismaking | Trivare',
+    description: 'Plan een vrijblijvende kennismaking of stuur een bericht. Trivare denkt met je mee over je website en reageert meestal binnen een werkdag.',
+    url: '/contact',
+    siteName: 'Trivare',
   },
 };
 
