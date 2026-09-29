@@ -22,24 +22,41 @@ export const capabilities = [
   { number: '04', title: 'Onderhoud', text: 'Betrokken blijven na de livegang.' },
 ];
 
-export const projects = [
+type Project = {
+  slug: string;
+  number: string;
+  label: string;
+  title: string;
+  description: string;
+  proof: string[];
+  problem: string;
+  approach: string;
+  execution: string;
+  result: string;
+  url?: string;
+  alt?: string;
+};
+
+export const projects: Project[] = [
   {
-    slug: 'north', number: '01', label: 'WEBDESIGN', title: 'North',
+    slug: 'crea-by-chantal', number: '01', label: 'WEBDESIGN', title: 'Crea by Chantal',
+    url: 'https://creabychantal.nl/',
+    description: 'Website voor handgemaakte creaties · overzichtelijke collectie · duidelijke bestelroute',
+    alt: 'Laptop op een bureau met de homepage van Crea by Chantal in beeld',
+    proof: ['Overzichtelijke collectie', 'Duidelijke bestelroute', 'Persoonlijk verhaal'],
+    problem: 'Handgemaakte creaties hadden een eigen plek nodig waar bezoekers de collectie zien en kunnen bestellen.',
+    approach: 'Collectie, bestelproces en het verhaal van Chantal komen samen op één rustige pagina.',
+    execution: 'Een overzicht van vier productgroepen met bestelknop, een bestelformulier in vier duidelijke stappen en een persoonlijke sectie over Chantal.',
+    result: 'Een persoonlijke website die het werk van Chantal toont en bezoekers naar een bestelling leidt.',
+  },
+  {
+    slug: 'north', number: '02', label: 'WEBDESIGN', title: 'North',
     description: 'Nieuwbouw webdesign · rustige merkbeleving · sterke mobiele ervaring',
     proof: ['Heldere structuur', 'Rustige merkbeleving', 'Sterke mobiele ervaring'],
     problem: 'De uitstraling miste rust en een duidelijke inhoudelijke hiërarchie.',
     approach: 'Een compacte structuur waarin boodschap, ritme en beeld elkaar versterken.',
     execution: 'Een helder designsysteem met veel ruimte, scherpe typografie en gerichte interactie.',
     result: 'Een rustige website die het karakter van North professioneel en herkenbaar overbrengt.',
-  },
-  {
-    slug: 'abc-construction', number: '02', label: 'REDESIGN', title: 'ABC Construction',
-    description: 'Complete redesign · duidelijkere navigatie · geloofwaardige presentatie',
-    proof: ['Professionelere uitstraling', 'Duidelijkere navigatie', 'Snellere oriëntatie'],
-    problem: 'De bestaande website sloot niet meer aan bij de kwaliteit en betrouwbaarheid van het bedrijf.',
-    approach: 'De belangrijkste diensten en bewijspunten kregen een logische, direct leesbare volgorde.',
-    execution: 'Een stevig visueel grid, duidelijke navigatie en een zorgvuldige mobiele uitwerking.',
-    result: 'Een geloofwaardige presentatie die bezoekers sneller laat begrijpen wat ABC Construction doet.',
   },
   {
     slug: 'bloom-weddings', number: '03', label: 'WEBDESIGN & BRANDING', title: 'Bloom Weddings',

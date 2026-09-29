@@ -46,7 +46,7 @@ export function WerkContent() {
         {projects.map((project, index) => (
           <section className={`case-block case-block--${layouts[index % layouts.length]}`} key={project.slug} data-reveal>
             <div className="case-block-visual">
-              <Image src={`/projects/${project.slug}.jpg`} alt="" fill quality={68} sizes="(max-width: 900px) 100vw, 70vw" />
+              <Image src={`/projects/${project.slug}.jpg`} alt={project.alt ?? ''} fill quality={68} sizes="(max-width: 900px) 100vw, 70vw" />
             </div>
             <div className="case-block-copy">
               <span className="case-block-eyebrow">{project.label}</span>

@@ -44,7 +44,15 @@ export function WorkIndex({ active, onHover, onOpen }: { active: number; onHover
         ))}
       </div>
       <div className="work-index-preview">
-        <Image key={activeProject.slug} src={`/projects/${activeProject.slug}.jpg`} alt="" fill quality={68} sizes="(max-width: 900px) 100vw, 66vw" />
+        <Image
+          key={activeProject.slug}
+          src={`/projects/${activeProject.slug}.jpg`}
+          alt={activeProject.alt ?? ''}
+          fill
+          quality={68}
+          sizes="(max-width: 900px) 100vw, 66vw"
+          className={activeProject.slug === 'crea-by-chantal' ? 'work-index-preview-contain' : ''}
+        />
         <div className="work-index-preview-caption">
           <strong>{activeProject.title}</strong>
           <p>{activeProject.description}</p>

@@ -13,8 +13,24 @@ export default function CaseDialog({ caseIndex, onClose }: { caseIndex: number |
     <Dialog open={caseIndex !== null} onOpenChange={(open) => !open && onClose()}>
       {selectedCase && (
         <DialogContent className="case-dialog">
-          <DialogHeader><DialogTitle>{selectedCase.title}</DialogTitle><DialogDescription>{selectedCase.label}</DialogDescription></DialogHeader>
-          <div className="case-visual"><Image src={`/projects/${selectedCase.slug}.jpg`} alt="" fill sizes="90vw" /></div>
+          <DialogHeader>
+            <DialogTitle>{selectedCase.title}</DialogTitle>
+            <DialogDescription>{selectedCase.label}</DialogDescription>
+            {selectedCase.url && (
+              <a className="quiet-link case-live-link" href={selectedCase.url} target="_blank" rel="noreferrer">
+                <span>Bekijk live website</span><ArrowUpRight />
+              </a>
+            )}
+          </DialogHeader>
+          <div className="case-visual">
+            <Image
+              src={`/projects/${selectedCase.slug}.jpg`}
+              alt={selectedCase.alt ?? ''}
+              fill
+              sizes="90vw"
+              className={selectedCase.slug === 'crea-by-chantal' ? 'case-visual-crop-dot' : ''}
+            />
+          </div>
           <div className="case-detail-grid">
             <div><span>PROBLEEM</span><p>{selectedCase.problem}</p></div>
             <div><span>AANPAK</span><p>{selectedCase.approach}</p></div>
