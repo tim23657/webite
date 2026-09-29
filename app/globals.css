@@ -3587,6 +3587,61 @@ main { animation: pageEnter .55s var(--ease); }
   .stats-arrow, .stats-arrow-icon, .stats-indicators button { transition: none; }
 }
 
+/* ---- "Waarom Trivare" — horizontal card carousel, homepage only.
+   Two full cards + a peek of the next on desktop, one card + a peek on
+   mobile. Native scroll-snap drives the swipe/drag; arrows and keyboard
+   move exactly one card via scrollIntoView. ---- */
+.why-trivare-section { background: var(--paper); }
+.why-carousel { margin-top: clamp(56px, 6vw, 90px); position: relative; }
+.why-track {
+  display: flex;
+  gap: clamp(20px, 2.4vw, 32px);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
+.why-track::-webkit-scrollbar { display: none; }
+.why-track:focus-visible { outline: 2px solid var(--gold); outline-offset: 6px; }
+.why-card {
+  flex: 0 0 clamp(440px, 42vw, 560px);
+  scroll-snap-align: start;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(20px, 2.6vw, 36px);
+  align-items: center;
+  padding: clamp(28px, 2.8vw, 40px);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 14px 34px rgba(11, 11, 10, .04);
+  background: var(--paper);
+}
+.why-card-body { display: flex; flex-direction: column; }
+.why-card-number { color: var(--gold); font-size: .72rem; font-weight: 650; letter-spacing: .08em; }
+.why-card-body h3 { margin: 14px 0 0; font-family: var(--font-heading), Arial, sans-serif; font-size: clamp(1.2rem, 1.7vw, 1.55rem); font-weight: 590; letter-spacing: -.02em; line-height: 1.15; color: var(--ink); }
+.why-card-body p { margin: 14px 0 0; color: var(--muted); font-size: .86rem; line-height: 1.65; }
+.why-card-media { position: relative; aspect-ratio: 4 / 5; border-radius: 12px; overflow: hidden; }
+.why-card-media img { object-fit: cover; }
+.why-carousel-nav { display: flex; align-items: center; gap: clamp(16px, 2.4vw, 28px); margin-top: clamp(28px, 3vw, 40px); }
+.why-counter { color: var(--muted); font-size: .74rem; font-weight: 650; letter-spacing: .06em; white-space: nowrap; }
+.why-progress { flex: 1 1 auto; height: 1px; background: var(--line); position: relative; }
+.why-progress span { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--gold); transition: width .45s var(--ease); }
+.why-arrows { display: flex; gap: 10px; }
+.why-arrow { width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line); color: var(--ink); background: transparent; display: grid; place-items: center; transition: border-color .35s var(--ease), background .35s var(--ease), color .35s var(--ease), opacity .35s var(--ease); }
+.why-arrow svg { width: 16px; height: 16px; }
+.why-arrow:hover:not(:disabled), .why-arrow:focus-visible { border-color: var(--gold); background: var(--gold); color: var(--paper); }
+.why-arrow:disabled { opacity: .32; cursor: default; }
+@media (max-width: 700px) {
+  .why-track { gap: 16px; }
+  .why-card { flex-basis: 76vw; grid-template-columns: minmax(0, 1fr); padding: 22px; }
+  .why-card-media { order: -1; aspect-ratio: 16 / 10; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .why-track { scroll-behavior: auto; }
+  .why-progress span, .why-arrow { transition: none; }
+}
+
 /* Slim gold reading-progress line, site-wide. Sits above the header so it
    reads as a persistent editorial detail rather than a section-local effect. */
 .scroll-progress {

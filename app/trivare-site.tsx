@@ -9,6 +9,7 @@ import { WorkIndex } from '@/app/components/work-index';
 import { ProcessIndex } from '@/app/components/process-index';
 import { ServiceStage } from '@/app/components/service-stage';
 import { StatsStage } from '@/app/components/stats-stage';
+import { WhyTrivare } from '@/app/components/why-trivare';
 import { LightningCursor } from '@/app/components/LightningCursor';
 import { faqs } from '@/app/lib/site-data';
 
@@ -450,6 +451,8 @@ export function TrivareSite() {
         </div>
         <StatsStage />
       </section>
+
+      <WhyTrivare />
 
       <section className="work-index-section" id="werk">
         <div className="section-intro work-intro" data-reveal>
