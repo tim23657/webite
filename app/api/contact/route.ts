@@ -1,4 +1,5 @@
 import { saveContactSubmission } from '@/lib/contact-db';
+import { sendContactNotification } from '@/lib/send-notification-email';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const services = new Set(['Nieuwe website', 'Redesign', 'SEO / CRO', 'Branding', 'Onderhoud', 'Anders', 'Gratis ontwerp aanvraag']);
@@ -28,6 +29,7 @@ export async function POST(request: Request) {
       return Response.json({ ok: false, message: 'Controleer de gemarkeerde velden.' }, { status: 400 });
     }
     await saveContactSubmission(submission);
+    await sendContactNotification(submission);
     return Response.json({ ok: true });
   } catch (error) {
     console.error('Contact submission failed', error);
