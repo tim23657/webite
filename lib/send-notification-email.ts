@@ -39,7 +39,7 @@ export async function sendContactNotification(submission: NotificationSubmission
       method: 'POST',
       headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: RESEND_FROM_EMAIL || 'Trivare Website <onboarding@resend.dev>',
+        from: RESEND_FROM_EMAIL || 'Trivare Website <website@trivare.nl>',
         to: [NOTIFY_TO],
         reply_to: submission.email,
         subject,
