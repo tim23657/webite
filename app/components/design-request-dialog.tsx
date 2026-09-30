@@ -53,7 +53,7 @@ export default function DesignRequestDialog({ open, onOpenChange }: { open: bool
             <label htmlFor="dr-email"><span>E-mailadres</span><Input id="dr-email" name="email" type="email" required autoComplete="email" placeholder="naam@bedrijf.nl" /></label>
             <label htmlFor="dr-web"><span>Huidige website of Instagram <small>(optioneel)</small></span><Input id="dr-web" name="website_instagram" placeholder="www.jouwbedrijf.nl of @instagram" /></label>
             <label htmlFor="dr-message"><span>Wat zoek je voor jouw website?</span><Textarea id="dr-message" name="message" required minLength={10} rows={4} placeholder="Vertel kort wat je zoekt" /></label>
-            <p className="design-request-note">Een vrijblijvend eerste ontwerp voor je homepage, zonder aankoopverplichting.</p>
+            <p className="design-request-note">Een gratis, vrijblijvend eerste ontwerp voor je homepage — geen volledige website, wel een concreet voorbeeld om op verder te bouwen.</p>
             <Button className="submit-button" type="submit" disabled={formState === 'sending'}>
               <span>{formState === 'sending' ? 'Versturen...' : 'Vraag mijn gratis ontwerp aan'}</span>
               {formState === 'sending' ? <i className="mini-loader" /> : <ArrowUpRight />}

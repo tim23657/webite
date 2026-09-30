@@ -1,7 +1,7 @@
 export const services = [
-  { number: '01', title: 'Website ontwerp', text: 'Een professionele website die past bij je bedrijf en prettig werkt.', image: '/kaffie-co-lxSRLFSA_8M-unsplash.jpg' },
-  { number: '02', title: 'Website redesign', text: 'Een frisse uitstraling en duidelijkere structuur voor je bestaande website.', image: '/sydney-rae-658TyhDubS4-unsplash.jpg' },
-  { number: '03', title: 'Website optimalisatie', text: 'Gerichte verbeteringen in snelheid, gebruiksgemak, SEO en conversie.', image: '/robert-clark-guP70X3HWtY-unsplash.jpg' },
+  { number: '01', title: 'Website ontwerp', text: 'Een volledig nieuwe website op maat: van paginastructuur tot een duidelijke route naar contact of aanvraag.', image: '/kaffie-co-lxSRLFSA_8M-unsplash.jpg' },
+  { number: '02', title: 'Website redesign', text: 'Nieuwe uitstraling en overzichtelijkere structuur voor je bestaande website, met behoud van wat al werkt.', image: '/sydney-rae-658TyhDubS4-unsplash.jpg' },
+  { number: '03', title: 'Website optimalisatie', text: 'Gerichte verbeteringen in snelheid, gebruiksgemak, SEO en conversie, zodat bezoekers sneller de stap naar contact zetten.', image: '/robert-clark-guP70X3HWtY-unsplash.jpg' },
 ];
 
 export const whyTrivare = [
@@ -11,7 +11,7 @@ export const whyTrivare = [
   },
   {
     number: '02', title: 'Eén prijs. Vooraf afgesproken.',
-    text: 'Je weet vóór de start precies wat jouw website kost. Voor het afgesproken werk blijft die prijs staan. Geen onverwachte toeslagen of hogere factuur achteraf. Extra wensen? Die bespreken we eerst.',
+    text: 'Je weet vóór de start precies wat jouw website kost. Die prijs blijft staan voor het afgesproken werk. Extra wensen bespreken we eerst, zodat je achteraf niet voor verrassingen komt te staan.',
   },
   {
     number: '03', title: 'Binnen 1 week live',
@@ -23,7 +23,7 @@ export const whyTrivare = [
   },
   {
     number: '05', title: 'Marketing als basis',
-    text: 'Ik kijk verder dan alleen het uiterlijk van een website: ook jouw boodschap, doelgroep en klantreis tellen mee.',
+    text: 'Mijn marketingervaring gebruik ik om verder te kijken dan alleen het uiterlijk: ook jouw boodschap, doelgroep en klantreis tellen mee, zodat bezoekers vanzelf de stap naar contact zetten.',
   },
   {
     number: '06', title: 'Sterk op ieder scherm',
@@ -43,7 +43,7 @@ export const capabilities = [
   { number: '01', title: 'SEO', text: 'Een heldere structuur en technische basis.' },
   { number: '02', title: 'CRO', text: 'Gerichte verbeteringen die contact makkelijker maken.' },
   { number: '03', title: 'Branding', text: 'Een visuele richting die herkenbaar voelt.' },
-  { number: '04', title: 'Onderhoud', text: 'Betrokken blijven na de livegang.' },
+  { number: '04', title: 'Onderhoud', text: 'Updates, kleine aanpassingen en technische controle, zodat je website betrouwbaar blijft werken.' },
 ];
 
 type Project = {
