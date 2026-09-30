@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { whyTrivare } from '@/app/lib/site-data';
@@ -8,7 +7,7 @@ import { whyTrivare } from '@/app/lib/site-data';
 export function WhyTrivare() {
   const [active, setActive] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const reducedMotionRef = useRef(false);
 
   useEffect(() => {
@@ -69,31 +68,36 @@ export function WhyTrivare() {
   return (
     <section className="section why-trivare-section" id="waarom-trivare">
       <div className="section-intro" data-reveal>
-        <p className="section-label">WAAROM TRIVARE</p>
-        <h2 className="display-heading">Een website die bij je past.</h2>
+        <p className="section-label">HOE WE TE WERK GAAN</p>
+        <h2 className="display-heading">Zo pakken we het aan.</h2>
         <p>Direct contact. Een vaste prijs. Snel online.</p>
       </div>
 
       <div className="why-carousel" data-reveal>
-        <div className="why-track" ref={trackRef} aria-label="Waarom Trivare">
-          {whyTrivare.map((item, index) => (
-            <div
-              className="why-card"
-              key={item.number}
-              ref={(el) => { cardRefs.current[index] = el; }}
-              aria-roledescription="slide"
-              aria-label={`${index + 1} van ${whyTrivare.length}`}
-            >
-              <div className="why-card-body">
-                <span className="why-card-number">{item.number}</span>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-              </div>
-              <div className="why-card-media">
-                <Image src={item.image} alt={item.alt} fill quality={72} sizes="(max-width: 700px) 86vw, 42vw" />
-              </div>
-            </div>
-          ))}
+        <div className="why-track" ref={trackRef} aria-label="Hoe we te werk gaan">
+          {whyTrivare.map((item, index) => {
+            const isActive = index === active;
+            return (
+              <button
+                type="button"
+                className={`why-card ${isActive ? 'is-active' : ''}`}
+                key={item.number}
+                ref={(el) => { cardRefs.current[index] = el; }}
+                onClick={() => scrollToIndex(index)}
+                aria-current={isActive || undefined}
+                aria-label={`${item.title} — ${index + 1} van ${whyTrivare.length}`}
+              >
+                {/* Keying on active state forces a remount when a card becomes
+                    active, replaying the reveal animation each time it does —
+                    the "arriving" motion as you navigate to the next card. */}
+                <div className="why-card-body" key={isActive ? 'in' : 'out'}>
+                  <span className="why-card-number">{item.number}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </div>
+              </button>
+            );
+          })}
         </div>
 
         <div className="why-carousel-nav">

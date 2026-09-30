@@ -8,42 +8,34 @@ export const whyTrivare = [
   {
     number: '01', title: 'Direct met de maker',
     text: 'Geen tussenpersoon of accountmanager. Je spreekt direct met mij: degene die jouw website ontwerpt en bouwt. Daardoor gaat het sneller dan bij een bureau en worden je wensen meteen opgepakt.',
-    image: '/process/strategy.jpg', alt: 'Handgetekende schetsen en ontwerpmateriaal op een bureau',
   },
   {
     number: '02', title: 'Eén prijs. Vooraf afgesproken.',
     text: 'Je weet vóór de start precies wat jouw website kost. Voor het afgesproken werk blijft die prijs staan. Geen onverwachte toeslagen of hogere factuur achteraf. Extra wensen? Die bespreken we eerst.',
-    image: '/stats/stat-trust.jpg', alt: 'Twee mensen die elkaar een hand geven',
   },
   {
     number: '03', title: 'Binnen twee weken live',
     text: 'Jouw website staat binnen twee weken live nadat alle benodigde teksten, beelden en informatie zijn aangeleverd. Haal ik de afgesproken deadline niet door mijn toedoen? Dan krijg je het betaalde bedrag terug.',
-    image: '/process/launch.jpg', alt: 'Een scherm met een geometrische compositie op een sokkel',
   },
   {
     number: '04', title: 'Ontwerp dat voor je werkt',
     text: 'Een mooie website moet ook iets opleveren. Ik maak jouw aanbod duidelijk en help bezoekers de stap te zetten naar een aanvraag, bestelling of contact.',
-    image: '/process/design-build.jpg', alt: 'Tablet met een websiteontwerp in zwart, wit en goud',
   },
   {
     number: '05', title: 'Marketing als basis',
     text: 'Ik kijk verder dan alleen het uiterlijk van een website: ook jouw boodschap, doelgroep en klantreis tellen mee.',
-    image: '/projects/bloom-weddings.jpg', alt: 'Sierlijke bloemvormen in wit en goud',
   },
   {
     number: '06', title: 'Sterk op ieder scherm',
     text: 'Op telefoon, tablet of computer: jouw website blijft overzichtelijk, herkenbaar en makkelijk te gebruiken.',
-    image: '/stats/stat-mobile.jpg', alt: 'Iemand bekijkt een webshop op een telefoon naast een beeldscherm',
   },
   {
     number: '07', title: 'De techniek die bij jou past',
     text: 'WordPress, Shopify of een volledig op maat gebouwde website. Ik bouw jouw site zelf, met behulp van de nieuwste AI-tools of binnen het platform dat bij jouw bedrijf past.',
-    image: '/stats/stat-revenue.jpg', alt: 'Laptop met een webshop naast een winkelwagentje',
   },
   {
     number: '08', title: 'Ook na de lancering bereikbaar',
     text: 'Je website is live, maar het contact stopt niet. Voor vragen, wijzigingen en verdere uitbreiding kun je rechtstreeks bij mij terecht.',
-    image: '/projects/north.jpg', alt: 'Abstracte gelaagde compositie in wit, zwart en goud',
   },
 ];
 

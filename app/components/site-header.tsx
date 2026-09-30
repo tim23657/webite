@@ -2,8 +2,10 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
+
+const DesignRequestDialog = lazy(() => import('@/app/components/design-request-dialog'));
 
 const navItems = [
   { label: 'Diensten', href: '/diensten' },
@@ -16,6 +18,8 @@ const navItems = [
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogLoaded, setDialogLoaded] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(scrollY > 20);
@@ -29,6 +33,7 @@ export function SiteHeader() {
   }, [menuOpen]);
 
   const closeMenuAndNavigate = () => setMenuOpen(false);
+  const openDesignRequest = () => { setDialogOpen(true); setDialogLoaded(true); setMenuOpen(false); };
 
   return (
     <>
@@ -37,13 +42,19 @@ export function SiteHeader() {
         <nav className="nav-links" aria-label="Hoofdnavigatie">
           {navItems.map((item) => <Link key={item.label} href={item.href}>{item.label}</Link>)}
         </nav>
-        <Link className="outline-cta" href="/contact"><span>Kennismaken</span><ArrowUpRight /></Link>
+        <button type="button" className="outline-cta" onClick={openDesignRequest}><span>Vraag een gratis ontwerp aan</span><ArrowUpRight /></button>
         <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label="Open menu">{menuOpen ? <X /> : <Menu />}</button>
       </header>
       <div className={`mobile-menu ${menuOpen ? 'is-open' : ''}`} aria-hidden={!menuOpen}>
         <nav>{navItems.map((item) => <Link key={item.label} href={item.href} onClick={closeMenuAndNavigate}>{item.label}</Link>)}</nav>
-        <Link className="mobile-menu-cta" href="/contact" onClick={closeMenuAndNavigate}>Plan een kennismaking <ArrowUpRight /></Link>
+        <button type="button" className="mobile-menu-cta" onClick={openDesignRequest}>Vraag een gratis ontwerp aan <ArrowUpRight /></button>
       </div>
+
+      {dialogLoaded && (
+        <Suspense fallback={null}>
+          <DesignRequestDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+        </Suspense>
+      )}
     </>
   );
 }
