@@ -71,7 +71,6 @@ export function WhyTrivare() {
         <span className="why-label-rule" aria-hidden="true" />
         <p className="section-label">WERKWIJZE</p>
         <h2 className="display-heading">Zo werkt het.</h2>
-        <p>Direct contact. Een vaste prijs. Snel online.</p>
         <span className="why-intro-rule" aria-hidden="true" />
       </div>
 

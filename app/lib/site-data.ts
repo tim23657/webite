@@ -39,17 +39,6 @@ export const whyTrivare = [
   },
 ];
 
-// `fallbackImage` is the previously-used, known-good image for each slide.
-// If `image` is ever swapped for a new asset that fails to load, StatsStage
-// falls back to it automatically instead of showing a broken image.
-export const stats = [
-  { headline: 'Bezoekers oordelen razendsnel.', supporting: 'Nog voor ze verder lezen.', image: '/stats/stat-first-impression.jpg', fallbackImage: '/stats/stat-first-impression.jpg' },
-  { headline: 'Ontwerp maakt het verschil.', supporting: 'Belangrijker dan de tekst zelf.', image: '/stats/stat-design.jpg', fallbackImage: '/stats/stat-design.jpg' },
-  { headline: 'Vertrouwen begint bij je website.', supporting: 'Nog voor het eerste contact.', image: '/stats/stat-trust.jpg', fallbackImage: '/stats/stat-trust.jpg' },
-  { headline: 'Mobiel bepaalt de ervaring.', supporting: 'Verreweg de meeste bezoekers.', image: '/stats/stat-mobile.jpg', fallbackImage: '/stats/stat-mobile.jpg' },
-  { headline: 'Een goede website loont.', supporting: 'Aantoonbaar meer omzet.', image: '/stats/stat-revenue.jpg', fallbackImage: '/stats/stat-revenue.jpg' },
-];
-
 export const capabilities = [
   { number: '01', title: 'SEO', text: 'Een heldere structuur en technische basis.' },
   { number: '02', title: 'CRO', text: 'Gerichte verbeteringen die contact makkelijker maken.' },

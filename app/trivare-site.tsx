@@ -8,7 +8,6 @@ import { SiteFooter } from '@/app/components/site-footer';
 import { WorkIndex } from '@/app/components/work-index';
 import { ProcessIndex } from '@/app/components/process-index';
 import { ServiceStage } from '@/app/components/service-stage';
-import { StatsStage } from '@/app/components/stats-stage';
 import { WhyTrivare } from '@/app/components/why-trivare';
 import { LightningCursor } from '@/app/components/LightningCursor';
 import { faqs } from '@/app/lib/site-data';
@@ -131,6 +130,7 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         float posSeedY = hash(seed + 3.0);
         float driftSeedB = hash(seed + 4.0);
         float angleSeed = hash(seed + 5.0);
+        float sideSeed = hash(seed + 6.0);
 
         float t = mod(time + phaseOffset, cycleDuration) / cycleDuration;
         // Fade and drift advance together, so the formation is clearly
@@ -141,10 +141,17 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         float life = emerge * dissolve;
         if (life <= 0.0015) { shade = 0.0; return 0.0; }
 
-        // Spawn off-screen right — mostly top-right, sometimes right-mid or
-        // center-right — drifting toward center/left/bottom-left over the
-        // lifetime, in aspect-corrected space.
-        vec2 spawnPos = vec2((0.9 + posSeedX * 0.24) * aspect, -0.14 + posSeedY * 0.68);
+        // Spawn off-screen — mostly top-right, sometimes right-mid or
+        // center-right, and a minority also from top-left — drifting
+        // toward center/left/bottom-left over the lifetime, in
+        // aspect-corrected space. The top-left spawns are the exact same
+        // shape/size/drift, just starting from the opposite corner, so
+        // the gold field reads a little fuller up there too.
+        bool spawnLeft = sideSeed < 0.32;
+        float spawnX = spawnLeft
+          ? (0.1 - posSeedX * 0.24) * aspect
+          : (0.9 + posSeedX * 0.24) * aspect;
+        vec2 spawnPos = vec2(spawnX, -0.14 + posSeedY * 0.68);
         vec2 driftVec = vec2((-1.05 - driftSeedA * 0.25) * aspect, 0.85 + driftSeedB * 0.35);
         float driftT = smoothstep(0.0, 0.96, t);
         vec2 center = spawnPos + driftVec * driftT;
@@ -430,7 +437,7 @@ export function TrivareSite() {
           </h1>
         </div>
         <div className="hero-cta-block" data-reveal-hero="4">
-          <Link className="primary-cta hero-primary-cta" href="/contact"><span>Plan een kennismaking</span><span className="cta-arrow"><NorthEastArrow /></span></Link>
+          <Link className="primary-cta hero-primary-cta cta-shine" href="/contact"><span>Plan een kennismaking</span><span className="cta-arrow"><NorthEastArrow /></span></Link>
           <Link className="quiet-link hero-services-link" href="/werk"><span>Bekijk ons werk</span></Link>
         </div>
       </section>
@@ -442,14 +449,6 @@ export function TrivareSite() {
         </div>
         <ServiceStage />
         <p className="wwd-tags" data-reveal>SEO · CRO · BRANDING · ONDERHOUD · GEBRUIKSGEMAK · PERSOONLIJKE SAMENWERKING</p>
-      </section>
-
-      <section className="section stats-section" id="waarom-een-website">
-        <div className="section-intro" data-reveal>
-          <p className="section-label">IN CIJFERS</p>
-          <h2 className="display-heading">Het belang van een sterke website.</h2>
-        </div>
-        <StatsStage />
       </section>
 
       <WhyTrivare />
@@ -484,7 +483,7 @@ export function TrivareSite() {
           <div className="mail-direct"><span>Liever mailen?</span><a href="mailto:contact@trivare.nl">contact@trivare.nl</a></div>
         </div>
         <div className="contact-teaser-panel" data-reveal>
-          <Link className="primary-cta" href="/contact"><span>Laten we kennismaken</span><span className="cta-arrow"><NorthEastArrow /></span></Link>
+          <Link className="primary-cta cta-shine" href="/contact"><span>Laten we kennismaken</span><span className="cta-arrow"><NorthEastArrow /></span></Link>
           <span className="contact-teaser-note">Reactie meestal binnen 1 werkdag.</span>
         </div>
       </section>

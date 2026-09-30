@@ -42,7 +42,7 @@ export function SiteHeader() {
         <nav className="nav-links" aria-label="Hoofdnavigatie">
           {navItems.map((item) => <Link key={item.label} href={item.href}>{item.label}</Link>)}
         </nav>
-        <button type="button" className="outline-cta" onClick={openDesignRequest}><span>Vraag een gratis ontwerp aan</span><ArrowUpRight /></button>
+        <button type="button" className="outline-cta cta-shine" onClick={openDesignRequest}><span>Vraag een gratis ontwerp aan</span><ArrowUpRight /></button>
         <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label="Open menu">{menuOpen ? <X /> : <Menu />}</button>
       </header>
       <div className={`mobile-menu ${menuOpen ? 'is-open' : ''}`} aria-hidden={!menuOpen}>
