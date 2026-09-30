@@ -3606,6 +3606,8 @@ main { animation: pageEnter .55s var(--ease); }
    scroll-snap drives the swipe/drag; arrows and keyboard move exactly
    one card via scrollIntoView. ---- */
 .why-trivare-section { background: var(--paper); }
+.why-label-rule { display: block; width: 34px; height: 2px; margin: 0 auto 14px; background: var(--gold); border-radius: 2px; }
+.why-intro-rule { display: block; width: 34px; height: 2px; margin: 32px auto 0; background: var(--gold); border-radius: 2px; }
 .why-carousel { margin-top: clamp(56px, 6vw, 90px); position: relative; }
 .why-track {
   display: flex;

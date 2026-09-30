@@ -68,9 +68,11 @@ export function WhyTrivare() {
   return (
     <section className="section why-trivare-section" id="waarom-trivare">
       <div className="section-intro" data-reveal>
-        <p className="section-label">HOE WE TE WERK GAAN</p>
-        <h2 className="display-heading">Zo pakken we het aan.</h2>
+        <span className="why-label-rule" aria-hidden="true" />
+        <p className="section-label">WERKWIJZE</p>
+        <h2 className="display-heading">Zo werkt het.</h2>
         <p>Direct contact. Een vaste prijs. Snel online.</p>
+        <span className="why-intro-rule" aria-hidden="true" />
       </div>
 
       <div className="why-carousel" data-reveal>

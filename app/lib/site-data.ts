@@ -6,7 +6,7 @@ export const services = [
 
 export const whyTrivare = [
   {
-    number: '01', title: 'Direct met de maker',
+    number: '01', title: 'Persoonlijk contact met mij.',
     text: 'Geen tussenpersoon of accountmanager. Je spreekt direct met mij: degene die jouw website ontwerpt en bouwt. Daardoor gaat het sneller dan bij een bureau en worden je wensen meteen opgepakt.',
   },
   {
@@ -14,8 +14,8 @@ export const whyTrivare = [
     text: 'Je weet vóór de start precies wat jouw website kost. Voor het afgesproken werk blijft die prijs staan. Geen onverwachte toeslagen of hogere factuur achteraf. Extra wensen? Die bespreken we eerst.',
   },
   {
-    number: '03', title: 'Binnen twee weken live',
-    text: 'Jouw website staat binnen twee weken live nadat alle benodigde teksten, beelden en informatie zijn aangeleverd. Haal ik de afgesproken deadline niet door mijn toedoen? Dan krijg je het betaalde bedrag terug.',
+    number: '03', title: 'Binnen 1 week live',
+    text: 'Jouw website staat binnen 1 week live nadat alle benodigde teksten, beelden en informatie zijn aangeleverd. Haal ik de afgesproken deadline niet door mijn toedoen? Dan krijg je het betaalde bedrag terug.',
   },
   {
     number: '04', title: 'Ontwerp dat voor je werkt',
