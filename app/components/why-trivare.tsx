@@ -1,118 +1,44 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { whyTrivare } from '@/app/lib/site-data';
+import type { ComponentType, MouseEvent } from 'react';
+import { Clock, Code, Handshake, LifeBuoy, MessageCircle, MonitorSmartphone, MousePointerClick, Target } from 'lucide-react';
+import { whyTrivare, whyTrivareBadges } from '@/app/lib/site-data';
+
+const icons: ComponentType<{ strokeWidth?: number }>[] = [
+  MessageCircle, Handshake, Clock, MousePointerClick, Target, MonitorSmartphone, Code, LifeBuoy,
+];
+
+function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
+  const card = event.currentTarget;
+  const rect = card.getBoundingClientRect();
+  card.style.setProperty('--px', `${((event.clientX - rect.left) / rect.width) * 100}%`);
+  card.style.setProperty('--py', `${((event.clientY - rect.top) / rect.height) * 100}%`);
+}
 
 export function WhyTrivare() {
-  const [active, setActive] = useState(0);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const reducedMotionRef = useRef(false);
-
-  useEffect(() => {
-    reducedMotionRef.current = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  }, []);
-
-  const getStep = () => {
-    const track = trackRef.current;
-    const first = cardRefs.current[0];
-    if (!track || !first) return 0;
-    return first.offsetWidth + parseFloat(getComputedStyle(track).columnGap || '0');
-  };
-
-  // Read the active index straight from scroll position rather than React
-  // state, so "next"/"prev" always act on where the track actually is —
-  // never a stale value from a click that fired mid-animation.
-  const getCurrentIndex = () => {
-    const track = trackRef.current;
-    const step = getStep();
-    if (!track || step <= 0) return 0;
-    return Math.max(0, Math.min(whyTrivare.length - 1, Math.round(track.scrollLeft / step)));
-  };
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    const sync = () => setActive(getCurrentIndex());
-    // 'scrollend' fires exactly once scrolling truly settles (programmatic
-    // or user-driven) — far more reliable than guessing a debounce delay.
-    if ('onscrollend' in window) {
-      track.addEventListener('scrollend', sync);
-      return () => track.removeEventListener('scrollend', sync);
-    }
-    let timer: ReturnType<typeof setTimeout> | null = null;
-    const onScroll = () => {
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(sync, 120);
-    };
-    track.addEventListener('scroll', onScroll, { passive: true });
-    return () => { track.removeEventListener('scroll', onScroll); if (timer) clearTimeout(timer); };
-  }, []);
-
-  const scrollToIndex = (index: number) => {
-    const clamped = Math.max(0, Math.min(whyTrivare.length - 1, index));
-    cardRefs.current[clamped]?.scrollIntoView({
-      behavior: reducedMotionRef.current ? 'auto' : 'smooth',
-      inline: 'start',
-      block: 'nearest',
-    });
-    setActive(clamped);
-  };
-
-  const goNext = () => scrollToIndex(getCurrentIndex() + 1);
-  const goPrev = () => scrollToIndex(getCurrentIndex() - 1);
-
-  const progress = whyTrivare.length > 1 ? (active / (whyTrivare.length - 1)) * 100 : 0;
-
   return (
     <section className="section why-trivare-section" id="waarom-trivare">
       <div className="section-intro" data-reveal>
         <span className="why-label-rule" aria-hidden="true" />
-        <p className="section-label">WERKWIJZE</p>
-        <h2 className="display-heading">Zo werkt het.</h2>
+        <h2 className="display-heading">Waarom Trivare?</h2>
+        <p className="why-intro-text">Persoonlijk contact, duidelijke afspraken en een website die bij jouw bedrijf past.</p>
         <span className="why-intro-rule" aria-hidden="true" />
       </div>
 
-      <div className="why-carousel" data-reveal>
-        <div className="why-track" ref={trackRef} aria-label="Hoe we te werk gaan">
-          {whyTrivare.map((item, index) => {
-            const isActive = index === active;
-            return (
-              <button
-                type="button"
-                className={`why-card ${isActive ? 'is-active' : ''}`}
-                key={item.number}
-                ref={(el) => { cardRefs.current[index] = el; }}
-                onClick={() => scrollToIndex(index)}
-                aria-current={isActive || undefined}
-                aria-label={`${item.title} — ${index + 1} van ${whyTrivare.length}`}
-              >
-                {/* Keying on active state forces a remount when a card becomes
-                    active, replaying the reveal animation each time it does —
-                    the "arriving" motion as you navigate to the next card. */}
-                <div className="why-card-body" key={isActive ? 'in' : 'out'}>
-                  <span className="why-card-number">{item.number}</span>
-                  <h3>{item.title}</h3>
-                  <p>{item.text}</p>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="why-carousel-nav">
-          <span className="why-counter">{String(active + 1).padStart(2, '0')} / {String(whyTrivare.length).padStart(2, '0')}</span>
-          <div className="why-progress" aria-hidden="true"><span style={{ width: `${progress}%` }} /></div>
-          <div className="why-arrows">
-            <button type="button" className="why-arrow" onClick={goPrev} disabled={active === 0} aria-label="Vorige">
-              <ArrowLeft />
-            </button>
-            <button type="button" className="why-arrow" onClick={goNext} disabled={active === whyTrivare.length - 1} aria-label="Volgende">
-              <ArrowRight />
-            </button>
-          </div>
-        </div>
+      <div className="process-grid why-grid" data-reveal>
+        {whyTrivare.map((item, index) => {
+          const Icon = icons[index];
+          return (
+            <div className="process-card" key={item.number} onMouseMove={handleMouseMove}>
+              <span className="process-card-glow" aria-hidden="true" />
+              <span className="process-card-icon" aria-hidden="true"><Icon strokeWidth={1.6} /></span>
+              <span className="process-card-number">{item.number}</span>
+              <h3 className="process-card-title">{item.title}</h3>
+              <p className="process-card-text">{item.text}</p>
+              <span className="process-card-badge">{whyTrivareBadges[index]}</span>
+            </div>
+          );
+        })}
       </div>
     </section>
   );

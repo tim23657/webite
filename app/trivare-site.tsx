@@ -6,7 +6,9 @@ import { ArrowUpRight } from 'lucide-react';
 import { SiteHeader } from '@/app/components/site-header';
 import { SiteFooter } from '@/app/components/site-footer';
 import { WorkIndex } from '@/app/components/work-index';
-import { ProcessIndex } from '@/app/components/process-index';
+import { ProcessGrid } from '@/app/components/process-grid';
+import { DesignRequestCta } from '@/app/components/design-request-cta';
+import { DienstenSection } from '@/app/components/diensten-section';
 import { ServiceStage } from '@/app/components/service-stage';
 import { WhyTrivare } from '@/app/components/why-trivare';
 import { LightningCursor } from '@/app/components/LightningCursor';
@@ -142,16 +144,25 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
         if (life <= 0.0015) { shade = 0.0; return 0.0; }
 
         // Spawn off-screen — mostly top-right, sometimes right-mid or
-        // center-right, and a minority also from top-left — drifting
-        // toward center/left/bottom-left over the lifetime, in
-        // aspect-corrected space. The top-left spawns are the exact same
-        // shape/size/drift, just starting from the opposite corner, so
-        // the gold field reads a little fuller up there too.
-        bool spawnLeft = sideSeed < 0.32;
-        float spawnX = spawnLeft
-          ? (0.1 - posSeedX * 0.24) * aspect
-          : (0.9 + posSeedX * 0.24) * aspect;
-        vec2 spawnPos = vec2(spawnX, -0.14 + posSeedY * 0.68);
+        // center-right, a minority also from top-left, and a smaller
+        // minority from the middle/bottom-right — drifting toward
+        // center/left/bottom-left over the lifetime, in aspect-corrected
+        // space. Every spawn region uses the exact same shape/size/drift
+        // formula, just a different starting point, so the gold field
+        // reads a little fuller in those areas too.
+        float spawnX;
+        float spawnY;
+        if (sideSeed < 0.24) {
+          spawnX = (0.1 - posSeedX * 0.24) * aspect;
+          spawnY = -0.14 + posSeedY * 0.68;
+        } else if (sideSeed < 0.38) {
+          spawnX = (0.58 + posSeedX * 0.3) * aspect;
+          spawnY = 0.58 + posSeedY * 0.5;
+        } else {
+          spawnX = (0.9 + posSeedX * 0.24) * aspect;
+          spawnY = -0.14 + posSeedY * 0.68;
+        }
+        vec2 spawnPos = vec2(spawnX, spawnY);
         vec2 driftVec = vec2((-1.05 - driftSeedA * 0.25) * aspect, 0.85 + driftSeedB * 0.35);
         float driftT = smoothstep(0.0, 0.96, t);
         vec2 center = spawnPos + driftVec * driftT;
@@ -272,7 +283,7 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
 
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const isCompact = matchMedia('(max-width: 760px)').matches || matchMedia('(pointer: coarse)').matches;
-    const formationCount = isCompact ? 4 : 7;
+    const formationCount = isCompact ? 5 : 8;
     const pointerEnabled = !reducedMotion && !isCompact;
     let visible = true;
     let frame = 0;
@@ -398,7 +409,6 @@ export function TrivareSite() {
   const heroRef = useRef<HTMLElement>(null);
   const heroCanvasRef = useRef<HTMLCanvasElement>(null);
   const [workActive, setWorkActive] = useState(0);
-  const [processActive, setProcessActive] = useState(0);
   const [caseIndex, setCaseIndex] = useState<number | null>(null);
   const [caseDialogLoaded, setCaseDialogLoaded] = useState(false);
   useFluidHeroField(heroRef, heroCanvasRef);
@@ -451,8 +461,6 @@ export function TrivareSite() {
         <p className="wwd-tags" data-reveal>SEO · CRO · BRANDING · ONDERHOUD · GEBRUIKSGEMAK · PERSOONLIJKE SAMENWERKING</p>
       </section>
 
-      <WhyTrivare />
-
       <section className="work-index-section" id="werk">
         <div className="section-intro work-intro" data-reveal>
           <p className="section-label">SELECTIE</p>
@@ -461,14 +469,19 @@ export function TrivareSite() {
         <WorkIndex active={workActive} onHover={setWorkActive} onOpen={openCase} />
       </section>
 
-      <section className="work-index-section" id="werkwijze">
-        <div className="section-intro work-intro" data-reveal>
-          <p className="section-label process-eyebrow">· HOE WIJ WERKEN</p>
-          <h2 className="work-heading work-index-heading process-bold-heading display-heading">Van idee naar<br /><span>een website die staat.</span></h2>
+      <section className="work-index-section process-section" id="werkwijze">
+        <div className="section-intro work-intro process-intro" data-reveal>
+          <p className="section-label process-eyebrow">WERKWIJZE</p>
+          <h2 className="work-heading work-index-heading process-bold-heading display-heading">Zo werkt het.</h2>
         </div>
-        <ProcessIndex active={processActive} onHover={setProcessActive} />
+        <ProcessGrid />
+        <DesignRequestCta />
         <Link className="quiet-link section-teaser-link work-index-more" href="/werkwijze"><span>Bekijk onze werkwijze</span><ArrowUpRight /></Link>
       </section>
+
+      <DienstenSection />
+
+      <WhyTrivare />
 
       <section className="section faq-section" id="faq">
         <div className="faq-intro" data-reveal><h2 className="faq-heading display-heading">Veelgestelde <span>vragen.</span></h2></div>

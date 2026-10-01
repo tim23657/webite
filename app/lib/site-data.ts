@@ -99,6 +99,27 @@ export const process = [
   { number: '03', label: 'LIVE & VERDER', title: 'Na controle gaat de website live en verbeteren we waar nodig verder.', image: '/process/launch.jpg' },
 ];
 
+// Compact 4-step summary used by the homepage's "Zo werkt het" grid —
+// kept separate from `process` above, which still feeds the full
+// image-led breakdown on the dedicated /werkwijze page.
+export const homeWerkwijzeSteps = [
+  { number: '01', title: 'Jouw wensen bespreken', text: 'We bespreken jouw bedrijf, doelgroep en wensen. Samen bepalen we wat de website moet uitstralen en wat bezoekers erop moeten kunnen doen.' },
+  { number: '02', title: 'Ontwerp en vaste prijs', text: 'Je krijgt een duidelijke prijs voor het afgesproken werk en een eerste ontwerp. We stemmen de stijl en inhoud samen af voordat ik verder bouw.' },
+  { number: '03', title: 'Bouwen en afstemmen', text: 'Ik bouw de website en laat je tussendoor meekijken. Je geeft rechtstreeks aan mij je feedback, zodat we snel kunnen bijsturen.' },
+  { number: '04', title: 'Controleren en live', text: 'We controleren de website op mobiel en desktop. Daarna regel ik de lancering en bespreken we de toegang, het beheer en eventuele ondersteuning.' },
+];
+
+export const whyTrivareBadges = [
+  'Direct met de maker',
+  'Vaste prijs vooraf',
+  'Duidelijke opleverafspraak',
+  'Gericht op jouw klant',
+  'Marketing als basis',
+  'Mobiel en desktop',
+  'Passend bij jouw bedrijf',
+  'Contact blijft mogelijk',
+];
+
 export const values = [
   { number: '01', title: 'Aandacht', text: 'We nemen de tijd om je bedrijf en wensen goed te begrijpen voordat we keuzes maken.' },
   { number: '02', title: 'Vakmanschap', text: 'We besteden aandacht aan ontwerp, techniek en gebruiksgemak, zodat de website ook in de details goed in elkaar zit.' },

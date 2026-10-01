@@ -134,9 +134,9 @@ export function LightningCursor({ containerRef }: { containerRef: React.RefObjec
 
         float compactBase = (1.0 - smoothstep(0.2, 0.68, length(pointerWarp * vec2(0.96, 1.34)))) * (0.055 + innerDetail * 0.045);
         float trailVein = (1.0 - smoothstep(0.02, 0.065, abs(trailWarp.y - sin(trailWarp.x * 4.4 - uTime * 0.31) * 0.07))) * trailContour;
-        float density = compactBase + filaments * (0.2 + speed * 0.17) + trailVein * (0.025 + speed * 0.035);
+        float density = compactBase + filaments * (0.15 + speed * 0.12) + trailVein * (0.02 + speed * 0.025);
         density *= uEnergy;
-        float alpha = min(0.31, density);
+        float alpha = min(0.2, density);
 
         vec3 darkGold = vec3(0.455, 0.318, 0.149);
         vec3 trivareGold = vec3(0.725, 0.584, 0.341);
@@ -144,9 +144,9 @@ export function LightningCursor({ containerRef }: { containerRef: React.RefObjec
         vec3 warmWhite = vec3(1.0, 0.976, 0.933);
         vec3 color = mix(darkGold, trivareGold, smoothstep(0.16, 0.78, filaments) * 0.72);
         float brightCore = smoothstep(0.64, 0.94, filaments) * (0.34 + speed * 0.34);
-        color = mix(color, champagne, brightCore * 0.38);
-        float whiteCore = smoothstep(0.86, 0.995, filaments * (0.78 + innerDetail * 0.3)) * fastGate;
-        color = mix(color, warmWhite, whiteCore * 0.42);
+        color = mix(color, champagne, brightCore * 0.24);
+        float whiteCore = smoothstep(0.92, 0.998, filaments * (0.78 + innerDetail * 0.3)) * fastGate;
+        color = mix(color, warmWhite, whiteCore * 0.2);
         gl_FragColor = vec4(color * alpha, alpha);
       }
     `;
@@ -245,8 +245,8 @@ export function LightningCursor({ containerRef }: { containerRef: React.RefObjec
         targetVelocityX *= 0.8;
         targetVelocityY *= 0.8;
         const movement = Math.min(1, Math.hypot(velocityX, velocityY) / 52);
-        const targetEnergy = pointerActive ? Math.min(1, movement * 1.35) : 0;
-        energy += (targetEnergy - energy) * (targetEnergy > energy ? 0.18 : 0.035);
+        const targetEnergy = pointerActive ? Math.min(1, movement * 1.05) : 0;
+        energy += (targetEnergy - energy) * (targetEnergy > energy ? 0.14 : 0.035);
 
         setProgram(program);
         gl.uniform2f(uniforms.resolution, canvas.width, canvas.height);
