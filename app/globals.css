@@ -2987,32 +2987,33 @@ footer { background: #050505; }
   transform-origin: center;
   transition: opacity .3s ease, transform .3s ease;
 }
-.icon-reveal-up {
-  opacity: 0;
-  transform: translateY(3px);
-  transition: opacity .3s ease, transform .3s ease;
+/* Gesprek — one full bounce of the bubble. */
+.icon-bounce { transform-origin: center; }
+@keyframes iconBounceOnce {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(-5px); }
+  55% { transform: translateY(0); }
+  75% { transform: translateY(-1.5px); }
+  100% { transform: translateY(0); }
 }
-.icon-reveal-fade {
-  opacity: 0;
-  transition: opacity .3s ease;
+/* Ontwerp — the tip jitters a little, like a quick stroke being written. */
+@keyframes iconWrite {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-1.2px, .8px); }
+  50% { transform: translate(.8px, -1px); }
+  75% { transform: translate(-.6px, .6px); }
+  100% { transform: translate(0, 0); }
 }
-.icon-draw {
-  stroke-dasharray: 10;
-  stroke-dashoffset: 10;
-  transition: stroke-dashoffset .3s ease;
+/* Bouwen — the head taps down three times. */
+@keyframes iconTap {
+  0% { transform: rotate(0); }
+  35% { transform: rotate(-18deg); }
+  70% { transform: rotate(0); }
+  100% { transform: rotate(0); }
 }
-.icon-pop { transform-origin: center; }
-.icon-nudge { transform-origin: center; }
-@keyframes iconPop {
-  0% { transform: scale(.85); opacity: .6; }
-  55% { transform: scale(1.06); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-@keyframes iconNudge {
-  0% { transform: none; }
-  50% { transform: var(--icon-peak); }
-  100% { transform: none; }
-}
+/* Live — the body lifts off while the flame grows in beneath it. */
+.icon-rise { transition: transform .5s var(--ease); }
+.icon-flame { opacity: 0; transform: scaleY(.4); transform-origin: top center; transition: opacity .4s ease .15s, transform .4s var(--ease) .15s; }
 .process-card-number {
   display: block;
   font-family: var(--font-heading), Arial, sans-serif;
@@ -3051,19 +3052,62 @@ footer { background: #050505; }
   .process-card:hover .process-card-icon { color: var(--gold); }
   .process-card:hover .process-card-icon { background-color: rgba(176,141,87,.2); }
   .process-card:hover .icon-reveal { opacity: 1; transform: scale(1); transition: opacity .45s ease, transform .45s ease; }
-  .process-card:hover .icon-reveal-up { opacity: 1; transform: translateY(0); transition: opacity .45s ease, transform .45s ease; }
-  .process-card:hover .icon-reveal-fade { opacity: .28; transition: opacity .45s ease; }
-  .process-card:hover .icon-draw { stroke-dashoffset: 0; transition: stroke-dashoffset .5s ease; }
-  .process-card:hover .icon-pop { animation: iconPop .4s ease-out; }
-  .process-card:hover .icon-nudge { animation: iconNudge .55s ease-out; }
   .process-card:hover .delay-1 { transition-delay: .12s; animation-delay: .1s; }
-  .process-card:hover .delay-2 { transition-delay: .24s; animation-delay: .18s; }
+  .process-card:hover .icon-bounce { animation: iconBounceOnce .6s ease-out; }
+  .process-card:hover .icon-write { animation: iconWrite .5s ease-in-out; }
+  .process-card:hover .icon-tap { animation: iconTap .3s ease-in-out 3; }
+  .process-card:hover .icon-rise { transform: translateY(-4px); }
+  .process-card:hover .icon-flame { opacity: 1; transform: scaleY(1); }
 }
 @media (prefers-reduced-motion: reduce) {
   .process-card, .process-card-glow, .process-card-icon, .process-card-number,
-  .icon-reveal, .icon-reveal-up, .icon-reveal-fade, .icon-draw { transition: none; }
-  .process-card:hover .icon-pop, .process-card:hover .icon-nudge { animation: none; }
+  .icon-reveal, .icon-rise, .icon-flame { transition: none; }
+  .process-card:hover .icon-bounce,
+  .process-card:hover .icon-write,
+  .process-card:hover .icon-tap { animation: none; }
 }
+
+/* Waarom Trivare — richer, multi-stage icon animations. Entirely new
+   class names (wt-*) so none of this touches the Werkwijze icons
+   above, which keep using .icon-reveal/.icon-pop/.icon-nudge as-is. */
+.wt-line { opacity: 0; transform: scaleX(0); transform-origin: left; transition: opacity .4s ease, transform .4s var(--ease); }
+.wt-check-draw { stroke-dasharray: 11; stroke-dashoffset: 11; opacity: .45; transition: stroke-dashoffset .45s var(--ease), opacity .45s ease; }
+.wt-ring-trace { stroke: var(--gold); opacity: 0; transition: opacity .4s ease; }
+.wt-hand, .wt-cursor-move, .wt-bracket { transform-origin: center; }
+.wt-spark { opacity: 0; transform: scale(.5); transform-origin: center; transition: opacity .35s ease, transform .35s ease; }
+.wt-bar { transform: scaleY(.32); transform-origin: bottom; transition: transform .4s var(--ease); }
+.wt-outline-trace { stroke: var(--gold); stroke-dasharray: 42; stroke-dashoffset: 42; transition: stroke-dashoffset .5s var(--ease); }
+.wt-content-fill { opacity: 0; transition: opacity .4s ease; }
+.wt-codeline { opacity: 0; transform: scaleX(0); transform-origin: left; transition: opacity .4s ease, transform .4s var(--ease); }
+.wt-cross { opacity: .35; transition: opacity .4s ease; }
+.wt-dot { opacity: 0; transform: scale(.5); transform-origin: center; transition: opacity .35s ease, transform .35s ease; }
+@keyframes wtHandSweep { 0% { transform: rotate(0); } 70% { transform: rotate(58deg); } 100% { transform: rotate(0); } }
+@keyframes wtCursorMove { 0% { transform: translate(-3px, -3px); opacity: .55; } 100% { transform: translate(0, 0); opacity: 1; } }
+@keyframes wtBracketOpen { 0% { transform: none; } 55% { transform: var(--icon-peak); } 100% { transform: none; } }
+@media (hover: hover) and (pointer: fine) {
+  .process-card:hover .wt-line { opacity: 1; transform: scaleX(1); }
+  .process-card:hover .wt-check-draw { stroke-dashoffset: 0; opacity: 1; }
+  .process-card:hover .wt-ring-trace { opacity: 1; transition-delay: .4s; }
+  .process-card:hover .wt-hand { animation: wtHandSweep .85s var(--ease); }
+  .process-card:hover .wt-cursor-move { animation: wtCursorMove .45s var(--ease); }
+  .process-card:hover .wt-spark { opacity: 1; transform: scale(1); }
+  .process-card:hover .wt-bar { transform: scaleY(1); }
+  .process-card:hover .wt-outline-trace { stroke-dashoffset: 0; }
+  .process-card:hover .wt-content-fill { opacity: .3; transition-delay: .45s; }
+  .process-card:hover .wt-bracket { animation: wtBracketOpen .5s var(--ease); }
+  .process-card:hover .wt-codeline { opacity: 1; transform: scaleX(1); transition-delay: .5s; }
+  .process-card:hover .wt-cross { opacity: 1; }
+  .process-card:hover .wt-dot { opacity: 1; transform: scale(1); }
+  .process-card:hover .wt-d0 { transition-delay: 0s; }
+  .process-card:hover .wt-d1 { transition-delay: .18s; }
+  .process-card:hover .wt-d2 { transition-delay: .36s; }
+  .process-card:hover .wt-d3 { transition-delay: .54s; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wt-line, .wt-check-draw, .wt-ring-trace, .wt-spark, .wt-bar, .wt-outline-trace, .wt-content-fill, .wt-codeline, .wt-cross, .wt-dot { transition: none; }
+  .process-card:hover .wt-hand, .process-card:hover .wt-cursor-move, .process-card:hover .wt-bracket { animation: none; }
+}
+
 @media (max-width: 1100px) {
   .process-grid, .why-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -3786,6 +3830,7 @@ main { animation: pageEnter .55s var(--ease); }
   border: 1px solid var(--line);
   border-radius: 20px;
   background: var(--paper);
+  transition: border-color .3s ease;
 }
 .design-cta-icon {
   flex: 0 0 auto;
@@ -3798,12 +3843,54 @@ main { animation: pageEnter .55s var(--ease); }
   background: rgba(176,141,87,.12);
   color: var(--gold);
 }
-.design-cta-icon svg { width: 25px; height: 25px; }
+.design-cta-icon svg { width: 25px; height: 25px; overflow: visible; }
 .design-cta-copy { flex: 1 1 auto; min-width: 0; }
-.design-cta-copy h3 { margin: 0; font-family: var(--font-heading), Arial, sans-serif; font-size: clamp(1.1rem, 1.5vw, 1.32rem); font-weight: 590; letter-spacing: -.02em; color: var(--ink); }
-.design-cta-copy p { margin: 8px 0 0; color: var(--muted); font-size: .86rem; line-height: 1.6; max-width: 58ch; }
+.design-cta-copy h3 { margin: 0; font-family: var(--font-heading), Arial, sans-serif; font-size: clamp(1.75rem, 2.6vw, 2.25rem); font-weight: 590; letter-spacing: -.02em; line-height: 1.15; color: var(--ink); }
+.design-cta-copy p { margin: 12px 0 0; color: var(--muted); font-size: 1.05rem; line-height: 1.6; max-width: 60ch; }
 .design-cta-button { flex: 0 0 auto; white-space: nowrap; }
+.design-cta-arrow { transition: transform .3s var(--ease); }
+.design-cta-button:hover .design-cta-arrow { transform: translate(2px, -2px); }
+
+/* Richer monitor icon: contour traces in, content warms, a small
+   cursor accent lands last — triggered by hovering the full banner. */
+.cta-icon-trace { stroke: var(--gold); opacity: 0; stroke-dasharray: 72; stroke-dashoffset: 72; transition: opacity .3s ease, stroke-dashoffset .55s var(--ease); }
+.cta-icon-fill { opacity: 0; transition: opacity .4s ease; }
+.cta-icon-cursor { opacity: 0; transform: scale(.6); transform-origin: center; transition: opacity .3s ease, transform .3s ease; }
+@media (hover: hover) and (pointer: fine) {
+  .design-cta-banner:hover { border-color: rgba(176,141,87,.45); }
+  .design-cta-banner:hover .cta-icon-trace { opacity: 1; stroke-dashoffset: 0; }
+  .design-cta-banner:hover .cta-icon-fill { opacity: .3; transition-delay: .45s; }
+  .design-cta-banner:hover .cta-icon-cursor { opacity: 1; transform: scale(1); transition-delay: .85s; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .design-cta-banner, .design-cta-arrow, .cta-icon-trace, .cta-icon-fill, .cta-icon-cursor { transition: none; }
+}
 @media (max-width: 900px) {
   .design-cta-banner { flex-direction: column; align-items: flex-start; text-align: left; }
   .design-cta-button { width: 100%; justify-content: center; }
+}
+@media (max-width: 500px) {
+  .design-cta-copy h3 { font-size: 1.75rem; }
+}
+
+/* "Bekijk onze werkwijze" — roughly double size, with its own
+   underline-build-on-hover and arrow nudge (scoped to this one link
+   via .section-teaser-link; .quiet-link elsewhere is untouched). */
+.section-teaser-link {
+  font-size: clamp(1.25rem, 2vw, 1.52rem);
+  gap: 14px;
+  padding: 10px 0;
+}
+.section-teaser-link svg { width: 24px; height: 24px; }
+.section-teaser-link::after { transform-origin: left; }
+@media (hover: hover) and (pointer: fine) {
+  .section-teaser-link:hover::after { transform: scaleX(1); }
+  .section-teaser-link:hover svg { transform: translate(3px, -3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .section-teaser-link::after, .section-teaser-link svg { transition: none; }
+}
+@media (max-width: 500px) {
+  .section-teaser-link { font-size: 1.05rem; gap: 10px; }
+  .section-teaser-link svg { width: 18px; height: 18px; }
 }

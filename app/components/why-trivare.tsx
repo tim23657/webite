@@ -2,19 +2,19 @@
 
 import type { ComponentType, MouseEvent } from 'react';
 import {
-  AgreementIcon,
-  BuildRingsIcon,
-  ClickAccentIcon,
-  ClockIcon,
   CodeIcon,
-  ConversationIcon,
-  ScreenIcon,
-  SupportIcon,
-} from '@/app/components/animated-icons';
+  GesprekIcon,
+  KlokIcon,
+  MarketingIcon,
+  OndersteuningIcon,
+  OntwerpIcon,
+  PrijsIcon,
+  SchermenIcon,
+} from '@/app/components/why-trivare-icons';
 import { whyTrivare, whyTrivareBadges } from '@/app/lib/site-data';
 
 const icons: ComponentType[] = [
-  ConversationIcon, AgreementIcon, ClockIcon, ClickAccentIcon, BuildRingsIcon, ScreenIcon, CodeIcon, SupportIcon,
+  GesprekIcon, PrijsIcon, KlokIcon, OntwerpIcon, MarketingIcon, SchermenIcon, CodeIcon, OndersteuningIcon,
 ];
 
 function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
