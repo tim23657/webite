@@ -30,7 +30,7 @@ export function SiteFooter() {
           {/* TODO: BTW-nummer hier toevoegen zodra bekend, bijv. <p className="footer-kvk">BTW: NL000000000B00</p> */}
         </div>
       </div>
-      <div className="footer-bottom"><span>© 2026 Trivare</span><span>Webdesign · SEO · CRO · Branding · Onderhoud</span><span className="footer-legal"><Link href="/privacybeleid">Privacybeleid</Link><Link href="/algemene-voorwaarden">Algemene voorwaarden</Link></span><span>Websites voor ondernemers</span></div>
+      <div className="footer-bottom"><span>© 2026 Trivare. Alle rechten voorbehouden.</span><span>Webdesign · SEO · CRO · Branding · Onderhoud</span><span className="footer-legal"><Link href="/privacybeleid">Privacybeleid</Link><Link href="/algemene-voorwaarden">Algemene voorwaarden</Link></span><span>Websites voor ondernemers</span></div>
     </footer>
   );
 }

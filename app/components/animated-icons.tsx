@@ -56,7 +56,7 @@ export function HammerIcon() {
   );
 }
 
-// Controleren en live — the body lifts off while the flame grows beneath it.
+// Controleren en live — the fire ignites first, then the body lifts off.
 export function RocketIcon() {
   return (
     <svg {...base}>
@@ -66,6 +66,7 @@ export function RocketIcon() {
         <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 .05 5 .05" />
       </g>
       <path className="icon-flame" d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+      <ellipse className="icon-flame-core" cx="12.9" cy="18" rx="1" ry="1.7" fill="currentColor" stroke="none" />
     </svg>
   );
 }

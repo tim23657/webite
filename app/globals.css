@@ -3012,8 +3012,9 @@ footer { background: #050505; }
   100% { transform: rotate(0); }
 }
 /* Live — the body lifts off while the flame grows in beneath it. */
-.icon-rise { transition: transform .5s var(--ease); }
-.icon-flame { opacity: 0; transform: scaleY(.4); transform-origin: top center; transition: opacity .4s ease .15s, transform .4s var(--ease) .15s; }
+.icon-rise { transition: transform .55s cubic-bezier(.3, 1.4, .5, 1) .32s; }
+.icon-flame { opacity: 0; transform: scaleY(.25) translate(0, 0); transform-origin: top center; transition: opacity .3s ease, transform .4s cubic-bezier(.3, 1.4, .5, 1); }
+.icon-flame-core { opacity: 0; transform: scale(.4); transform-origin: 50% 70%; transition: opacity .25s ease .16s, transform .3s cubic-bezier(.3, 1.4, .5, 1) .16s; }
 .process-card-number {
   display: block;
   font-family: var(--font-heading), Arial, sans-serif;
@@ -3056,12 +3057,13 @@ footer { background: #050505; }
   .process-card:hover .icon-bounce { animation: iconBounceOnce .6s ease-out; }
   .process-card:hover .icon-write { animation: iconWrite .5s ease-in-out; }
   .process-card:hover .icon-tap { animation: iconTap .3s ease-in-out 3; }
-  .process-card:hover .icon-rise { transform: translateY(-4px); }
-  .process-card:hover .icon-flame { opacity: 1; transform: scaleY(1); }
+  .process-card:hover .icon-rise { transform: translate(3px, -5px); }
+  .process-card:hover .icon-flame { opacity: 1; transform: scaleY(1) translate(-1px, 1px); }
+  .process-card:hover .icon-flame-core { opacity: .85; transform: scale(1) translate(-1px, 1px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .process-card, .process-card-glow, .process-card-icon, .process-card-number,
-  .icon-reveal, .icon-rise, .icon-flame { transition: none; }
+  .icon-reveal, .icon-rise, .icon-flame, .icon-flame-core { transition: none; }
   .process-card:hover .icon-bounce,
   .process-card:hover .icon-write,
   .process-card:hover .icon-tap { animation: none; }
@@ -3894,3 +3896,8 @@ main { animation: pageEnter .55s var(--ease); }
   .section-teaser-link { font-size: 1.05rem; gap: 10px; }
   .section-teaser-link svg { width: 18px; height: 18px; }
 }
+
+/* Light copy-protection: discourage casual lifting of layout/text.
+   Form fields stay selectable/editable as normal. */
+body { -webkit-user-select: none; user-select: none; }
+input, textarea, [contenteditable='true'] { -webkit-user-select: text; user-select: text; }

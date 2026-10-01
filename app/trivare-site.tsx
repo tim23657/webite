@@ -9,7 +9,6 @@ import { WorkIndex } from '@/app/components/work-index';
 import { ProcessGrid } from '@/app/components/process-grid';
 import { DesignRequestCta } from '@/app/components/design-request-cta';
 import { DienstenSection } from '@/app/components/diensten-section';
-import { ServiceStage } from '@/app/components/service-stage';
 import { WhyTrivare } from '@/app/components/why-trivare';
 import { LightningCursor } from '@/app/components/LightningCursor';
 import { faqs } from '@/app/lib/site-data';
@@ -452,14 +451,7 @@ export function TrivareSite() {
         </div>
       </section>
 
-      <section className="section wwd-section" id="wat-we-doen">
-        <div className="wwd-top-line" aria-hidden="true" />
-        <div className="section-intro" data-reveal>
-          <h2 className="display-heading">Wat we doen.</h2>
-        </div>
-        <ServiceStage />
-        <p className="wwd-tags" data-reveal>SEO · CRO · BRANDING · ONDERHOUD · GEBRUIKSGEMAK · PERSOONLIJKE SAMENWERKING</p>
-      </section>
+      <DienstenSection />
 
       <section className="work-index-section" id="werk">
         <div className="section-intro work-intro" data-reveal>
@@ -478,8 +470,6 @@ export function TrivareSite() {
         <DesignRequestCta />
         <Link className="quiet-link section-teaser-link work-index-more" href="/werkwijze"><span>Bekijk onze werkwijze</span><ArrowUpRight /></Link>
       </section>
-
-      <DienstenSection />
 
       <WhyTrivare />
 

@@ -15,6 +15,11 @@ export const metadata: Metadata = {
     icon: '/favicon.svg?v=2',
     shortcut: '/favicon.svg?v=2',
   },
+  robots: { index: true, follow: true },
+  other: {
+    noai: 'noai',
+    noimageai: 'noimageai',
+  },
   openGraph: {
     title: 'Trivare — Websites die vertrouwen uitstralen',
     description: 'Professioneel webdesign, redesign en website-optimalisatie voor ondernemers.',
@@ -38,6 +43,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <div className="scroll-progress" aria-hidden="true" />
         {children}
         <CookieBanner />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){
+              document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+            })();`,
+          }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){
