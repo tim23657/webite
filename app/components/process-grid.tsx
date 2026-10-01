@@ -1,7 +1,10 @@
 'use client';
 
-import type { MouseEvent } from 'react';
+import type { ComponentType, MouseEvent } from 'react';
+import { ConversationIcon, DesignIcon, HammerIcon, RocketIcon } from '@/app/components/animated-icons';
 import { homeWerkwijzeSteps } from '@/app/lib/site-data';
+
+const icons: ComponentType[] = [ConversationIcon, DesignIcon, HammerIcon, RocketIcon];
 
 function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
   const card = event.currentTarget;
@@ -13,14 +16,18 @@ function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
 export function ProcessGrid() {
   return (
     <div className="process-grid" data-reveal>
-      {homeWerkwijzeSteps.map((step) => (
-        <div className="process-card" key={step.number} onMouseMove={handleMouseMove}>
-          <span className="process-card-glow" aria-hidden="true" />
-          <span className="process-card-number">{step.number}</span>
-          <h3 className="process-card-title">{step.title}</h3>
-          <p className="process-card-text">{step.text}</p>
-        </div>
-      ))}
+      {homeWerkwijzeSteps.map((step, index) => {
+        const Icon = icons[index];
+        return (
+          <div className="process-card" key={step.number} onMouseMove={handleMouseMove}>
+            <span className="process-card-glow" aria-hidden="true" />
+            <span className="process-card-icon" aria-hidden="true"><Icon /></span>
+            <span className="process-card-number">{step.number}</span>
+            <h3 className="process-card-title">{step.title}</h3>
+            <p className="process-card-text">{step.text}</p>
+          </div>
+        );
+      })}
     </div>
   );
 }

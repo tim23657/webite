@@ -1,11 +1,20 @@
 'use client';
 
 import type { ComponentType, MouseEvent } from 'react';
-import { Clock, Code, Handshake, LifeBuoy, MessageCircle, MonitorSmartphone, MousePointerClick, Target } from 'lucide-react';
+import {
+  AgreementIcon,
+  BuildRingsIcon,
+  ClickAccentIcon,
+  ClockIcon,
+  CodeIcon,
+  ConversationIcon,
+  ScreenIcon,
+  SupportIcon,
+} from '@/app/components/animated-icons';
 import { whyTrivare, whyTrivareBadges } from '@/app/lib/site-data';
 
-const icons: ComponentType<{ strokeWidth?: number }>[] = [
-  MessageCircle, Handshake, Clock, MousePointerClick, Target, MonitorSmartphone, Code, LifeBuoy,
+const icons: ComponentType[] = [
+  ConversationIcon, AgreementIcon, ClockIcon, ClickAccentIcon, BuildRingsIcon, ScreenIcon, CodeIcon, SupportIcon,
 ];
 
 function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
@@ -31,7 +40,7 @@ export function WhyTrivare() {
           return (
             <div className="process-card" key={item.number} onMouseMove={handleMouseMove}>
               <span className="process-card-glow" aria-hidden="true" />
-              <span className="process-card-icon" aria-hidden="true"><Icon strokeWidth={1.6} /></span>
+              <span className="process-card-icon" aria-hidden="true"><Icon /></span>
               <span className="process-card-number">{item.number}</span>
               <h3 className="process-card-title">{item.title}</h3>
               <p className="process-card-text">{item.text}</p>
