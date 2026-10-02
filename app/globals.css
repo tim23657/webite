@@ -3110,6 +3110,64 @@ footer { background: #050505; }
   .process-card:hover .wt-hand, .process-card:hover .wt-cursor-move, .process-card:hover .wt-bracket { animation: none; }
 }
 
+/* Touch devices: the same animations, triggered by scrolling the card
+   into view instead of a hover that taps can't reliably sustain.
+   .scroll-glow is toggled by the shared IntersectionObserver script in
+   layout.tsx (scoped to pointer:coarse there), same mechanism already
+   used sitewide for the other scroll-glow accents below. */
+@media (pointer: coarse) {
+  .process-card.scroll-glow {
+    background-color: #fdfbf6;
+    border-color: rgba(176,141,87,.45);
+  }
+  .process-card.scroll-glow .process-card-glow { opacity: 1; }
+  .process-card.scroll-glow .process-card-number,
+  .process-card.scroll-glow .process-card-icon { color: var(--gold); }
+  .process-card.scroll-glow .process-card-icon { background-color: rgba(176,141,87,.2); }
+  .process-card.scroll-glow .icon-reveal { opacity: 1; transform: scale(1); transition: opacity .45s ease, transform .45s ease; }
+  .process-card.scroll-glow .delay-1 { transition-delay: .12s; animation-delay: .1s; }
+  .process-card.scroll-glow .icon-bounce { animation: iconBounceOnce .6s ease-out; }
+  .process-card.scroll-glow .icon-write { animation: iconWrite .5s ease-in-out; }
+  .process-card.scroll-glow .icon-tap { animation: iconTap .3s ease-in-out 3; }
+  .process-card.scroll-glow .icon-rise { transform: translate(3px, -5px); }
+  .process-card.scroll-glow .icon-flame { opacity: 1; transform: scaleY(1) translate(-1px, 1px); }
+  .process-card.scroll-glow .icon-flame-core { opacity: .85; transform: scale(1) translate(-1px, 1px); }
+
+  .process-card.scroll-glow .wt-line { opacity: 1; transform: scaleX(1); }
+  .process-card.scroll-glow .wt-check-draw { stroke-dashoffset: 0; opacity: 1; }
+  .process-card.scroll-glow .wt-ring-trace { opacity: 1; transition-delay: .4s; }
+  .process-card.scroll-glow .wt-hand { animation: wtHandSweep .85s var(--ease); }
+  .process-card.scroll-glow .wt-cursor-move { animation: wtCursorMove .45s var(--ease); }
+  .process-card.scroll-glow .wt-spark { opacity: 1; transform: scale(1); }
+  .process-card.scroll-glow .wt-bar { transform: scaleY(1); }
+  .process-card.scroll-glow .wt-outline-trace { stroke-dashoffset: 0; }
+  .process-card.scroll-glow .wt-content-fill { opacity: .3; transition-delay: .45s; }
+  .process-card.scroll-glow .wt-bracket { animation: wtBracketOpen .5s var(--ease); }
+  .process-card.scroll-glow .wt-codeline { opacity: 1; transform: scaleX(1); transition-delay: .5s; }
+  .process-card.scroll-glow .wt-cross { opacity: 1; }
+  .process-card.scroll-glow .wt-dot { opacity: 1; transform: scale(1); }
+  .process-card.scroll-glow .wt-d0 { transition-delay: 0s; }
+  .process-card.scroll-glow .wt-d1 { transition-delay: .18s; }
+  .process-card.scroll-glow .wt-d2 { transition-delay: .36s; }
+  .process-card.scroll-glow .wt-d3 { transition-delay: .54s; }
+
+  .design-cta-banner.scroll-glow { border-color: rgba(176,141,87,.45); }
+  .design-cta-banner.scroll-glow .cta-icon-trace { opacity: 1; stroke-dashoffset: 0; }
+  .design-cta-banner.scroll-glow .cta-icon-fill { opacity: .3; transition-delay: .45s; }
+  .design-cta-banner.scroll-glow .cta-icon-cursor { opacity: 1; transform: scale(1); transition-delay: .85s; }
+
+  .section-teaser-link.scroll-glow::after { transform: scaleX(1); }
+  .section-teaser-link.scroll-glow svg { transform: translate(3px, -3px); }
+}
+@media (pointer: coarse) and (prefers-reduced-motion: reduce) {
+  .process-card.scroll-glow .icon-bounce,
+  .process-card.scroll-glow .icon-write,
+  .process-card.scroll-glow .icon-tap,
+  .process-card.scroll-glow .wt-hand,
+  .process-card.scroll-glow .wt-cursor-move,
+  .process-card.scroll-glow .wt-bracket { animation: none; }
+}
+
 @media (max-width: 1100px) {
   .process-grid, .why-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -3901,3 +3959,12 @@ main { animation: pageEnter .55s var(--ease); }
    Form fields stay selectable/editable as normal. */
 body { -webkit-user-select: none; user-select: none; }
 input, textarea, [contenteditable='true'] { -webkit-user-select: text; user-select: text; }
+
+/* The CTA banner's button inherited a sharp-cornered .primary-cta
+   variant from elsewhere in this file — restore the pill shape and a
+   soft lift so it matches the rounded card/icon around it. */
+.design-cta-button {
+  border-radius: 999px;
+  box-shadow: 0 14px 30px rgba(176,141,87,.22);
+}
+.design-cta-button:hover { box-shadow: 0 18px 38px rgba(176,141,87,.3); }
