@@ -3021,34 +3021,42 @@ footer { background: #050505; }
   transform-origin: center;
   transition: opacity .3s ease, transform .3s ease;
 }
-/* Gesprek — one full bounce of the bubble. */
-.icon-bounce { transform-origin: center; }
+/* Gesprek — a light compress, the rise, and a soft, decaying settle. */
+.icon-bounce { transform: none; transform-origin: center; transition: transform .3s var(--ease); }
 @keyframes iconBounceOnce {
   0% { transform: translateY(0); }
-  30% { transform: translateY(-5px); }
-  55% { transform: translateY(0); }
-  75% { transform: translateY(-1.5px); }
+  10% { transform: translateY(1.5px); }
+  42% { transform: translateY(-6px); }
+  65% { transform: translateY(0); }
+  82% { transform: translateY(-1.5px); }
   100% { transform: translateY(0); }
 }
-/* Ontwerp — the tip jitters a little, like a quick stroke being written. */
+/* Ontwerp — the tip traces a small stroke; the accent (delay-xs)
+   lands just after, like ink following the nib. */
+.icon-write { transform: none; transition: transform .3s var(--ease); }
 @keyframes iconWrite {
   0% { transform: translate(0, 0); }
-  25% { transform: translate(-1.2px, .8px); }
-  50% { transform: translate(.8px, -1px); }
-  75% { transform: translate(-.6px, .6px); }
+  20% { transform: translate(-1.8px, 1.1px); }
+  45% { transform: translate(1.3px, -1.4px); }
+  70% { transform: translate(-.8px, .8px); }
   100% { transform: translate(0, 0); }
 }
-/* Bouwen — the head taps down three times. */
+/* Bouwen — a short wind-up, the strike, and a soft rebound before the
+   head settles — repeated three times; the impact tick (delay-xs)
+   lands right as the first strike hits. */
+.icon-tap { transform: none; transition: transform .3s var(--ease); }
 @keyframes iconTap {
   0% { transform: rotate(0); }
-  35% { transform: rotate(-18deg); }
-  70% { transform: rotate(0); }
+  14% { transform: rotate(3deg); }
+  42% { transform: rotate(-20deg); }
+  68% { transform: rotate(3deg); }
   100% { transform: rotate(0); }
 }
-/* Live — the body lifts off while the flame grows in beneath it. */
-.icon-rise { transition: transform .55s cubic-bezier(.3, 1.4, .5, 1) .32s; }
+/* Live — the fire ignites, then the body lifts off while the trail
+   follows a beat behind it, trailing in the same direction. */
+.icon-rise { transition: transform .4s var(--ease); }
 .icon-flame { opacity: 0; transform: scaleY(.25) translate(0, 0); transform-origin: top center; transition: opacity .3s ease, transform .4s cubic-bezier(.3, 1.4, .5, 1); }
-.icon-flame-core { opacity: 0; transform: scale(.4); transform-origin: 50% 70%; transition: opacity .25s ease .16s, transform .3s cubic-bezier(.3, 1.4, .5, 1) .16s; }
+.icon-flame-core { opacity: 0; transform: scale(.4) translate(0, 0); transform-origin: 50% 70%; transition: opacity .2s ease, transform .3s var(--ease); }
 .process-card-number {
   display: block;
   font-family: var(--font-heading), Arial, sans-serif;
@@ -3088,16 +3096,17 @@ footer { background: #050505; }
   .process-card:hover .process-card-icon { background-color: rgba(176,141,87,.2); }
   .process-card:hover .icon-reveal { opacity: 1; transform: scale(1); transition: opacity .45s ease, transform .45s ease; }
   .process-card:hover .delay-1 { transition-delay: .12s; animation-delay: .1s; }
-  .process-card:hover .icon-bounce { animation: iconBounceOnce .6s ease-out; }
-  .process-card:hover .icon-write { animation: iconWrite .5s ease-in-out; }
-  .process-card:hover .icon-tap { animation: iconTap .3s ease-in-out 3; }
-  .process-card:hover .icon-rise { transform: translate(3px, -5px); }
-  .process-card:hover .icon-flame { opacity: 1; transform: scaleY(1) translate(-1px, 1px); }
-  .process-card:hover .icon-flame-core { opacity: .85; transform: scale(1) translate(-1px, 1px); }
+  .process-card:hover .delay-xs { transition-delay: .07s; animation-delay: .07s; }
+  .process-card:hover .icon-bounce { animation: iconBounceOnce .62s var(--ease); }
+  .process-card:hover .icon-write { animation: iconWrite .52s var(--ease); }
+  .process-card:hover .icon-tap { animation: iconTap .32s var(--ease) 3; }
+  .process-card:hover .icon-rise { transform: translate(3px, -5px); transition: transform .55s cubic-bezier(.3, 1.4, .5, 1) .32s; }
+  .process-card:hover .icon-flame { opacity: 1; transform: scaleY(1) translate(1.5px, -2.5px); transition: opacity .3s ease, transform .45s cubic-bezier(.3, 1.4, .5, 1) .4s; }
+  .process-card:hover .icon-flame-core { opacity: .85; transform: scale(1) translate(1.5px, -2.5px); transition: opacity .22s ease .3s, transform .35s var(--ease) .4s; }
 }
 @media (prefers-reduced-motion: reduce) {
   .process-card, .process-card-glow, .process-card-icon, .process-card-number,
-  .icon-reveal, .icon-rise, .icon-flame, .icon-flame-core { transition: none; }
+  .icon-reveal, .icon-bounce, .icon-write, .icon-tap, .icon-rise, .icon-flame, .icon-flame-core { transition: none; }
   .process-card:hover .icon-bounce,
   .process-card:hover .icon-write,
   .process-card:hover .icon-tap { animation: none; }
@@ -3108,8 +3117,8 @@ footer { background: #050505; }
    above, which keep using .icon-reveal/.icon-pop/.icon-nudge as-is. */
 .wt-line { opacity: 0; transform: scaleX(0); transform-origin: left; transition: opacity .4s ease, transform .4s var(--ease); }
 .wt-check-draw { stroke-dasharray: 11; stroke-dashoffset: 11; opacity: .45; transition: stroke-dashoffset .45s var(--ease), opacity .45s ease; }
-.wt-ring-trace { stroke: var(--gold); opacity: 0; transition: opacity .4s ease; }
-.wt-hand, .wt-cursor-move, .wt-bracket { transform-origin: center; }
+.wt-ring-trace { stroke: var(--gold); opacity: 0; transform-origin: center; transition: opacity .25s ease; }
+.wt-hand, .wt-cursor-move, .wt-bracket { transform: none; transform-origin: center; transition: transform .3s var(--ease); }
 .wt-spark { opacity: 0; transform: scale(.5); transform-origin: center; transition: opacity .35s ease, transform .35s ease; }
 .wt-bar { transform: scaleY(.32); transform-origin: bottom; transition: transform .4s var(--ease); }
 .wt-outline-trace { stroke: var(--gold); stroke-dasharray: 42; stroke-dashoffset: 42; transition: stroke-dashoffset .5s var(--ease); }
@@ -3117,20 +3126,38 @@ footer { background: #050505; }
 .wt-codeline { opacity: 0; transform: scaleX(0); transform-origin: left; transition: opacity .4s ease, transform .4s var(--ease); }
 .wt-cross { opacity: .35; transition: opacity .4s ease; }
 .wt-dot { opacity: 0; transform: scale(.5); transform-origin: center; transition: opacity .35s ease, transform .35s ease; }
-@keyframes wtHandSweep { 0% { transform: rotate(0); } 70% { transform: rotate(58deg); } 100% { transform: rotate(0); } }
-@keyframes wtCursorMove { 0% { transform: translate(-3px, -3px); opacity: .55; } 100% { transform: translate(0, 0); opacity: 1; } }
-@keyframes wtBracketOpen { 0% { transform: none; } 55% { transform: var(--icon-peak); } 100% { transform: none; } }
+@keyframes wtHandSweep {
+  0% { transform: rotate(0); }
+  12% { transform: rotate(-5deg); }
+  68% { transform: rotate(58deg); }
+  100% { transform: rotate(0); }
+}
+@keyframes wtCursorMove {
+  0% { transform: translate(-3px, -3px); opacity: .55; }
+  80% { transform: translate(.4px, .4px); opacity: 1; }
+  100% { transform: translate(0, 0); opacity: 1; }
+}
+@keyframes wtBracketOpen {
+  0% { transform: none; }
+  48% { transform: var(--icon-peak); }
+  100% { transform: none; }
+}
+@keyframes wtRingPulse {
+  0% { transform: scale(1); opacity: 0; }
+  55% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
 @media (hover: hover) and (pointer: fine) {
   .process-card:hover .wt-line { opacity: 1; transform: scaleX(1); }
   .process-card:hover .wt-check-draw { stroke-dashoffset: 0; opacity: 1; }
-  .process-card:hover .wt-ring-trace { opacity: 1; transition-delay: .4s; }
+  .process-card:hover .wt-ring-trace { animation: wtRingPulse .45s var(--ease) .4s; }
   .process-card:hover .wt-hand { animation: wtHandSweep .85s var(--ease); }
-  .process-card:hover .wt-cursor-move { animation: wtCursorMove .45s var(--ease); }
+  .process-card:hover .wt-cursor-move { animation: wtCursorMove .48s var(--ease); }
   .process-card:hover .wt-spark { opacity: 1; transform: scale(1); }
   .process-card:hover .wt-bar { transform: scaleY(1); }
   .process-card:hover .wt-outline-trace { stroke-dashoffset: 0; }
   .process-card:hover .wt-content-fill { opacity: .3; transition-delay: .45s; }
-  .process-card:hover .wt-bracket { animation: wtBracketOpen .5s var(--ease); }
+  .process-card:hover .wt-bracket { animation: wtBracketOpen .52s var(--ease); }
   .process-card:hover .wt-codeline { opacity: 1; transform: scaleX(1); transition-delay: .5s; }
   .process-card:hover .wt-cross { opacity: 1; }
   .process-card:hover .wt-dot { opacity: 1; transform: scale(1); }
@@ -3140,8 +3167,8 @@ footer { background: #050505; }
   .process-card:hover .wt-d3 { transition-delay: .54s; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .wt-line, .wt-check-draw, .wt-ring-trace, .wt-spark, .wt-bar, .wt-outline-trace, .wt-content-fill, .wt-codeline, .wt-cross, .wt-dot { transition: none; }
-  .process-card:hover .wt-hand, .process-card:hover .wt-cursor-move, .process-card:hover .wt-bracket { animation: none; }
+  .wt-line, .wt-check-draw, .wt-ring-trace, .wt-hand, .wt-cursor-move, .wt-bracket, .wt-spark, .wt-bar, .wt-outline-trace, .wt-content-fill, .wt-codeline, .wt-cross, .wt-dot { transition: none; }
+  .process-card:hover .wt-hand, .process-card:hover .wt-cursor-move, .process-card:hover .wt-bracket, .process-card:hover .wt-ring-trace { animation: none; }
 }
 
 /* Touch devices: the same animations, triggered by scrolling the card
@@ -3160,23 +3187,24 @@ footer { background: #050505; }
   .process-card.scroll-glow .process-card-icon { background-color: rgba(176,141,87,.2); }
   .process-card.scroll-glow .icon-reveal { opacity: 1; transform: scale(1); transition: opacity .45s ease, transform .45s ease; }
   .process-card.scroll-glow .delay-1 { transition-delay: .12s; animation-delay: .1s; }
-  .process-card.scroll-glow .icon-bounce { animation: iconBounceOnce .6s ease-out; }
-  .process-card.scroll-glow .icon-write { animation: iconWrite .5s ease-in-out; }
-  .process-card.scroll-glow .icon-tap { animation: iconTap .3s ease-in-out 3; }
-  .process-card.scroll-glow .icon-rise { transform: translate(3px, -5px); }
-  .process-card.scroll-glow .icon-flame { opacity: 1; transform: scaleY(1) translate(-1px, 1px); }
-  .process-card.scroll-glow .icon-flame-core { opacity: .85; transform: scale(1) translate(-1px, 1px); }
+  .process-card.scroll-glow .delay-xs { transition-delay: .07s; animation-delay: .07s; }
+  .process-card.scroll-glow .icon-bounce { animation: iconBounceOnce .62s var(--ease); }
+  .process-card.scroll-glow .icon-write { animation: iconWrite .52s var(--ease); }
+  .process-card.scroll-glow .icon-tap { animation: iconTap .32s var(--ease) 3; }
+  .process-card.scroll-glow .icon-rise { transform: translate(3px, -5px); transition: transform .55s cubic-bezier(.3, 1.4, .5, 1) .32s; }
+  .process-card.scroll-glow .icon-flame { opacity: 1; transform: scaleY(1) translate(1.5px, -2.5px); transition: opacity .3s ease, transform .45s cubic-bezier(.3, 1.4, .5, 1) .4s; }
+  .process-card.scroll-glow .icon-flame-core { opacity: .85; transform: scale(1) translate(1.5px, -2.5px); transition: opacity .22s ease .3s, transform .35s var(--ease) .4s; }
 
   .process-card.scroll-glow .wt-line { opacity: 1; transform: scaleX(1); }
   .process-card.scroll-glow .wt-check-draw { stroke-dashoffset: 0; opacity: 1; }
-  .process-card.scroll-glow .wt-ring-trace { opacity: 1; transition-delay: .4s; }
+  .process-card.scroll-glow .wt-ring-trace { animation: wtRingPulse .45s var(--ease) .4s; }
   .process-card.scroll-glow .wt-hand { animation: wtHandSweep .85s var(--ease); }
-  .process-card.scroll-glow .wt-cursor-move { animation: wtCursorMove .45s var(--ease); }
+  .process-card.scroll-glow .wt-cursor-move { animation: wtCursorMove .48s var(--ease); }
   .process-card.scroll-glow .wt-spark { opacity: 1; transform: scale(1); }
   .process-card.scroll-glow .wt-bar { transform: scaleY(1); }
   .process-card.scroll-glow .wt-outline-trace { stroke-dashoffset: 0; }
   .process-card.scroll-glow .wt-content-fill { opacity: .3; transition-delay: .45s; }
-  .process-card.scroll-glow .wt-bracket { animation: wtBracketOpen .5s var(--ease); }
+  .process-card.scroll-glow .wt-bracket { animation: wtBracketOpen .52s var(--ease); }
   .process-card.scroll-glow .wt-codeline { opacity: 1; transform: scaleX(1); transition-delay: .5s; }
   .process-card.scroll-glow .wt-cross { opacity: 1; }
   .process-card.scroll-glow .wt-dot { opacity: 1; transform: scale(1); }
@@ -3199,7 +3227,8 @@ footer { background: #050505; }
   .process-card.scroll-glow .icon-tap,
   .process-card.scroll-glow .wt-hand,
   .process-card.scroll-glow .wt-cursor-move,
-  .process-card.scroll-glow .wt-bracket { animation: none; }
+  .process-card.scroll-glow .wt-bracket,
+  .process-card.scroll-glow .wt-ring-trace { animation: none; }
 }
 
 @media (max-width: 1100px) {
@@ -3949,7 +3978,7 @@ main { animation: pageEnter .55s var(--ease); }
    cursor accent lands last — triggered by hovering the full banner. */
 .cta-icon-trace { stroke: var(--gold); opacity: 0; stroke-dasharray: 72; stroke-dashoffset: 72; transition: opacity .3s ease, stroke-dashoffset .55s var(--ease); }
 .cta-icon-fill { opacity: 0; transition: opacity .4s ease; }
-.cta-icon-cursor { opacity: 0; transform: scale(.6); transform-origin: center; transition: opacity .3s ease, transform .3s ease; }
+.cta-icon-cursor { opacity: 0; transform: scale(.55); transform-origin: center; transition: opacity .3s ease, transform .35s cubic-bezier(.3, 1.4, .5, 1); }
 @media (hover: hover) and (pointer: fine) {
   .design-cta-banner:hover { border-color: rgba(176,141,87,.45); }
   .design-cta-banner:hover .cta-icon-trace { opacity: 1; stroke-dashoffset: 0; }
