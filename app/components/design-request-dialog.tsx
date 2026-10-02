@@ -40,20 +40,23 @@ export default function DesignRequestDialog({ open, onOpenChange }: { open: bool
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="design-request-dialog">
         <DialogHeader>
-          <DialogTitle>Vraag een gratis ontwerp aan</DialogTitle>
-          <p className="design-request-intro">Vertel me kort iets over je bedrijf en welke uitstraling je zoekt. Ik neem contact met je op om je wensen te bespreken.</p>
+          <p className="design-request-label">GRATIS EERSTE ONTWERP</p>
+          <DialogTitle>Jouw website begint hier.</DialogTitle>
+          <p className="design-request-intro">Vertel kort over je bedrijf en je wensen. Samen bespreken we welke uitstraling bij je past.</p>
         </DialogHeader>
         {formState === 'success' ? (
           <p className="design-request-success">Bedankt voor je aanvraag! Ik neem zo snel mogelijk contact met je op.</p>
         ) : (
           <form className="contact-form design-request-form" onSubmit={submit} noValidate>
             <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hp-field" aria-hidden="true" />
-            <label htmlFor="dr-name"><span>Naam</span><Input id="dr-name" name="name" required autoComplete="name" placeholder="Jouw naam" /></label>
-            <label htmlFor="dr-company"><span>Bedrijfsnaam</span><Input id="dr-company" name="company" required autoComplete="organization" placeholder="Naam van je bedrijf" /></label>
+            <div className="design-request-row">
+              <label htmlFor="dr-name"><span>Naam</span><Input id="dr-name" name="name" required autoComplete="name" placeholder="Jouw naam" /></label>
+              <label htmlFor="dr-company"><span>Bedrijfsnaam</span><Input id="dr-company" name="company" required autoComplete="organization" placeholder="Naam van je bedrijf" /></label>
+            </div>
             <label htmlFor="dr-email"><span>E-mailadres</span><Input id="dr-email" name="email" type="email" required autoComplete="email" placeholder="naam@bedrijf.nl" /></label>
-            <label htmlFor="dr-web"><span>Huidige website of Instagram <small>(optioneel)</small></span><Input id="dr-web" name="website_instagram" placeholder="www.jouwbedrijf.nl of @instagram" /></label>
+            <label htmlFor="dr-web"><span>Huidige website of Instagram <small>(optioneel)</small></span><Input id="dr-web" name="website_instagram" placeholder="www.jouwbedrijf.nl" /></label>
             <label htmlFor="dr-message"><span>Wat zoek je voor jouw website?</span><Textarea id="dr-message" name="message" required minLength={10} rows={4} placeholder="Vertel kort wat je zoekt" /></label>
-            <p className="design-request-note">Een gratis, vrijblijvend eerste ontwerp voor je homepage — geen volledige website, wel een concreet voorbeeld om op verder te bouwen.</p>
+            <p className="design-request-note">Gratis en vrijblijvend. Je ontvangt een eerste homepageontwerp.</p>
             <Button className="submit-button" type="submit" disabled={formState === 'sending'}>
               <span>{formState === 'sending' ? 'Versturen...' : 'Vraag mijn gratis ontwerp aan'}</span>
               {formState === 'sending' ? <i className="mini-loader" /> : <ArrowUpRight />}
