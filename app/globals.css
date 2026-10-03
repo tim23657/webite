@@ -3056,8 +3056,14 @@ footer { background: #050505; }
 /* Live — the fire ignites, then the body lifts off at an angle while
    the trail follows a beat behind it. */
 .icon-rise { transform-origin: 70% 60%; transition: transform .4s var(--ease); }
-.icon-flame { opacity: 0; transform: scaleY(.25) translate(0, 0); transform-origin: top center; transition: opacity .3s ease, transform .4s cubic-bezier(.3, 1.4, .5, 1); }
-.icon-flame-core { opacity: 0; transform: scale(.4) translate(0, 0); transform-origin: 50% 70%; transition: opacity .2s ease, transform .3s var(--ease); }
+.icon-flame { opacity: 0; transform: scale(.25) translate(0, 0); transform-origin: top center; transition: opacity .3s ease, transform .3s ease; }
+@keyframes iconFlameFlicker {
+  0% { opacity: 0; transform: scale(.25) translate(0, 0); }
+  40% { opacity: 1; transform: scale(1.18) translate(1px, -2px); }
+  60% { opacity: 1; transform: scale(.92) translate(1.5px, -3px); }
+  80% { opacity: 1; transform: scale(1.1) translate(1.8px, -3.3px); }
+  100% { opacity: 1; transform: scale(1) translate(2px, -3.5px); }
+}
 .process-card-number {
   display: block;
   font-family: var(--font-heading), Arial, sans-serif;
@@ -3103,15 +3109,15 @@ footer { background: #050505; }
   .process-card:hover .icon-ink { opacity: 1; transform: scale(1); transition: opacity .3s ease .22s, transform .32s cubic-bezier(.3, 1.4, .5, 1) .22s; }
   .process-card:hover .icon-tap { animation: iconTap .32s var(--ease) 3; }
   .process-card:hover .icon-rise { transform: translate(4px, -7px); transition: transform .55s cubic-bezier(.3, 1.4, .5, 1) .32s; }
-  .process-card:hover .icon-flame { opacity: 1; transform: scaleY(1.04) translate(2px, -3.5px); transition: opacity .3s ease, transform .45s cubic-bezier(.3, 1.4, .5, 1) .4s; }
-  .process-card:hover .icon-flame-core { opacity: .9; transform: scale(1.02) translate(2px, -3.5px); transition: opacity .22s ease .3s, transform .35s var(--ease) .4s; }
+  .process-card:hover .icon-flame { animation: iconFlameFlicker .6s var(--ease) .4s forwards; }
 }
 @media (prefers-reduced-motion: reduce) {
   .process-card, .process-card-glow, .process-card-icon, .process-card-number,
-  .icon-reveal, .icon-ink, .icon-bounce, .icon-write, .icon-tap, .icon-rise, .icon-flame, .icon-flame-core { transition: none; }
+  .icon-reveal, .icon-ink, .icon-bounce, .icon-write, .icon-tap, .icon-rise, .icon-flame { transition: none; }
   .process-card:hover .icon-bounce,
   .process-card:hover .icon-write,
   .process-card:hover .icon-tap { animation: none; }
+  .process-card:hover .icon-flame { animation: none; opacity: 1; transform: scale(1) translate(2px, -3.5px); }
 }
 
 /* Waarom Trivare — richer, multi-stage icon animations. Entirely new
@@ -3195,8 +3201,7 @@ footer { background: #050505; }
   .process-card.scroll-glow .icon-ink { opacity: 1; transform: scale(1); transition: opacity .3s ease .22s, transform .32s cubic-bezier(.3, 1.4, .5, 1) .22s; }
   .process-card.scroll-glow .icon-tap { animation: iconTap .32s var(--ease) 3; }
   .process-card.scroll-glow .icon-rise { transform: translate(4px, -7px); transition: transform .55s cubic-bezier(.3, 1.4, .5, 1) .32s; }
-  .process-card.scroll-glow .icon-flame { opacity: 1; transform: scaleY(1.04) translate(2px, -3.5px); transition: opacity .3s ease, transform .45s cubic-bezier(.3, 1.4, .5, 1) .4s; }
-  .process-card.scroll-glow .icon-flame-core { opacity: .9; transform: scale(1.02) translate(2px, -3.5px); transition: opacity .22s ease .3s, transform .35s var(--ease) .4s; }
+  .process-card.scroll-glow .icon-flame { animation: iconFlameFlicker .6s var(--ease) .4s forwards; }
 
   .process-card.scroll-glow .wt-line { opacity: 1; transform: scaleX(1); }
   .process-card.scroll-glow .wt-check-draw { stroke-dashoffset: 0; opacity: 1; }
@@ -3232,6 +3237,7 @@ footer { background: #050505; }
   .process-card.scroll-glow .wt-cursor-move,
   .process-card.scroll-glow .wt-bracket,
   .process-card.scroll-glow .wt-ring-trace { animation: none; }
+  .process-card.scroll-glow .icon-flame { animation: none; opacity: 1; transform: scale(1) translate(2px, -3.5px); }
 }
 
 @media (max-width: 1100px) {
