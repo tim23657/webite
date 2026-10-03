@@ -3007,7 +3007,7 @@ footer { background: #050505; }
   margin-bottom: 16px;
   background: rgba(176,141,87,.12);
   color: rgba(176,141,87,.6);
-  transition: color .3s ease, background-color .3s ease;
+  transition: color .3s ease, background-color .3s ease, box-shadow .3s ease;
 }
 .process-card-icon svg { width: 19px; height: 19px; overflow: visible; }
 
@@ -3115,17 +3115,17 @@ footer { background: #050505; }
 /* Waarom Trivare — richer, multi-stage icon animations. Entirely new
    class names (wt-*) so none of this touches the Werkwijze icons
    above, which keep using .icon-reveal/.icon-pop/.icon-nudge as-is. */
-.wt-line { opacity: 0; transform: scaleX(0); transform-origin: left; transition: opacity .4s ease, transform .4s var(--ease); }
+.wt-line { opacity: 0; transform: scaleX(0); transform-origin: left; transition: opacity .4s ease, transform .4s cubic-bezier(.3, 1.4, .5, 1); }
 .wt-check-draw { stroke-dasharray: 11; stroke-dashoffset: 11; opacity: .45; transition: stroke-dashoffset .45s var(--ease), opacity .45s ease; }
 .wt-ring-trace { stroke: var(--gold); opacity: 0; transform-origin: center; transition: opacity .25s ease; }
 .wt-hand, .wt-cursor-move, .wt-bracket { transform: none; transform-origin: center; transition: transform .3s var(--ease); }
-.wt-spark { opacity: 0; transform: scale(.5); transform-origin: center; transition: opacity .35s ease, transform .35s ease; }
-.wt-bar { transform: scaleY(.32); transform-origin: bottom; transition: transform .4s var(--ease); }
+.wt-spark { opacity: 0; transform: scale(.5); transform-origin: center; transition: opacity .35s ease, transform .35s cubic-bezier(.3, 1.4, .5, 1); }
+.wt-bar { transform: scaleY(.32); transform-origin: bottom; transition: transform .42s cubic-bezier(.3, 1.4, .5, 1); }
 .wt-outline-trace { stroke: var(--gold); stroke-dasharray: 42; stroke-dashoffset: 42; transition: stroke-dashoffset .5s var(--ease); }
 .wt-content-fill { opacity: 0; transition: opacity .4s ease; }
-.wt-codeline { opacity: 0; transform: scaleX(0); transform-origin: left; transition: opacity .4s ease, transform .4s var(--ease); }
+.wt-codeline { opacity: 0; transform: scaleX(0); transform-origin: left; transition: opacity .4s ease, transform .4s cubic-bezier(.3, 1.4, .5, 1); }
 .wt-cross { opacity: .35; transition: opacity .4s ease; }
-.wt-dot { opacity: 0; transform: scale(.5); transform-origin: center; transition: opacity .35s ease, transform .35s ease; }
+.wt-dot { opacity: 0; transform: scale(.5); transform-origin: center; transition: opacity .35s ease, transform .35s cubic-bezier(.3, 1.4, .5, 1); }
 @keyframes wtHandSweep {
   0% { transform: rotate(0); }
   12% { transform: rotate(-5deg); }
@@ -4093,13 +4093,18 @@ input, textarea, [contenteditable='true'] { -webkit-user-select: text; user-sele
    shares the same shape. */
 .primary-cta { border-radius: 999px; }
 
-/* The investment-step heading sits in a narrow side column but was
-   picking up the site's largest heading size, wrapping into five
-   near-single-word lines. Scale it to fit its column. */
-.investment-copy h2 {
-  font-size: clamp(1.9rem, 2.8vw, 2.6rem) !important;
-  line-height: 1.15 !important;
-  margin-top: clamp(20px, 2.6vw, 32px) !important;
+/* The investment-step heading sits in a narrow side column on desktop
+   but was picking up the site's largest heading size, wrapping into
+   five near-single-word lines. Scale it to fit its column. Below
+   900px the layout already goes full-width/centered (see the
+   .investment-block breakpoint above), so the normal larger heading
+   size is restored there — no column constraint left to fix. */
+@media (min-width: 901px) {
+  .investment-copy h2 {
+    font-size: clamp(1.9rem, 2.8vw, 2.6rem) !important;
+    line-height: 1.15 !important;
+    margin-top: clamp(20px, 2.6vw, 32px) !important;
+  }
 }
 
 /* Portfolio/service preview images read as muddy under the combined
@@ -4107,3 +4112,14 @@ input, textarea, [contenteditable='true'] { -webkit-user-select: text; user-sele
    clearly visible, while keeping the caption readable. */
 .work-index-preview img { filter: brightness(.8) saturate(1); }
 .work-index-preview::after { background: linear-gradient(0deg, rgba(11,11,10,.72), rgba(11,11,10,.12) 65%, transparent 100%); }
+
+/* Waarom Trivare extra polish: a soft gold glow behind the icon box
+   on hover/scroll-glow, and livelier arrival easing on the simpler
+   reveals (wt-line/wt-bar/wt-dot/wt-codeline/wt-spark above) — small
+   finishing touches, not a new effect. */
+@media (hover: hover) and (pointer: fine) {
+  #waarom-trivare .process-card:hover .process-card-icon { box-shadow: 0 6px 18px rgba(176,141,87,.28); }
+}
+@media (pointer: coarse) {
+  #waarom-trivare .process-card.scroll-glow .process-card-icon { box-shadow: 0 6px 18px rgba(176,141,87,.28); }
+}
