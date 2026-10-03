@@ -3021,40 +3021,35 @@ footer { background: #050505; }
   transform-origin: center;
   transition: opacity .3s ease, transform .3s ease;
 }
-/* Gesprek — a squash-and-stretch bounce: compress, launch, overshoot,
-   and settle with a decaying rebound. */
+/* Gesprek — a light, single arc: a gentle compress, a clean rise,
+   and a soft decaying settle. Understated, not bouncy. */
 .icon-bounce { transform: none; transform-origin: bottom center; transition: transform .32s var(--ease); }
 @keyframes iconBounceOnce {
   0% { transform: translateY(0) scale(1, 1); }
-  10% { transform: translateY(2px) scale(1.1, .88); }
-  38% { transform: translateY(-11px) scale(.92, 1.1); }
-  60% { transform: translateY(0) scale(1.06, .95); }
-  78% { transform: translateY(-3.5px) scale(.98, 1.02); }
-  92% { transform: translateY(0) scale(1.01, .99); }
+  12% { transform: translateY(1px) scale(1.03, .97); }
+  44% { transform: translateY(-7px) scale(.98, 1.03); }
+  68% { transform: translateY(0) scale(1.01, .99); }
+  86% { transform: translateY(-1.5px) scale(1); }
   100% { transform: translateY(0) scale(1, 1); }
 }
-/* Ontwerp — the tip scribbles energetically; the accent (delay-xs)
-   lands just after, like ink following the nib. */
+/* Ontwerp — one clean, short stroke; a drop of ink (delay-xs) settles
+   at the nib right after. */
 .icon-write { transform: none; transition: transform .3s var(--ease); }
 @keyframes iconWrite {
-  0% { transform: translate(0, 0) rotate(0); }
-  16% { transform: translate(-2.8px, 1.8px) rotate(-7deg); }
-  34% { transform: translate(2.2px, -2.2px) rotate(6deg); }
-  52% { transform: translate(-2.4px, 1.4px) rotate(-5deg); }
-  70% { transform: translate(1.6px, -1.2px) rotate(4deg); }
-  85% { transform: translate(-.6px, .5px) rotate(-1.5deg); }
-  100% { transform: translate(0, 0) rotate(0); }
+  0% { transform: translate(0, 0); }
+  30% { transform: translate(-1.4px, 1.1px); }
+  62% { transform: translate(1px, -.8px); }
+  100% { transform: translate(0, 0); }
 }
-/* Bouwen — a deeper wind-up, a harder strike with an impact punch,
-   and a springier rebound before the head settles — three times. */
+/* Bouwen — a light wind-up, a clean strike, a soft rebound before the
+   head settles — three times, without an exaggerated impact punch. */
 .icon-tap { transform: none; transition: transform .3s var(--ease); }
 @keyframes iconTap {
-  0% { transform: rotate(0) scale(1); }
-  16% { transform: rotate(7deg) scale(1.03); }
-  40% { transform: rotate(-32deg) scale(.9); }
-  55% { transform: rotate(-20deg) scale(1.05); }
-  74% { transform: rotate(5deg) scale(.98); }
-  100% { transform: rotate(0) scale(1); }
+  0% { transform: rotate(0); }
+  16% { transform: rotate(4deg); }
+  42% { transform: rotate(-21deg); }
+  68% { transform: rotate(3deg); }
+  100% { transform: rotate(0); }
 }
 /* Live — the fire ignites, then the body lifts off at an angle while
    the trail follows a beat behind it. */
@@ -3101,12 +3096,12 @@ footer { background: #050505; }
   .process-card:hover .icon-reveal { opacity: 1; transform: scale(1); transition: opacity .45s ease, transform .45s ease; }
   .process-card:hover .delay-1 { transition-delay: .12s; animation-delay: .1s; }
   .process-card:hover .delay-xs { transition-delay: .07s; animation-delay: .07s; }
-  .process-card:hover .icon-bounce { animation: iconBounceOnce .72s var(--ease); }
-  .process-card:hover .icon-write { animation: iconWrite .62s var(--ease); }
-  .process-card:hover .icon-tap { animation: iconTap .34s var(--ease) 3; }
-  .process-card:hover .icon-rise { transform: translate(6px, -10px) rotate(-10deg); transition: transform .58s cubic-bezier(.3, 1.4, .5, 1) .32s; }
-  .process-card:hover .icon-flame { opacity: 1; transform: scaleY(1.15) translate(3px, -5px); transition: opacity .3s ease, transform .48s cubic-bezier(.3, 1.4, .5, 1) .4s; }
-  .process-card:hover .icon-flame-core { opacity: .95; transform: scale(1.1) translate(3px, -5px); transition: opacity .22s ease .3s, transform .38s var(--ease) .4s; }
+  .process-card:hover .icon-bounce { animation: iconBounceOnce .6s var(--ease); }
+  .process-card:hover .icon-write { animation: iconWrite .46s var(--ease); }
+  .process-card:hover .icon-tap { animation: iconTap .32s var(--ease) 3; }
+  .process-card:hover .icon-rise { transform: translate(4px, -7px); transition: transform .55s cubic-bezier(.3, 1.4, .5, 1) .32s; }
+  .process-card:hover .icon-flame { opacity: 1; transform: scaleY(1.04) translate(2px, -3.5px); transition: opacity .3s ease, transform .45s cubic-bezier(.3, 1.4, .5, 1) .4s; }
+  .process-card:hover .icon-flame-core { opacity: .9; transform: scale(1.02) translate(2px, -3.5px); transition: opacity .22s ease .3s, transform .35s var(--ease) .4s; }
 }
 @media (prefers-reduced-motion: reduce) {
   .process-card, .process-card-glow, .process-card-icon, .process-card-number,
@@ -3192,12 +3187,12 @@ footer { background: #050505; }
   .process-card.scroll-glow .icon-reveal { opacity: 1; transform: scale(1); transition: opacity .45s ease, transform .45s ease; }
   .process-card.scroll-glow .delay-1 { transition-delay: .12s; animation-delay: .1s; }
   .process-card.scroll-glow .delay-xs { transition-delay: .07s; animation-delay: .07s; }
-  .process-card.scroll-glow .icon-bounce { animation: iconBounceOnce .72s var(--ease); }
-  .process-card.scroll-glow .icon-write { animation: iconWrite .62s var(--ease); }
-  .process-card.scroll-glow .icon-tap { animation: iconTap .34s var(--ease) 3; }
-  .process-card.scroll-glow .icon-rise { transform: translate(6px, -10px) rotate(-10deg); transition: transform .58s cubic-bezier(.3, 1.4, .5, 1) .32s; }
-  .process-card.scroll-glow .icon-flame { opacity: 1; transform: scaleY(1.15) translate(3px, -5px); transition: opacity .3s ease, transform .48s cubic-bezier(.3, 1.4, .5, 1) .4s; }
-  .process-card.scroll-glow .icon-flame-core { opacity: .95; transform: scale(1.1) translate(3px, -5px); transition: opacity .22s ease .3s, transform .38s var(--ease) .4s; }
+  .process-card.scroll-glow .icon-bounce { animation: iconBounceOnce .6s var(--ease); }
+  .process-card.scroll-glow .icon-write { animation: iconWrite .46s var(--ease); }
+  .process-card.scroll-glow .icon-tap { animation: iconTap .32s var(--ease) 3; }
+  .process-card.scroll-glow .icon-rise { transform: translate(4px, -7px); transition: transform .55s cubic-bezier(.3, 1.4, .5, 1) .32s; }
+  .process-card.scroll-glow .icon-flame { opacity: 1; transform: scaleY(1.04) translate(2px, -3.5px); transition: opacity .3s ease, transform .45s cubic-bezier(.3, 1.4, .5, 1) .4s; }
+  .process-card.scroll-glow .icon-flame-core { opacity: .9; transform: scale(1.02) translate(2px, -3.5px); transition: opacity .22s ease .3s, transform .35s var(--ease) .4s; }
 
   .process-card.scroll-glow .wt-line { opacity: 1; transform: scaleX(1); }
   .process-card.scroll-glow .wt-check-draw { stroke-dashoffset: 0; opacity: 1; }
