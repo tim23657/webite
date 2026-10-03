@@ -4079,3 +4079,31 @@ input, textarea, [contenteditable='true'] { -webkit-user-select: text; user-sele
 @media (prefers-reduced-motion: reduce) {
   .design-request-form .submit-button svg { transition: none; }
 }
+
+/* ============================================================
+   COHERENCE PASS — unify the button system, fix an awkward heading
+   wrap, and lighten the portfolio preview overlay. Placed last so it
+   wins over the many historical layers above (same convention used
+   throughout this file).
+   ============================================================ */
+
+/* .primary-cta is pill-shaped everywhere except one later layer that
+   squared it off again for the hero/contact CTAs — restore the pill
+   so every button on the site (header, CTA banner, hero, contact)
+   shares the same shape. */
+.primary-cta { border-radius: 999px; }
+
+/* The investment-step heading sits in a narrow side column but was
+   picking up the site's largest heading size, wrapping into five
+   near-single-word lines. Scale it to fit its column. */
+.investment-copy h2 {
+  font-size: clamp(1.9rem, 2.8vw, 2.6rem) !important;
+  line-height: 1.15 !important;
+  margin-top: clamp(20px, 2.6vw, 32px) !important;
+}
+
+/* Portfolio/service preview images read as muddy under the combined
+   brightness filter + gradient — lighten both so the actual work is
+   clearly visible, while keeping the caption readable. */
+.work-index-preview img { filter: brightness(.8) saturate(1); }
+.work-index-preview::after { background: linear-gradient(0deg, rgba(11,11,10,.72), rgba(11,11,10,.12) 65%, transparent 100%); }
