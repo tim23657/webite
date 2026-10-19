@@ -10,6 +10,7 @@ import { ProcessGrid } from '@/app/components/process-grid';
 import { DesignRequestCta } from '@/app/components/design-request-cta';
 import { DienstenSection } from '@/app/components/diensten-section';
 import { WhyTrivare } from '@/app/components/why-trivare';
+import { Testimonial } from '@/app/components/testimonial';
 import { LightningCursor } from '@/app/components/LightningCursor';
 import { faqs } from '@/app/lib/site-data';
 
@@ -460,6 +461,8 @@ export function TrivareSite() {
         </div>
         <WorkIndex active={workActive} onHover={setWorkActive} onOpen={openCase} />
       </section>
+
+      <Testimonial />
 
       <section className="work-index-section process-section" id="werkwijze">
         <div className="section-intro work-intro process-intro" data-reveal>

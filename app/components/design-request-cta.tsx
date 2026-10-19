@@ -29,7 +29,7 @@ export function DesignRequestCta() {
       <div className="design-cta-banner" data-reveal>
         <span className="design-cta-icon" aria-hidden="true"><DesignCtaIcon /></span>
         <div className="design-cta-copy">
-          <h3>Twijfel je nog? Bekijk eerst een gratis ontwerp.</h3>
+          <h3>Twijfel je nog?<br />Bekijk eerst een gratis ontwerp.</h3>
           <p>Vertel me over jouw bedrijf en wat je zoekt. Ik maak een eerste ontwerp voor je homepage, zodat je kunt zien welke uitstraling bij je past. Gratis en vrijblijvend. Bevalt de richting, dan bespreken we de verdere uitwerking.</p>
         </div>
         <button type="button" className="primary-cta cta-shine design-cta-button" onClick={openDialog}>

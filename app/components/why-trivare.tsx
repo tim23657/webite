@@ -1,6 +1,6 @@
 'use client';
 
-import type { ComponentType, MouseEvent } from 'react';
+import type { ComponentType, CSSProperties, MouseEvent } from 'react';
 import {
   CodeIcon,
   GesprekIcon,
@@ -34,11 +34,17 @@ export function WhyTrivare() {
         <span className="why-intro-rule" aria-hidden="true" />
       </div>
 
-      <div className="process-grid why-grid" data-reveal>
+      <div className="process-grid why-grid">
         {whyTrivare.map((item, index) => {
           const Icon = icons[index];
           return (
-            <div className="process-card" key={item.number} onMouseMove={handleMouseMove}>
+            <div
+              className="process-card why-card-reveal"
+              key={item.number}
+              data-reveal
+              style={{ '--reveal-delay': `${index * 70}ms` } as CSSProperties}
+              onMouseMove={handleMouseMove}
+            >
               <span className="process-card-glow" aria-hidden="true" />
               <span className="process-card-icon" aria-hidden="true"><Icon /></span>
               <span className="process-card-number">{item.number}</span>

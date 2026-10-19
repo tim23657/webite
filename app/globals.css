@@ -3091,6 +3091,7 @@ footer { background: #050505; }
   font-size: .66rem;
   font-weight: 650;
   letter-spacing: .04em;
+  transition: transform .4s cubic-bezier(.3, 1.4, .5, 1), background .35s var(--ease), color .35s var(--ease), box-shadow .35s var(--ease);
 }
 @media (hover: hover) and (pointer: fine) {
   .process-card:hover {
@@ -4131,4 +4132,176 @@ input, textarea, [contenteditable='true'] { -webkit-user-select: text; user-sele
 }
 @media (pointer: coarse) {
   #waarom-trivare .process-card.scroll-glow .process-card-icon { box-shadow: 0 8px 22px rgba(176,141,87,.34); }
+}
+
+/* The badge at the bottom of each Waarom Trivare card ("Gericht op
+   jouw klant", "Duidelijke opleverafspraak", ...) sat static — give
+   it its own lift when the card is hovered (desktop) or scrolled
+   into view on touch, so that detail reads as alive too. */
+@media (hover: hover) and (pointer: fine) {
+  #waarom-trivare .process-card:hover .process-card-badge {
+    transform: scale(1.07);
+    background: var(--gold);
+    color: #fffef9;
+    box-shadow: 0 8px 18px rgba(176,141,87,.32);
+  }
+}
+#waarom-trivare .process-card.scroll-glow .process-card-badge {
+  transform: scale(1.07);
+  background: var(--gold);
+  color: #fffef9;
+  box-shadow: 0 8px 18px rgba(176,141,87,.32);
+}
+@media (prefers-reduced-motion: reduce) {
+  .process-card-badge { transition: none; }
+}
+
+/* The CTA banner's arrow had no breathing room on its own right side
+   (the label span's padding only sits between text and arrow; the
+   button itself added none after it), so the arrow sat flush against
+   — and on mobile's full-width button, visually spilled past — the
+   pill's rounded edge. Pull it left with matching space on both
+   sides of the icon. */
+.design-cta-button { padding-right: clamp(22px, 2.6vw, 30px); }
+.design-cta-button > span:first-child { padding-right: 14px; }
+
+/* "Bekijk onze werkwijze" — was a plain underlined text link (black,
+   per the generic .quiet-link default); turned into its own solid
+   gold pill button with a shine sweep and arrow lift, matching the
+   site's other CTAs. Scoped entirely to .section-teaser-link so every
+   other .quiet-link on the site is untouched. */
+.section-teaser-link {
+  gap: 12px;
+  padding: 15px 15px 15px 28px;
+  font-size: .92rem;
+  font-weight: 650;
+  letter-spacing: .003em;
+  color: #fffef9;
+  background: linear-gradient(135deg, #b08d57, #c7a56e);
+  border: 1px solid #b08d57;
+  border-radius: 999px;
+  box-shadow: 0 14px 30px rgba(176,141,87,.24);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: box-shadow .45s var(--ease), transform .3s cubic-bezier(.3, 1.4, .5, 1);
+}
+.section-teaser-link::after { display: none; }
+.section-teaser-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(105deg, transparent 18%, rgba(255,254,249,.4) 48%, transparent 76%);
+  transform: translateX(-130%);
+  transition: transform .7s var(--ease);
+  pointer-events: none;
+}
+.section-teaser-link > span { position: relative; z-index: 1; }
+.section-teaser-link svg {
+  position: relative;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  padding: 9px;
+  box-sizing: content-box;
+  border-radius: 999px;
+  background: rgba(255,254,249,.14);
+  border: 1px solid rgba(255,254,249,.32);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.22);
+  color: #fffef9;
+  stroke-width: 2.1px;
+  transition: transform .4s cubic-bezier(.3, 1.4, .5, 1), background .35s var(--ease), border-color .35s var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .section-teaser-link:hover { color: #fffef9; box-shadow: 0 20px 40px rgba(176,141,87,.32); transform: translateY(-3px); }
+  .section-teaser-link:hover::before { transform: translateX(130%); }
+  .section-teaser-link:hover svg { background: rgba(255,254,249,.3); border-color: rgba(255,254,249,.6); transform: translate(3px, -3px) rotate(45deg); }
+}
+.section-teaser-link.scroll-glow { color: #fffef9; box-shadow: 0 20px 40px rgba(176,141,87,.32); }
+.section-teaser-link.scroll-glow::before { transform: translateX(130%); }
+.section-teaser-link.scroll-glow svg { background: rgba(255,254,249,.3); border-color: rgba(255,254,249,.6); transform: translate(3px, -3px) rotate(45deg); }
+.section-teaser-link:active { transform: scale(.95); transition-duration: .15s; box-shadow: 0 8px 18px rgba(176,141,87,.22); }
+.section-teaser-link:active svg { transform: scale(.82) translate(2px, -2px) rotate(65deg); background: rgba(255,254,249,.4); border-color: rgba(255,254,249,.7); transition-duration: .15s; }
+@media (prefers-reduced-motion: reduce) {
+  .section-teaser-link, .section-teaser-link::before, .section-teaser-link svg { transition: none; }
+}
+@media (max-width: 500px) {
+  .section-teaser-link { font-size: .85rem; gap: 10px; padding: 13px 13px 13px 22px; }
+  .section-teaser-link svg { width: 13px; height: 13px; padding: 7px; }
+}
+
+/* Waarom Trivare cards: each one reveals on its own (via its own
+   data-reveal + --reveal-delay, set per-card in why-trivare.tsx) with
+   a soft blur-to-sharp focus pull alongside the usual rise, instead
+   of a flat opacity fade — same idea as wapps.nl's "Waarom Wapps"
+   cards. Same IntersectionObserver drives it on mobile and desktop,
+   so the behaviour is identical on both. */
+.why-card-reveal[data-reveal] {
+  transform: translateY(20px) scale(.985);
+  filter: blur(6px);
+  transition: opacity .7s var(--ease) var(--reveal-delay, 0s), transform .7s var(--ease) var(--reveal-delay, 0s), filter .7s var(--ease) var(--reveal-delay, 0s);
+}
+.why-card-reveal[data-reveal][data-visible='true'] { transform: none; filter: none; }
+
+/* Testimonial — single quote, placed directly under "Een selectie
+   van ons werk." Deliberately plain: no card, no border, no shadow,
+   no stars. Warm ivory background, serif quote, gold accents only on
+   the label and the small opening mark. */
+.testimonial-section {
+  background: #f8f1e3;
+  color: var(--ink);
+  padding: clamp(84px, 10vw, 148px) clamp(24px, 7.3vw, 124px);
+  text-align: center;
+}
+.testimonial-inner { max-width: 740px; margin: 0 auto; }
+.testimonial-label { color: var(--gold); }
+.testimonial-heading {
+  margin: 10px 0 0;
+  font-family: var(--font-heading), Arial, sans-serif;
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+  font-weight: 590;
+  letter-spacing: -.01em;
+  color: var(--ink);
+}
+.testimonial-mark {
+  display: block;
+  margin: clamp(22px, 3vw, 32px) 0 -8px;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(2.8rem, 5vw, 4rem);
+  line-height: 1;
+  color: rgba(176,141,87,.5);
+}
+.testimonial-quote { margin: 0; }
+.testimonial-quote p {
+  margin: 0 auto;
+  max-width: 50ch;
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 440;
+  font-style: italic;
+  font-size: clamp(1.22rem, 2vw, 1.56rem);
+  line-height: 1.65;
+  color: var(--ink);
+}
+.testimonial-attribution {
+  margin: clamp(22px, 3vw, 30px) 0 0;
+  font-size: .92rem;
+  font-weight: 600;
+  letter-spacing: .01em;
+  color: #6b655b;
+}
+.testimonial-attribution a {
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(176,141,87,.4);
+  transition: color .3s ease, text-decoration-color .3s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .testimonial-attribution a:hover { color: #8c6936; text-decoration-color: rgba(176,141,87,.85); }
+}
+.testimonial-section[data-reveal] { transform: translateY(6px); }
+.testimonial-section[data-reveal][data-visible='true'] { transform: translateY(0); }
+@media (max-width: 500px) {
+  .testimonial-mark { font-size: 2.4rem; margin-bottom: -4px; }
 }

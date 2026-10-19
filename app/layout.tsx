@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
-import { Inter, Manrope, Bricolage_Grotesque } from 'next/font/google';
+import { Inter, Manrope, Bricolage_Grotesque, Lora } from 'next/font/google';
 import { CookieBanner } from '@/app/components/cookie-banner';
 import './globals.css';
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' });
 const manrope = Manrope({ variable: '--font-heading', subsets: ['latin'], display: 'swap' });
 const bricolage = Bricolage_Grotesque({ variable: '--font-display', subsets: ['latin'], display: 'swap' });
+const lora = Lora({ variable: '--font-serif', subsets: ['latin'], style: ['italic', 'normal'], display: 'swap' });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://trivare.nl'),
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="nl">
-      <body className={`${inter.variable} ${manrope.variable} ${bricolage.variable}`}>
+      <body className={`${inter.variable} ${manrope.variable} ${bricolage.variable} ${lora.variable}`}>
         <div className="scroll-progress" aria-hidden="true" />
         {children}
         <CookieBanner />
