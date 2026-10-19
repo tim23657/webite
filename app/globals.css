@@ -4245,63 +4245,94 @@ input, textarea, [contenteditable='true'] { -webkit-user-select: text; user-sele
 .why-card-reveal[data-reveal][data-visible='true'] { transform: none; filter: none; }
 
 /* Testimonial — single quote, placed directly under "Een selectie
-   van ons werk." Deliberately plain: no card, no border, no shadow,
-   no stars. Warm ivory background, serif quote, gold accents only on
-   the label and the small opening mark. */
+   van ons werk." Asymmetric editorial layout: a narrow label/heading
+   column beside a wider quote column, the same ~30/70 proportion the
+   rest of the site uses for label+heading pairs (see .section-intro).
+   Deliberately plain: no card, no border, no shadow, no stars, no
+   hover effect on the section itself — only the company link animates
+   on hover. Warm ivory background, serif quote, gold used sparingly. */
 .testimonial-section {
   background: #f8f1e3;
   color: var(--ink);
   padding: clamp(84px, 10vw, 148px) clamp(24px, 7.3vw, 124px);
-  text-align: center;
 }
-.testimonial-inner { max-width: 740px; margin: 0 auto; }
-.testimonial-label { color: var(--gold); }
+.testimonial-divider {
+  display: block;
+  max-width: 1180px;
+  margin: 0 auto clamp(48px, 6vw, 84px);
+  height: 1px;
+  background: rgba(176,141,87,.22);
+}
+.testimonial-grid {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(200px, .3fr) minmax(0, .7fr);
+  gap: clamp(40px, 6vw, 96px);
+  align-items: start;
+}
+.testimonial-label { color: var(--gold); margin: 0; }
 .testimonial-heading {
   margin: 10px 0 0;
   font-family: var(--font-heading), Arial, sans-serif;
-  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+  font-size: clamp(1.7rem, 2.2vw, 2.1rem);
   font-weight: 590;
   letter-spacing: -.01em;
+  line-height: 1.25;
   color: var(--ink);
 }
 .testimonial-mark {
   display: block;
-  margin: clamp(22px, 3vw, 32px) 0 -8px;
+  margin: 0 0 14px;
   font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(2.8rem, 5vw, 4rem);
+  font-size: 2.6rem;
   line-height: 1;
-  color: rgba(176,141,87,.5);
+  color: rgba(176,141,87,.55);
 }
 .testimonial-quote { margin: 0; }
 .testimonial-quote p {
-  margin: 0 auto;
-  max-width: 50ch;
+  margin: 0;
+  max-width: 42ch;
   font-family: var(--font-serif), Georgia, serif;
   font-weight: 440;
   font-style: italic;
-  font-size: clamp(1.22rem, 2vw, 1.56rem);
-  line-height: 1.65;
+  font-size: clamp(1.32rem, 1.9vw, 1.7rem);
+  line-height: 1.7;
   color: var(--ink);
 }
 .testimonial-attribution {
-  margin: clamp(22px, 3vw, 30px) 0 0;
-  font-size: .92rem;
-  font-weight: 600;
-  letter-spacing: .01em;
-  color: #6b655b;
+  margin: clamp(26px, 3vw, 34px) 0 0;
 }
-.testimonial-attribution a {
-  color: var(--gold);
+.testimonial-name { font-size: 1rem; font-weight: 650; color: var(--ink); }
+.testimonial-sep { font-size: .92rem; color: #8a8378; }
+.testimonial-company {
+  font-size: .88rem;
+  font-weight: 500;
+  color: #8a8378;
   text-decoration: underline;
   text-underline-offset: 3px;
-  text-decoration-color: rgba(176,141,87,.4);
-  transition: color .3s ease, text-decoration-color .3s ease;
+  text-decoration-color: rgba(176,141,87,0);
+  transition: color .35s ease, text-decoration-color .35s ease;
 }
 @media (hover: hover) and (pointer: fine) {
-  .testimonial-attribution a:hover { color: #8c6936; text-decoration-color: rgba(176,141,87,.85); }
+  .testimonial-company:hover { color: var(--gold); text-decoration-color: rgba(176,141,87,.6); }
 }
-.testimonial-section[data-reveal] { transform: translateY(6px); }
-.testimonial-section[data-reveal][data-visible='true'] { transform: translateY(0); }
+
+/* Quote, then attribution — each a single quiet fade + 8px rise on
+   scroll, staggered via --reveal-delay (set inline on the
+   attribution). Scoped to .testimonial-reveal so it doesn't share the
+   sitewide [data-reveal] 14px/.7s defaults. */
+.testimonial-reveal[data-reveal] {
+  transform: translateY(8px);
+  transition: opacity .5s var(--ease) var(--reveal-delay, 0s), transform .5s var(--ease) var(--reveal-delay, 0s);
+}
+.testimonial-reveal[data-reveal][data-visible='true'] { transform: translateY(0); }
+
+@media (max-width: 860px) {
+  .testimonial-grid { grid-template-columns: 1fr; gap: 28px; }
+  .testimonial-heading-col { text-align: left; }
+}
 @media (max-width: 500px) {
-  .testimonial-mark { font-size: 2.4rem; margin-bottom: -4px; }
+  .testimonial-mark { font-size: 2.1rem; }
+  .testimonial-quote p { max-width: none; }
 }
