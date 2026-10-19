@@ -4252,7 +4252,7 @@ input, textarea, [contenteditable='true'] { -webkit-user-select: text; user-sele
    hover effect on the section itself — only the company link animates
    on hover. Warm ivory background, serif quote, gold used sparingly. */
 .testimonial-section {
-  background: #f8f1e3;
+  background: var(--paper);
   color: var(--ink);
   padding: clamp(84px, 10vw, 148px) clamp(24px, 7.3vw, 124px);
 }
@@ -4304,18 +4304,18 @@ input, textarea, [contenteditable='true'] { -webkit-user-select: text; user-sele
   margin: clamp(26px, 3vw, 34px) 0 0;
 }
 .testimonial-name { font-size: 1rem; font-weight: 650; color: var(--ink); }
-.testimonial-sep { font-size: .92rem; color: #8a8378; }
+.testimonial-sep { font-size: .92rem; color: var(--ink); }
 .testimonial-company {
   font-size: .88rem;
-  font-weight: 500;
-  color: #8a8378;
+  font-weight: 600;
+  color: var(--gold);
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-color: rgba(176,141,87,0);
   transition: color .35s ease, text-decoration-color .35s ease;
 }
 @media (hover: hover) and (pointer: fine) {
-  .testimonial-company:hover { color: var(--gold); text-decoration-color: rgba(176,141,87,.6); }
+  .testimonial-company:hover { color: #8c6936; text-decoration-color: rgba(176,141,87,.6); }
 }
 
 /* Quote, then attribution — each a single quiet fade + 8px rise on
