@@ -1,0 +1,77 @@
+/*
+ * Motion layer — calm scroll reveals, hover and press feedback.
+ *
+ * Loaded after globals.css on purpose: it only adds timing and motion, never
+ * colour, type, size or spacing. Everything here animates opacity/transform
+ * (plus the independent `translate` / `scale` properties) so nothing shifts
+ * the layout, and every effect is switched off under prefers-reduced-motion.
+ */
+
+:root {
+  --motion-ease: cubic-bezier(.22, 1, .36, 1); /* soft ease-out, no overshoot */
+  --reveal-distance: 10px;
+  --reveal-duration: 560ms;
+}
+
+/* ── Scroll reveal ─────────────────────────────────────────────────────────
+   [data-reveal] content is visible by default (no JS, print, reduced motion).
+   use-reveal.ts arms only what sits below the first screen
+   (data-visible="false", applied instantly while off-screen) and flips it to
+   "true" shortly before it scrolls into view. The animation uses the separate
+   `translate` property, so it never fights an element's own `transform`
+   (hover, press) or transitions, and leaves no delay behind once finished. */
+[data-reveal][data-visible='false'] {
+  opacity: 0;
+  translate: 0 var(--reveal-distance);
+}
+[data-reveal][data-visible='true'] {
+  animation: revealIn var(--reveal-duration) var(--motion-ease) var(--reveal-delay, 0ms) backwards;
+}
+@keyframes revealIn {
+  from { opacity: 0; translate: 0 var(--reveal-distance); }
+}
+
+/* ── Hero: pause the slow background drifts while it is scrolled away ───── */
+.hero-section[data-offscreen='true'],
+.hero-section[data-offscreen='true']::before,
+.hero-section[data-offscreen='true']::after,
+.hero-section[data-offscreen='true'] *,
+.hero-section[data-offscreen='true'] *::before,
+.hero-section[data-offscreen='true'] *::after {
+  animation-play-state: paused;
+}
+
+/* ── Press feedback for the quieter text buttons (primary / outline / submit
+   buttons already have one in globals.css). Short, 2–3 % scale, no layout shift. */
+.work-index-preview-caption button,
+.case-block-copy button { transition: border-color .35s var(--ease), scale .16s var(--motion-ease); }
+.service-choices button { transition: background .35s var(--ease), border-color .35s var(--ease), color .35s var(--ease), scale .16s var(--motion-ease); }
+.calendar-link { transition: scale .16s var(--motion-ease); }
+.work-index-preview-caption button:active,
+.case-block-copy button:active,
+.service-choices button:active,
+.calendar-link:active { scale: .975; transition-duration: .1s; }
+
+@media print {
+  [data-reveal][data-visible='false'] { opacity: 1; translate: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal][data-visible='false'] { opacity: 1; translate: none; }
+  [data-reveal][data-visible='true'] { animation: none; }
+  .work-index-preview-caption button,
+  .case-block-copy button,
+  .service-choices button,
+  .calendar-link { transition: none; }
+  .work-index-preview-caption button:active,
+  .case-block-copy button:active,
+  .service-choices button:active,
+  .calendar-link:active { scale: none; }
+}
+
+/* ── Keeps the current look of /over-trivare "Zo werk ik": the old reveal rule
+   (opacity: 1 after reveal) has always out-ranked the dimmed .62 opacity of the
+   inactive steps, so they have appeared at full strength. Stated explicitly so
+   moving the reveal to animations does not change what is on screen. Remove this
+   rule to get the dimmed inactive steps that globals.css describes. */
+.about-page-points button { opacity: 1; }

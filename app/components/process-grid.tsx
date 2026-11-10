@@ -3,6 +3,7 @@
 import type { ComponentType, MouseEvent } from 'react';
 import { ConversationIcon, DesignIcon, HammerIcon, RocketIcon } from '@/app/components/animated-icons';
 import { homeWerkwijzeSteps } from '@/app/lib/site-data';
+import { onCardPointerEnter, onCardPointerLeave } from '@/app/components/card-intent';
 
 const icons: ComponentType[] = [ConversationIcon, DesignIcon, HammerIcon, RocketIcon];
 
@@ -15,11 +16,11 @@ function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
 
 export function ProcessGrid() {
   return (
-    <div className="process-grid" data-reveal>
+    <div className="process-grid">
       {homeWerkwijzeSteps.map((step, index) => {
         const Icon = icons[index];
         return (
-          <div className="process-card" key={step.number} onMouseMove={handleMouseMove}>
+          <div className="process-card" key={step.number} data-reveal onMouseMove={handleMouseMove} onPointerEnter={onCardPointerEnter} onPointerLeave={onCardPointerLeave}>
             <span className="process-card-glow" aria-hidden="true" />
             <span className="process-card-icon" aria-hidden="true"><Icon /></span>
             <span className="process-card-number">{step.number}</span>

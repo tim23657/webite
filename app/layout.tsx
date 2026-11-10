@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, Manrope, Bricolage_Grotesque, Lora } from 'next/font/google';
 import { CookieBanner } from '@/app/components/cookie-banner';
 import './globals.css';
+import './motion.css';
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' });
 const manrope = Manrope({ variable: '--font-heading', subsets: ['latin'], display: 'swap' });
@@ -48,6 +49,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           dangerouslySetInnerHTML={{
             __html: `(function(){
               document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+              // iOS Safari only applies :active (button press feedback) when a touch listener exists.
+              document.addEventListener('touchstart', function(){}, { passive: true });
             })();`,
           }}
         />
@@ -57,7 +60,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               if (!matchMedia('(pointer: coarse)').matches) return;
               var selectors = ['.service-row','.capability-item','.project-card','.proof-band-grid > div','.proof-strip > div','.approach-words span','.about-copy h2 span','.about-image','.values-grid article','.investment-panel article','.quiet-link','.hero-services-link','h2.process-bold-heading','h2.contact-heading','.display-heading','h2.work-heading','h2.services-heading','.process-card','.design-cta-banner','.section-teaser-link'];
               var io = new IntersectionObserver(function(entries){
-                entries.forEach(function(entry){ entry.target.classList.toggle('scroll-glow', entry.isIntersecting); });
+                entries.forEach(function(entry){
+                  entry.target.classList.toggle('scroll-glow', entry.isIntersecting);
+                  if (entry.isIntersecting && entry.target.classList.contains('process-card')) entry.target.classList.add('icon-played');
+                });
               }, { threshold: 0.55 });
               function scan(){
                 selectors.forEach(function(sel){

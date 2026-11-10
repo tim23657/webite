@@ -1,23 +1,15 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect } from 'react';
 import { SiteHeader } from '@/app/components/site-header';
 import { SiteFooter } from '@/app/components/site-footer';
 import { process } from '@/app/lib/site-data';
+import { useReveal } from '@/app/components/use-reveal';
 
 const layouts = ['right', 'left', 'right'] as const;
 
 export function WerkwijzeContent() {
-  useEffect(() => {
-    const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { revealItems.forEach((item) => item.dataset.visible = 'true'); return; }
-    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
-      if (entry.isIntersecting) { (entry.target as HTMLElement).dataset.visible = 'true'; observer.unobserve(entry.target); }
-    }), { threshold: .13 });
-    revealItems.forEach((item) => observer.observe(item));
-    return () => observer.disconnect();
-  }, []);
+  useReveal();
 
   return (
     <main>

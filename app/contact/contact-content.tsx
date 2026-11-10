@@ -1,12 +1,13 @@
 'use client';
 
-import { lazy, Suspense, SyntheticEvent, useEffect, useState } from 'react';
+import { lazy, Suspense, SyntheticEvent, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { SiteHeader } from '@/app/components/site-header';
 import { SiteFooter } from '@/app/components/site-footer';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { useReveal } from '@/app/components/use-reveal';
 
 const CalendlyDialog = lazy(() => import('@/app/components/calendly-dialog'));
 
@@ -19,15 +20,7 @@ export function ContactContent() {
 
   const openCalendly = () => { setCalendlyOpen(true); setCalendlyLoaded(true); };
 
-  useEffect(() => {
-    const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { revealItems.forEach((item) => item.dataset.visible = 'true'); return; }
-    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
-      if (entry.isIntersecting) { (entry.target as HTMLElement).dataset.visible = 'true'; observer.unobserve(entry.target); }
-    }), { threshold: .13 });
-    revealItems.forEach((item) => observer.observe(item));
-    return () => observer.disconnect();
-  }, []);
+  useReveal();
 
   const submitContact = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault(); setFormState('sending'); setFormError('');

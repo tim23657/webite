@@ -1,5 +1,3 @@
-import type { CSSProperties } from 'react';
-
 export function Testimonial() {
   return (
     <section className="testimonial-section" id="ervaringen">
@@ -14,20 +12,13 @@ export function Testimonial() {
           <blockquote className="testimonial-quote testimonial-reveal" data-reveal>
             <p>Hele fijne samenwerking. Er wordt goed geluisterd naar je wensen, kwaliteit geleverd en meegedacht. Ik ben heel blij met het verloop en kan met al mijn vragen terecht.</p>
           </blockquote>
-          <p
-            className="testimonial-attribution testimonial-reveal"
-            data-reveal
-            style={{ '--reveal-delay': '160ms' } as CSSProperties}
-          >
+          <p className="testimonial-attribution testimonial-reveal" data-reveal>
             <span className="testimonial-name">Chantal</span>
             <span className="testimonial-sep"> · </span>
             <a className="testimonial-company" href="https://creabychantal.nl" target="_blank" rel="noreferrer">Crea by Chantal</a>
           </p>
         </div>
       </div>
-      <noscript>
-        <style>{'.testimonial-reveal{opacity:1!important;transform:none!important;}'}</style>
-      </noscript>
     </section>
   );
 }

@@ -13,6 +13,7 @@ import { WhyTrivare } from '@/app/components/why-trivare';
 import { Testimonial } from '@/app/components/testimonial';
 import { LightningCursor } from '@/app/components/LightningCursor';
 import { faqs } from '@/app/lib/site-data';
+import { useReveal } from '@/app/components/use-reveal';
 
 const CaseDialog = lazy(() => import('@/app/components/case-dialog'));
 
@@ -336,6 +337,8 @@ function useFluidHeroField(ref: React.RefObject<HTMLElement | null>, canvasRef: 
 
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
+      // Lets the CSS pause the slow background drifts while the hero is off-screen.
+      element.dataset.offscreen = visible ? 'false' : 'true';
       if (visible && !reducedMotion && !frame) frame = requestAnimationFrame(render);
     }, { threshold: 0.02 });
     observer.observe(element);
@@ -415,15 +418,7 @@ export function TrivareSite() {
 
   const openCase = (index: number) => { setCaseIndex(index); setCaseDialogLoaded(true); };
 
-  useEffect(() => {
-    const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { revealItems.forEach((item) => item.dataset.visible = 'true'); return; }
-    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
-      if (entry.isIntersecting) { (entry.target as HTMLElement).dataset.visible = 'true'; observer.unobserve(entry.target); }
-    }), { threshold: .13 });
-    revealItems.forEach((item) => observer.observe(item));
-    return () => observer.disconnect();
-  }, []);
+  useReveal();
 
   return (
     <main>

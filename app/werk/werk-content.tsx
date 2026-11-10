@@ -2,11 +2,12 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { SiteHeader } from '@/app/components/site-header';
 import { SiteFooter } from '@/app/components/site-footer';
 import { projects } from '@/app/lib/site-data';
+import { useReveal } from '@/app/components/use-reveal';
 
 const CaseDialog = lazy(() => import('@/app/components/case-dialog'));
 
@@ -18,15 +19,7 @@ export function WerkContent() {
 
   const openCase = (index: number) => { setCaseIndex(index); setCaseDialogLoaded(true); };
 
-  useEffect(() => {
-    const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { revealItems.forEach((item) => item.dataset.visible = 'true'); return; }
-    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
-      if (entry.isIntersecting) { (entry.target as HTMLElement).dataset.visible = 'true'; observer.unobserve(entry.target); }
-    }), { threshold: .13 });
-    revealItems.forEach((item) => observer.observe(item));
-    return () => observer.disconnect();
-  }, []);
+  useReveal();
 
   return (
     <main>

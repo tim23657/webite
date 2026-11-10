@@ -1,6 +1,6 @@
 'use client';
 
-import type { ComponentType, CSSProperties, MouseEvent } from 'react';
+import type { ComponentType, MouseEvent } from 'react';
 import {
   CodeIcon,
   GesprekIcon,
@@ -12,6 +12,7 @@ import {
   SchermenIcon,
 } from '@/app/components/why-trivare-icons';
 import { whyTrivare, whyTrivareBadges } from '@/app/lib/site-data';
+import { onCardPointerEnter, onCardPointerLeave } from '@/app/components/card-intent';
 
 const icons: ComponentType[] = [
   GesprekIcon, PrijsIcon, KlokIcon, OntwerpIcon, MarketingIcon, SchermenIcon, CodeIcon, OndersteuningIcon,
@@ -42,8 +43,9 @@ export function WhyTrivare() {
               className="process-card why-card-reveal"
               key={item.number}
               data-reveal
-              style={{ '--reveal-delay': `${index * 70}ms` } as CSSProperties}
               onMouseMove={handleMouseMove}
+              onPointerEnter={onCardPointerEnter}
+              onPointerLeave={onCardPointerLeave}
             >
               <span className="process-card-glow" aria-hidden="true" />
               <span className="process-card-icon" aria-hidden="true"><Icon /></span>
